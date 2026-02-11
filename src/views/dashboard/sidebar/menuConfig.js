@@ -16,17 +16,6 @@ import {
  */
 export const SIDEBAR_SECTIONS = [
   {
-    id: 'main',
-    items: [
-      {
-        id: 'dashboard',
-        label: 'Dashboard',
-        href: '/dashboard',
-        icon: Home2,
-      },
-    ],
-  },
-  {
     id: 'manajemen',
     label: 'MANAJEMEN',
     items: [
@@ -65,25 +54,25 @@ export const SIDEBAR_SECTIONS = [
       {
         id: 'notifikasi',
         label: 'Notifikasi',
-        href: '/dashboard/notifikasi',
+        href: '/notifikasi',
         icon: Notification,
         children: [
           {
             id: 'notif-kategori-template',
             label: 'Kategori Template',
-            href: '/dashboard/notifikasi/kategori-template',
+            href: '/notifikasi/kategori-template',
             icon: Setting2,
           },
           {
             id: 'notif-template',
             label: 'Template',
-            href: '/dashboard/notifikasi/template',
+            href: '/notifikasi/template',
             icon: DocumentText,
           },
           {
             id: 'notif-zepto',
             label: 'Jumlah Email Zepto',
-            href: '/dashboard/notifikasi/jumlah-email-zepto',
+            href: '/notifikasi/jumlah-email-zepto',
             icon: Sms,
           },
         ],

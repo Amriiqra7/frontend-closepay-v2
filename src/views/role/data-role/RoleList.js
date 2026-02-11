@@ -8,6 +8,9 @@ import {
   IconButton,
   Typography,
   Grid,
+  Select,
+  MenuItem,
+  Tooltip,
 } from '@mui/material';
 import {
   MaterialReactTable,
@@ -18,6 +21,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import TablePagination from '@/components/TablePagination';
 import AlertDialog from '@/components/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/components/FilterCollapse';
+import PageLoading from '@/components/PageLoading';
 
 // Sample data - replace with actual API call
 // Generate 100 mock roles for testing pagination
@@ -51,6 +55,7 @@ const generateMockRoles = () => {
   ];
 
   // Generate 100 roles dengan companyId yang berbeda-beda
+  const userTypes = ['Superadmin', 'Admin', 'Member', 'Merchant'];
   for (let i = 1; i <= 100; i++) {
     const baseData = sampleData[(i - 1) % sampleData.length];
     roles.push({
@@ -59,6 +64,7 @@ const generateMockRoles = () => {
       deskripsi: baseData.deskripsi,
       jumlahPengguna: baseData.jumlahPengguna + Math.floor(Math.random() * 10),
       companyId: baseData.companyId + Math.floor((i - 1) / 25) % 4, // Distribute across companies
+      jenisUser: userTypes[i % userTypes.length], // Add jenisUser field
     });
   }
 
@@ -82,13 +88,36 @@ export default function RoleList() {
   const [sorting, setSorting] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [userTypeFilter, setUserTypeFilter] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Wait for component to mount (client-side only) to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Redirect ke halaman pemilihan company jika tidak ada companyId
   useEffect(() => {
+    if (!isMounted) return;
     if (searchParams && !companyId) {
+      setIsLoading(true);
       router.push('/role/data-role');
     }
-  }, [companyId, router, searchParams]);
+  }, [companyId, router, searchParams, isMounted]);
+
+  // Loading state saat companyId berubah
+  useEffect(() => {
+    if (!isMounted) return;
+    if (companyId) {
+      setIsLoading(true);
+      // Simulate loading saat data dimuat (bisa diganti dengan actual API call)
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [companyId, isMounted]);
 
   const handleToggleFilters = useCallback((nextOpen) => {
     if (typeof nextOpen === 'boolean') {
@@ -102,16 +131,35 @@ export default function RoleList() {
     const value = event.target.value;
     setSearchValue(value);
     
-    // Update columnFilters for 'nama' field
+    // Update columnFilters
+    const filters = [];
     if (value) {
-      setColumnFilters([{ id: 'nama', value }]);
-    } else {
-      setColumnFilters([]);
+      filters.push({ id: 'nama', value });
     }
-  }, []);
+    if (userTypeFilter) {
+      filters.push({ id: 'jenisUser', value: userTypeFilter });
+    }
+    setColumnFilters(filters);
+  }, [userTypeFilter]);
+
+  const handleUserTypeFilterChange = useCallback((event) => {
+    const value = event.target.value;
+    setUserTypeFilter(value);
+    
+    // Update columnFilters
+    const filters = [];
+    if (searchValue) {
+      filters.push({ id: 'nama', value: searchValue });
+    }
+    if (value) {
+      filters.push({ id: 'jenisUser', value });
+    }
+    setColumnFilters(filters);
+  }, [searchValue]);
 
   const handleResetFilter = useCallback(() => {
     setSearchValue('');
+    setUserTypeFilter('');
     setColumnFilters([]);
   }, []);
 
@@ -122,8 +170,8 @@ export default function RoleList() {
   });
 
   const hasActiveFilters = useMemo(
-    () => columnFilters.length > 0,
-    [columnFilters]
+    () => columnFilters.length > 0 || searchValue || userTypeFilter,
+    [columnFilters, searchValue, userTypeFilter]
   );
 
   // Filter data based on columnFilters and companyId
@@ -331,6 +379,9 @@ export default function RoleList() {
     },
     muiTablePaperProps: {
       elevation: 0,
+      sx: {
+        mb: 4,
+      },
     },
     mrtTheme: (theme) => ({
       baseBackgroundColor: 'rgba(255, 255, 255, 1)',
@@ -342,27 +393,33 @@ export default function RoleList() {
     },
     renderRowActions: ({ row }) => (
       <Box display="flex">
-        <IconButton
-          size="small"
-          color="info"
-          onClick={() => handleView(row.original)}
-        >
-          <Eye size={20} variant="Linear" />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="success"
-          onClick={() => handleEdit(row.original)}
-        >
-          <Edit size={20} variant="Linear" />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="error"
-          onClick={() => handleDelete(row.original)}
-        >
-          <Trash size={20} variant="Linear" />
-        </IconButton>
+        <Tooltip title="Detail" arrow>
+          <IconButton
+            size="small"
+            color="info"
+            onClick={() => handleView(row.original)}
+          >
+            <Eye size={20} variant="Linear" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit" arrow>
+          <IconButton
+            size="small"
+            color="success"
+            onClick={() => handleEdit(row.original)}
+          >
+            <Edit size={20} variant="Linear" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Hapus" arrow>
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() => handleDelete(row.original)}
+          >
+            <Trash size={20} variant="Linear" />
+          </IconButton>
+        </Tooltip>
       </Box>
     ),
     renderBottomToolbar: () => (
@@ -376,6 +433,11 @@ export default function RoleList() {
       />
     ),
   });
+
+  // Tampilkan loading saat belum mounted atau saat redirect/loading data
+  if (!isMounted || isLoading) {
+    return <PageLoading />;
+  }
 
   return (
     <>
@@ -461,10 +523,61 @@ export default function RoleList() {
               }}
             />
           </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Select
+              value={userTypeFilter}
+              onChange={handleUserTypeFilterChange}
+              displayEmpty
+              fullWidth
+              size="small"
+              renderValue={(selected) => {
+                if (!selected) {
+                  return <Typography sx={{ color: 'text.secondary' }}>Jenis User</Typography>;
+                }
+                return selected;
+              }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300,
+                    overflowY: 'auto',
+                  },
+                },
+                anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                },
+                transformOrigin: {
+                  vertical: 'top',
+                  horizontal: 'left',
+                },
+              }}
+              sx={{
+                width: '100%',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'rgba(0, 0, 0, 0.23)',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }}
+            >
+              <MenuItem value="">Semua</MenuItem>
+              <MenuItem value="Superadmin">Superadmin</MenuItem>
+              <MenuItem value="Admin">Admin</MenuItem>
+              <MenuItem value="Member">Member</MenuItem>
+              <MenuItem value="Merchant">Merchant</MenuItem>
+            </Select>
+          </Grid>
         </FilterCollapse>
 
         {/* MaterialReactTable */}
-        <MaterialReactTable table={table} />
+        <Box sx={{ pb: 4 }}>
+          <MaterialReactTable table={table} />
+        </Box>
       </Box>
 
       {/* Delete Confirmation Dialog */}

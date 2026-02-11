@@ -13,7 +13,7 @@ import Image from 'next/image';
 import SidebarNavItem from './sidebar/SidebarNavItem';
 import { SIDEBAR_SECTIONS } from './sidebar/menuConfig';
 
-const brandColor = '#080808';
+const brandColor = '#155DFC';
 
 export default function Sidebar({
   mobileOpen,
@@ -36,11 +36,14 @@ export default function Sidebar({
       {/* Logo Section */}
       <Box
         sx={{
-          p: desktopExpanded ? 3 : 2,
+          p: desktopExpanded ? 3 : 2.1,
+          minHeight: desktopExpanded ? 'auto' : '89px',
           display: 'flex',
           alignItems: 'center',
           gap: desktopExpanded ? 2 : 0,
           justifyContent: desktopExpanded ? 'flex-start' : 'center',
+          borderBottom: "none",
+          borderColor: desktopExpanded ? 'transparent' : 'divider',
         }}
       >
         <Box
@@ -69,8 +72,6 @@ export default function Sidebar({
         </Box>
       </Box>
 
-      <Divider />
-
       {/* Menu Items */}
       <Box sx={{ px: desktopExpanded ? 2 : 1, py: 2 }}>
         {SIDEBAR_SECTIONS.map((section) => (
@@ -80,7 +81,7 @@ export default function Sidebar({
                 variant="caption"
                 sx={{
                   color: 'rgba(8,8,8,0.45)',
-                  fontWeight: 700,
+                  fontWeight: 400,
                   letterSpacing: '0.08em',
                   fontSize: '0.7rem',
                   px: 1,
@@ -136,7 +137,7 @@ export default function Sidebar({
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: drawerWidth,
-            borderRight: '1px solid #e0e0e0',
+            borderRight: '1px dashed #b0b0b0',
           },
         }}
       >
@@ -151,7 +152,7 @@ export default function Sidebar({
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: desktopWidth,
-            borderRight: '1px solid #e0e0e0',
+            borderRight: '1px dashed #b0b0b0',
             bgcolor: 'white',
             overflowX: 'hidden',
             transition: (theme) =>

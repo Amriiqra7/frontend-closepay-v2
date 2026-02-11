@@ -7,16 +7,17 @@ export default function WelcomeBanner() {
   return (
     <Box
       sx={{
-        borderRadius: 3,
+        borderRadius: 2,
         p: 4,
         position: 'relative',
         overflow: 'hidden',
-        minHeight: '130px',
+        minHeight: '200px',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         backgroundImage: "url('/assets/images/bg-welcomebanner.png')",
         backgroundSize: 'cover',
-        backgroundPosition: 'right center',
+        backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         '&::before': {
           content: '""',
@@ -46,27 +47,31 @@ export default function WelcomeBanner() {
         sx={{
           position: 'relative',
           zIndex: 1,
-          mt: 2,
+          mt: 3,
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'flex-start',
           gap: 1,
+          maxWidth: '60%',
         }}
       >
         <Typography
-          variant="h5"
+          variant="h4"
           sx={{
             color: 'white',
-            fontWeight: 600,
+            fontWeight: 400,
             lineHeight: 1.3,
+            fontSize: { xs: '1.5rem', sm: '2rem' },
           }}
         >
           Selamat Datang, Team E Subsidi Bangka Belitung
         </Typography>
         <Typography
-          variant="body2"
+          variant="body1"
           sx={{
             color: 'rgba(255, 255, 255, 0.9)',
             lineHeight: 1.5,
+            fontSize: { xs: '0.9rem', sm: '1rem' },
           }}
         >
           Hari ini adalah hari yang baik!

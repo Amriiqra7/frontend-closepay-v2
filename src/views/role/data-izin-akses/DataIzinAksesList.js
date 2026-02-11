@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   Box,
   TextField,
@@ -8,72 +8,256 @@ import {
   IconButton,
   Typography,
   Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  Chip,
   Tooltip,
 } from '@mui/material';
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
-import { Add, Eye, Edit, Trash, Setting2, Menu, Login } from 'iconsax-react';
+import { Add, Eye, Edit, Trash } from 'iconsax-react';
 import { usePathname, useRouter } from 'next/navigation';
 import TablePagination from '@/components/TablePagination';
 import AlertDialog from '@/components/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/components/FilterCollapse';
 
-// Sample data - replace with actual API call
-// Generate 100 mock companies for testing pagination
-const generateMockCompanies = () => {
-  const companies = [];
-  const sampleData = [
+// Sample data based on the image
+const generateMockDataIzinAkses = () => {
+  return [
     {
-      nama: 'Bougenvile Blok',
-      inisialPerusahaan: 'BB',
-      namaPIC: 'Arik Riko Prasetya',
-      emailPIC: 'ArikRikoPrasetya@gmail.com',
+      id: 1,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Activate or Deactivate Admin',
+      kode: 'user_membership_activate_deactivate_admin',
+      deskripsi: 'Membersip Activate or Deactivate Admin (user_membership_activate_deactivate_admin)',
+      status: 'aktif',
     },
     {
-      nama: 'Kantin FKi 12',
-      inisialPerusahaan: 'KF12',
-      namaPIC: 'John Doe',
-      emailPIC: 'john.doe@example.com',
+      id: 2,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Create Admin',
+      kode: 'user_membership_create_admin',
+      deskripsi: 'Membersip Create Admin (user_membership_create_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 3,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Get Admin',
+      kode: 'user_membership_get_admin',
+      deskripsi: 'Membersip Get Admin (user_membership_get_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 4,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Grant Role Admin',
+      kode: 'user_membership_grant_role_admin',
+      deskripsi: 'Membersip Grant Role Admin (user_membership_grant_role_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 5,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Revoke Role Admin',
+      kode: 'user_membership_revoke_role_admin',
+      deskripsi: 'Membersip Revoke Role Admin (user_membership_revoke_role_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 6,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Update Admin',
+      kode: 'user_membership_update_admin',
+      deskripsi: 'Membersip Update Admin (user_membership_update_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 7,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Remove Security Code Member',
+      kode: 'user_membership_remove_security_code_member',
+      deskripsi: 'Membership Remove Security Code Member (user_membership_remove_security_code_member)',
+      status: 'aktif',
+    },
+    {
+      id: 8,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Reset Password Member',
+      kode: 'user_membership_reset_password_member',
+      deskripsi: 'Membership Reset Password Member (user_membership_reset_password_member)',
+      status: 'aktif',
+    },
+    {
+      id: 9,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Set Parent Member',
+      kode: 'user_membership_set_parent_member',
+      deskripsi: 'Membership Set Parent Member (user_membership_set_parent_member)',
+      status: 'aktif',
+    },
+    {
+      id: 10,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membersip Activate or Deactivate Member',
+      kode: 'user_membership_activate_deactivate_member',
+      deskripsi: 'Membersip Activate or Deactivate Member (user_membership_activate_deactivate_member)',
+      status: 'aktif',
+    },
+    {
+      id: 11,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Create Member',
+      kode: 'user_membership_create_member',
+      deskripsi: 'Membership Create Member (user_membership_create_member)',
+      status: 'aktif',
+    },
+    {
+      id: 12,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Get Member',
+      kode: 'user_membership_get_member',
+      deskripsi: 'Membership Get Member (user_membership_get_member)',
+      status: 'aktif',
+    },
+    {
+      id: 13,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Update Member',
+      kode: 'user_membership_update_member',
+      deskripsi: 'Membership Update Member (user_membership_update_member)',
+      status: 'aktif',
+    },
+    {
+      id: 14,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Grant Role Member',
+      kode: 'user_membership_grant_role_member',
+      deskripsi: 'Membership Grant Role Member (user_membership_grant_role_member)',
+      status: 'aktif',
+    },
+    {
+      id: 15,
+      service: 'user',
+      tipe: 'admin',
+      nama: 'Membership Revoke Role Member',
+      kode: 'user_membership_revoke_role_member',
+      deskripsi: 'Membership Revoke Role Member (user_membership_revoke_role_member)',
+      status: 'aktif',
+    },
+    {
+      id: 16,
+      service: 'user',
+      tipe: 'member',
+      nama: 'Membership View Profile',
+      kode: 'user_membership_view_profile',
+      deskripsi: 'Membership View Profile (user_membership_view_profile)',
+      status: 'aktif',
+    },
+    {
+      id: 17,
+      service: 'user',
+      tipe: 'member',
+      nama: 'Membership Edit Profile',
+      kode: 'user_membership_edit_profile',
+      deskripsi: 'Membership Edit Profile (user_membership_edit_profile)',
+      status: 'aktif',
+    },
+    {
+      id: 18,
+      service: 'user',
+      tipe: 'member',
+      nama: 'Membership Change Password',
+      kode: 'user_membership_change_password',
+      deskripsi: 'Membership Change Password (user_membership_change_password)',
+      status: 'aktif',
+    },
+    {
+      id: 19,
+      service: 'user',
+      tipe: 'member',
+      nama: 'Membership View Transactions',
+      kode: 'user_membership_view_transactions',
+      deskripsi: 'Membership View Transactions (user_membership_view_transactions)',
+      status: 'aktif',
+    },
+    {
+      id: 20,
+      service: 'user',
+      tipe: 'member',
+      nama: 'Membership View Balance',
+      kode: 'user_membership_view_balance',
+      deskripsi: 'Membership View Balance (user_membership_view_balance)',
+      status: 'aktif',
+    },
+    {
+      id: 21,
+      service: 'transaction',
+      tipe: 'admin',
+      nama: 'Transaction Create Admin',
+      kode: 'transaction_create_admin',
+      deskripsi: 'Transaction Create Admin (transaction_create_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 22,
+      service: 'transaction',
+      tipe: 'admin',
+      nama: 'Transaction Get Admin',
+      kode: 'transaction_get_admin',
+      deskripsi: 'Transaction Get Admin (transaction_get_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 23,
+      service: 'transaction',
+      tipe: 'admin',
+      nama: 'Transaction Update Admin',
+      kode: 'transaction_update_admin',
+      deskripsi: 'Transaction Update Admin (transaction_update_admin)',
+      status: 'aktif',
+    },
+    {
+      id: 24,
+      service: 'transaction',
+      tipe: 'admin',
+      nama: 'Transaction Delete Admin',
+      kode: 'transaction_delete_admin',
+      deskripsi: 'Transaction Delete Admin (transaction_delete_admin)',
+      status: 'aktif',
     },
   ];
-
-  // Generate 100 companies
-  for (let i = 1; i <= 100; i++) {
-    const baseData = sampleData[(i - 1) % sampleData.length];
-    companies.push({
-      id: i,
-      nama: i <= sampleData.length ? baseData.nama : `${baseData.nama} ${Math.floor(i / sampleData.length)}`,
-      inisialPerusahaan: baseData.inisialPerusahaan,
-      namaPIC: baseData.namaPIC,
-      emailPIC: baseData.emailPIC,
-    });
-  }
-
-  return companies;
 };
 
-const mockCompanies = generateMockCompanies();
+const mockDataIzinAkses = generateMockDataIzinAkses();
 
-export default function Company() {
+export default function DataIzinAksesList() {
   const router = useRouter();
   const pathname = usePathname();
+  
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  const [rowCount, setRowCount] = useState(mockCompanies.length);
+  const [rowCount, setRowCount] = useState(mockDataIzinAkses.length);
   const [sorting, setSorting] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [companyInitialFilter, setCompanyInitialFilter] = useState('');
-  const [detailDialog, setDetailDialog] = useState({ open: false, company: null });
 
   const handleToggleFilters = useCallback((nextOpen) => {
     if (typeof nextOpen === 'boolean') {
@@ -87,35 +271,16 @@ export default function Company() {
     const value = event.target.value;
     setSearchValue(value);
     
-    // Update columnFilters
-    const filters = [];
+    // Update columnFilters for 'nama' field
     if (value) {
-      filters.push({ id: 'nama', value });
+      setColumnFilters([{ id: 'nama', value }]);
+    } else {
+      setColumnFilters([]);
     }
-    if (companyInitialFilter) {
-      filters.push({ id: 'inisialPerusahaan', value: companyInitialFilter });
-    }
-    setColumnFilters(filters);
-  }, [companyInitialFilter]);
-
-  const handleCompanyInitialFilterChange = useCallback((event) => {
-    const value = event.target.value;
-    setCompanyInitialFilter(value);
-    
-    // Update columnFilters
-    const filters = [];
-    if (searchValue) {
-      filters.push({ id: 'nama', value: searchValue });
-    }
-    if (value) {
-      filters.push({ id: 'inisialPerusahaan', value });
-    }
-    setColumnFilters(filters);
-  }, [searchValue]);
+  }, []);
 
   const handleResetFilter = useCallback(() => {
     setSearchValue('');
-    setCompanyInitialFilter('');
     setColumnFilters([]);
   }, []);
 
@@ -126,14 +291,15 @@ export default function Company() {
   });
 
   const hasActiveFilters = useMemo(
-    () => columnFilters.length > 0 || searchValue || companyInitialFilter,
-    [columnFilters, searchValue, companyInitialFilter]
+    () => columnFilters.length > 0,
+    [columnFilters]
   );
 
   // Filter data based on columnFilters
   const filteredData = useMemo(() => {
-    let filtered = [...mockCompanies];
+    let filtered = [...mockDataIzinAkses];
 
+    // Apply column filters
     columnFilters.forEach((filter) => {
       if (filter.value) {
         filtered = filtered.filter((item) => {
@@ -174,46 +340,28 @@ export default function Company() {
     }));
   }, [sortedData, pagination]);
 
-  const handleView = useCallback((company) => {
-    setDetailDialog({ open: true, company });
+  const handleView = useCallback((item) => {
+    // TODO: Implement view functionality
+    console.log('View data izin akses:', item);
   }, []);
 
-  const handleAturMenu = useCallback((company) => {
-    // TODO: Implement atur menu functionality
-    console.log('Atur menu company:', company);
-    router.push(`${pathname}/${company.id}/menu`);
-  }, [router, pathname]);
-
-  const handlePengaturanPerusahaan = useCallback((company) => {
-    // TODO: Implement pengaturan perusahaan functionality
-    console.log('Pengaturan perusahaan:', company);
-    router.push(`${pathname}/${company.id}/settings`);
-  }, [router, pathname]);
-
-  const handleMasukKeCompany = useCallback((company) => {
-    // TODO: Implement masuk ke company functionality
-    console.log('Masuk ke company:', company);
-    // Redirect to company dashboard or set company context
-    router.push(`/company/${company.id}/dashboard`);
-  }, [router]);
-
-  const handleEdit = useCallback((company) => {
+  const handleEdit = useCallback((item) => {
     // TODO: Implement edit functionality
-    console.log('Edit company:', company);
-    // router.push(`${pathname}/${company.id}/edit`);
+    console.log('Edit data izin akses:', item);
+    // router.push(`${pathname}/edit/${item.id}`);
   }, []);
 
-  const handleDelete = useCallback((company) => {
+  const handleDelete = useCallback((item) => {
     setDeleteDialog({
       open: true,
-      id: company.id,
-      name: company.nama,
+      id: item.id,
+      name: item.nama,
     });
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
     // TODO: Implement delete functionality
-    console.log('Delete company:', deleteDialog.id);
+    console.log('Delete data izin akses:', deleteDialog.id);
     setDeleteDialog({ open: false, id: null, name: '' });
   }, [deleteDialog]);
 
@@ -228,7 +376,6 @@ export default function Company() {
   const handlePageSizeChange = useCallback((newPageSize) => {
     setPagination((prev) => ({ ...prev, pageSize: newPageSize, pageIndex: 0 }));
   }, []);
-
 
   const columns = useMemo(
     () => [
@@ -247,36 +394,72 @@ export default function Company() {
         ),
       },
       {
+        accessorKey: 'service',
+        header: 'Service',
+        size: 120,
+        Cell: ({ cell }) => (
+          <Typography variant="body2">{cell.getValue()}</Typography>
+        ),
+      },
+      {
+        accessorKey: 'tipe',
+        header: 'Tipe',
+        size: 120,
+        Cell: ({ cell }) => (
+          <Typography variant="body2">{cell.getValue()}</Typography>
+        ),
+      },
+      {
         accessorKey: 'nama',
         header: 'Nama',
-        size: 200,
+        size: 300,
         Cell: ({ cell }) => (
           <Typography variant="body2">{cell.getValue()}</Typography>
         ),
       },
       {
-        accessorKey: 'inisialPerusahaan',
-        header: 'Inisial Perusahaan',
-        size: 150,
+        accessorKey: 'kode',
+        header: 'Kode',
+        size: 300,
         Cell: ({ cell }) => (
           <Typography variant="body2">{cell.getValue()}</Typography>
         ),
       },
       {
-        accessorKey: 'namaPIC',
-        header: 'Nama PIC',
-        size: 200,
+        accessorKey: 'deskripsi',
+        header: 'Deskripsi',
+        size: 400,
         Cell: ({ cell }) => (
           <Typography variant="body2">{cell.getValue()}</Typography>
         ),
       },
       {
-        accessorKey: 'emailPIC',
-        header: 'Email PIC',
-        size: 250,
-        Cell: ({ cell }) => (
-          <Typography variant="body2">{cell.getValue()}</Typography>
-        ),
+        accessorKey: 'status',
+        header: 'Status',
+        size: 120,
+        enableSorting: false,
+        muiTableHeadCellProps: { align: 'center' },
+        muiTableBodyCellProps: { align: 'center' },
+        Cell: ({ cell }) => {
+          const status = cell.getValue();
+          const isAktif = status === 'aktif';
+          return (
+            <Chip
+              label={isAktif ? 'Aktif' : 'Nonaktif'}
+              size="small"
+              sx={{
+                bgcolor: isAktif ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)',
+                color: isAktif ? '#4caf50' : '#f44336',
+                fontWeight: 500,
+                fontSize: '0.75rem',
+                height: 24,
+                '& .MuiChip-label': {
+                  px: 1.5,
+                },
+              }}
+            />
+          );
+        },
       },
     ],
     []
@@ -360,82 +543,32 @@ export default function Company() {
       },
     },
     renderRowActions: ({ row }) => (
-      <Box 
-        display="flex" 
-        gap={0.5}
-        sx={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <Box display="flex">
         <Tooltip title="Detail" arrow>
           <IconButton
             size="small"
+            color="info"
             onClick={() => handleView(row.original)}
-            sx={{
-              color: '#1976d2',
-              '&:hover': {
-                bgcolor: 'rgba(25, 118, 210, 0.08)',
-              },
-            }}
           >
-            <Eye size={20} variant="Linear" color="#1976d2" />
+            <Eye size={20} variant="Linear" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Edit" arrow>
           <IconButton
             size="small"
+            color="success"
             onClick={() => handleEdit(row.original)}
-            sx={{
-              color: '#ed6c02',
-              '&:hover': {
-                bgcolor: 'rgba(237, 108, 2, 0.08)',
-              },
-            }}
           >
-            <Edit size={20} variant="Linear" color="#ed6c02" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Pengaturan Perusahaan" arrow>
-          <IconButton
-            size="small"
-            onClick={() => handlePengaturanPerusahaan(row.original)}
-            sx={{
-              color: '#ed6c02',
-              '&:hover': {
-                bgcolor: 'rgba(237, 108, 2, 0.08)',
-              },
-            }}
-          >
-            <Setting2 size={20} variant="Linear" color="#ed6c02" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Masuk ke Company" arrow>
-          <IconButton
-            size="small"
-            onClick={() => handleMasukKeCompany(row.original)}
-            sx={{
-              color: '#2e7d32',
-              '&:hover': {
-                bgcolor: 'rgba(46, 125, 50, 0.08)',
-              },
-            }}
-          >
-            <Login size={20} variant="Linear" color="#2e7d32" />
+            <Edit size={20} variant="Linear" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Hapus" arrow>
           <IconButton
             size="small"
+            color="error"
             onClick={() => handleDelete(row.original)}
-            sx={{
-              color: '#d32f2f',
-              '&:hover': {
-                bgcolor: 'rgba(211, 47, 47, 0.08)',
-              },
-            }}
           >
-            <Trash size={20} variant="Linear" color="#d32f2f" />
+            <Trash size={20} variant="Linear" />
           </IconButton>
         </Tooltip>
       </Box>
@@ -520,28 +653,9 @@ export default function Company() {
           <Grid item xs={12} sm={6} md={3}>
             <TextField
               fullWidth
-              placeholder="Cari perusahaan..."
+              placeholder="Cari nama atau kode izin akses..."
               value={searchValue}
               onChange={handleSearchChange}
-              size="small"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '&:hover fieldset': {
-                    borderColor: 'primary.main',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'primary.main',
-                  },
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth
-              placeholder="Cari Company Initial..."
-              value={companyInitialFilter}
-              onChange={handleCompanyInitialFilterChange}
               size="small"
               sx={{
                 '& .MuiOutlinedInput-root': {
@@ -578,65 +692,6 @@ export default function Company() {
         cancelText="Batal"
         confirmColor="error"
       />
-
-      {/* Detail Dialog */}
-      <Dialog
-        open={detailDialog.open}
-        onClose={() => setDetailDialog({ open: false, company: null })}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>
-          <Typography variant="h6" fontWeight="bold">
-            Detail Perusahaan
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          {detailDialog.company && (
-            <Box sx={{ pt: 2 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Nama
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500}>
-                    {detailDialog.company.nama}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Inisial Perusahaan
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500}>
-                    {detailDialog.company.inisialPerusahaan}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Nama PIC
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500}>
-                    {detailDialog.company.namaPIC}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    Email PIC
-                  </Typography>
-                  <Typography variant="body1" fontWeight={500}>
-                    {detailDialog.company.emailPIC}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDetailDialog({ open: false, company: null })}>
-            Tutup
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }

@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }) {
   const SidebarComponent = selectedMenu ? AdminSidebar : Sidebar;
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#f5f5f5', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#f8f9fa', overflow: 'hidden' }}>
       <SidebarComponent
         mobileOpen={mobileOpen}
         handleDrawerToggle={handleDrawerToggle}
@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }) {
         />
 
         {/* Spacer for fixed AppBar */}
-        <Toolbar />
+        <Toolbar sx={{ minHeight: '80px !important' }} />
 
         {/* Main Content - Scroll happens here */}
         <Box 
@@ -73,6 +73,7 @@ export default function DashboardLayout({ children }) {
             overflowX: 'hidden',
             overflowY: 'auto',
             minHeight: 0,
+            maxHeight: 'calc(100vh - 80px)',
           }}
         >
           {/* Global Page Header (Breadcrumb & Title) */}

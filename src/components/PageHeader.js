@@ -160,62 +160,70 @@ export default function PageHeader() {
     }
   };
 
+  // Jangan tampilkan breadcrumb dan title jika di /dashboard
+  const showBreadcrumb = pathname !== '/dashboard';
+  const showTitle = pathname !== '/dashboard';
+
   return (
     <Box>
       {/* Breadcrumb */}
-      <Box sx={{ pb: 1 }}>
-        <Breadcrumbs
-          aria-label="breadcrumb"
-          sx={{
-            '& .MuiBreadcrumbs-separator': {
-              mx: 1,
-            },
-          }}
-        >
-          {breadcrumbs.map((crumb, index) => {
-            const isLast = index === breadcrumbs.length - 1;
-            
-            if (isLast || !crumb.href) {
+      {showBreadcrumb && (
+        <Box sx={{ pb: 1 }}>
+          <Breadcrumbs
+            aria-label="breadcrumb"
+            sx={{
+              '& .MuiBreadcrumbs-separator': {
+                mx: 1,
+              },
+            }}
+          >
+            {breadcrumbs.map((crumb, index) => {
+              const isLast = index === breadcrumbs.length - 1;
+              
+              if (isLast || !crumb.href) {
+                return (
+                  <Typography
+                    key={index}
+                    sx={{
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {crumb.label}
+                  </Typography>
+                );
+              }
+
               return (
-                <Typography
+                <Link
                   key={index}
+                  underline="hover"
+                  component="button"
+                  onClick={() => handleBreadcrumbClick(crumb.href)}
                   sx={{
                     fontSize: '0.875rem',
-                    fontWeight: 500,
+                    cursor: 'pointer',
+                    border: 'none',
+                    background: 'none',
+                    padding: 0,
                   }}
                 >
                   {crumb.label}
-                </Typography>
+                </Link>
               );
-            }
-
-            return (
-              <Link
-                key={index}
-                underline="hover"
-                component="button"
-                onClick={() => handleBreadcrumbClick(crumb.href)}
-                sx={{
-                  fontSize: '0.875rem',
-                  cursor: 'pointer',
-                  border: 'none',
-                  background: 'none',
-                  padding: 0,
-                }}
-              >
-                {crumb.label}
-              </Link>
-            );
-          })}
-        </Breadcrumbs>
-      </Box>
+            })}
+          </Breadcrumbs>
+        </Box>
+      )}
 
       {/* Title */}
-      <Box sx={{ pb: 1 }}>
-        <Typography variant="h5" fontWeight="bold">
-          {title}
-        </Typography>
-      </Box>
+      {showTitle && (
+        <Box sx={{ pb: 1 }}>
+          <Typography variant="h5" fontWeight="bold">
+            {title}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

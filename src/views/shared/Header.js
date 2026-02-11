@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Avatar, IconButton, Menu, MenuItem, Box, Divider, useTheme } from '@mui/material';
-import { ArrowDown2, HambergerMenu, Profile, Setting2, LogoutCurve, ArrowLeft2 } from 'iconsax-react';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Typography, Avatar, IconButton, Menu, MenuItem, Box, Divider, useTheme, Button, TextField, InputAdornment, Paper } from '@mui/material';
+import { ArrowDown2, HambergerMenu, Profile, Setting2, LogoutCurve, ArrowLeft2, SearchNormal1 } from 'iconsax-react';
 import { useAdminMenu } from '@/contexts/AdminMenuContext';
 import { useRouter } from 'next/navigation';
+import SearchDialog from '@/components/SearchDialog';
 
 export default function Header({ 
   drawerWidth, 
@@ -16,6 +17,20 @@ export default function Header({
   const router = useRouter();
   const { selectedMenu, clearAdminMenu } = useAdminMenu();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
+
+  // Handle Ctrl+K shortcut
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchDialogOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,8 +42,7 @@ export default function Header({
 
   const handleBackToSuperadmin = () => {
     clearAdminMenu();
-    handleMenuClose();
-    router.push('/dashboard');
+    router.push('/monitor-admin-dashboard');
   };
 
   return (
@@ -46,22 +60,141 @@ export default function Header({
           },
           bgcolor: 'white',
           boxShadow: 'none',
-          borderBottom: `1px solid ${theme.palette.divider}`,
+          borderBottom: '1px dashed #b0b0b0',
           transition: 'left 120ms ease, width 120ms ease',
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Toolbar sx={{ justifyContent: 'space-between', minHeight: '80px !important', py: 2.1 }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={onDrawerToggle}
-            sx={{ mr: 2, color: 'text.primary' }}
+            sx={{ 
+              color: 'text.primary',
+              bgcolor: 'grey.100',
+              '&:hover': {
+                bgcolor: 'grey.200',
+              },
+            }}
           >
-            <HambergerMenu size={24} color={theme.palette.text.primary} variant="Linear" />
+            <HambergerMenu size={26} color={theme.palette.text.secondary} variant="Linear" />
           </IconButton>
           
+          {/* Search Bar */}
+          <Box
+            sx={{
+              flex: 1,
+              maxWidth: 400,
+              mx: 2,
+              display: { xs: 'none', md: 'block' },
+            }}
+          >
+            <TextField
+              fullWidth
+              placeholder="Search menu..."
+              size="medium"
+              value=""
+              readOnly
+              onClick={() => setSearchDialogOpen(true)}
+              onFocus={(e) => e.target.blur()}
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchNormal1 size={20} color="#999" variant="Linear" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                      <Paper
+                        component="span"
+                        sx={{
+                          px: 0.75,
+                          py: 0.25,
+                          bgcolor: 'action.hover',
+                          boxShadow: 'none',
+                          borderRadius: 0.75,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant="caption" sx={{ fontSize: '0.7rem', color: 'text.secondary' }}>
+                          Ctrl
+                        </Typography>
+                      </Paper>
+                      <Paper
+                        component="span"
+                        sx={{
+                          px: 0.75,
+                          py: 0.25,
+                          bgcolor: 'action.hover',
+                          boxShadow: 'none',
+                          borderRadius: 0.75,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Typography variant="caption" sx={{ fontSize: '0.7rem', color: 'text.secondary' }}>
+                          K
+                        </Typography>
+                      </Paper>
+                    </Box>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  border: "1px solid #d9d9d9",
+                  cursor: 'pointer',
+                  height: '48px', // Increased height
+                  '& fieldset': {
+                    borderColor: 'transparent',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#d9d9d9',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#d9d9d9',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  cursor: 'pointer',
+                  py: 1.5, // Increased vertical padding
+                },
+              }}
+            />
+          </Box>
+
           <Box sx={{ flexGrow: 1 }} />
+          
+          {/* Button Kembali ke Superadmin - hanya muncul jika ada selectedMenu */}
+          {selectedMenu && (
+            <Button
+              variant="contained"
+              startIcon={<ArrowLeft2 size={18} variant="Linear" color="#155DFC" />}
+              onClick={handleBackToSuperadmin}
+              sx={{
+                textTransform: 'none',
+                fontWeight: 400,
+                fontSize: '0.9rem',
+                px: 2.5,
+                py: 1.25,
+                mr: 1,
+                bgcolor: 'rgba(21, 93, 252, 0.1)',
+                color: '#155DFC',
+                boxShadow: 'none',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  bgcolor: 'rgba(21, 93, 252, 0.15)',
+                  boxShadow: 'none',
+                },
+              }}
+            >
+              Kembali ke Superadmin
+            </Button>
+          )}
           
           <Box 
             sx={{ 
@@ -83,11 +216,10 @@ export default function Header({
               sx={{ 
                 width: 42, 
                 height: 42, 
-                bgcolor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                fontWeight: 600,
+                bgcolor: '#155DFC',
+                fontWeight: 400,
                 fontSize: '0.95rem',
-                boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)',
+                boxShadow: 'none',
               }}
             >
               PC
@@ -96,7 +228,7 @@ export default function Header({
               <Typography 
                 variant="body2" 
                 sx={{ 
-                  fontWeight: 600, 
+                  fontWeight: 400, 
                   color: 'text.primary',
                   lineHeight: 1.2,
                   mb: 0.25
@@ -141,19 +273,19 @@ export default function Header({
           horizontal: 'right',
         }}
         PaperProps={{
-          elevation: 8,
+          elevation: 0,
           sx: {
             mt: 1.5,
             minWidth: 200,
             borderRadius: 2,
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(0, 0, 0, 0.05)',
+            boxShadow: 'none',
+            border: '1px solid rgba(0, 0, 0, 0.1)',
             overflow: 'hidden',
           },
         }}
       >
         <Box sx={{ px: 2, py: 1.5, bgcolor: 'action.hover' }}>
-          <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary', mb: 0.25 }}>
+          <Typography variant="body2" sx={{ fontWeight: 400, color: 'text.primary', mb: 0.25 }}>
             Petr Cech UPN
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
@@ -161,25 +293,6 @@ export default function Header({
           </Typography>
         </Box>
         <Divider />
-        {selectedMenu && (
-          <MenuItem 
-            onClick={handleBackToSuperadmin}
-            sx={{
-              py: 1.25,
-              px: 2,
-              gap: 1.5,
-              '&:hover': {
-                bgcolor: 'action.hover',
-              }
-            }}
-          >
-            <ArrowLeft2 size={20} color={theme.palette.primary.main} variant="Linear" />
-            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 500 }}>
-              Kembali ke Superadmin
-            </Typography>
-          </MenuItem>
-        )}
-        {selectedMenu && <Divider />}
         <MenuItem 
           onClick={handleMenuClose}
           sx={{
@@ -226,11 +339,17 @@ export default function Header({
           }}
         >
           <LogoutCurve size={20} color="#d32f2f" variant="Linear" />
-          <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 500 }}>
+          <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 400 }}>
             Logout
           </Typography>
         </MenuItem>
       </Menu>
+
+      {/* Search Dialog */}
+      <SearchDialog
+        open={searchDialogOpen}
+        onClose={() => setSearchDialogOpen(false)}
+      />
     </>
   );
 }

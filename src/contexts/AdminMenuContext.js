@@ -97,6 +97,7 @@ export function AdminMenuProvider({ children }) {
         selectedCompany,
         setAdminMenu,
         clearAdminMenu,
+        isHydrated,
       }}
     >
       {children}

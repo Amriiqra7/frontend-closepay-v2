@@ -9,243 +9,70 @@ import {
   Typography,
   Grid,
   Chip,
+  Tooltip,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
-import { Add, Eye, Edit, Trash } from 'iconsax-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { Add, Edit, Trash, Lock1 } from 'iconsax-react';
+import { usePathname } from 'next/navigation';
 import TablePagination from '@/components/TablePagination';
 import AlertDialog from '@/components/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/components/FilterCollapse';
+import KategoriTemplateForm from './KategoriTemplateForm';
 
-// Sample data based on the image
-const generateMockDataIzinAkses = () => {
+// Sample data - replace with actual API call
+const generateMockKategoriTemplate = () => {
   return [
     {
       id: 1,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Activate or Deactivate Admin',
-      kode: 'user_membership_activate_deactivate_admin',
-      deskripsi: 'Membersip Activate or Deactivate Admin (user_membership_activate_deactivate_admin)',
+      nama: 'ACTIVATION ADMIN',
       status: 'aktif',
     },
     {
       id: 2,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Create Admin',
-      kode: 'user_membership_create_admin',
-      deskripsi: 'Membersip Create Admin (user_membership_create_admin)',
+      nama: 'ACTIVATION MEMBER',
       status: 'aktif',
     },
     {
       id: 3,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Get Admin',
-      kode: 'user_membership_get_admin',
-      deskripsi: 'Membersip Get Admin (user_membership_get_admin)',
+      nama: 'ACTIVATION MERCHANT',
       status: 'aktif',
     },
     {
       id: 4,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Grant Role Admin',
-      kode: 'user_membership_grant_role_admin',
-      deskripsi: 'Membersip Grant Role Admin (user_membership_grant_role_admin)',
+      nama: 'ADD BANK ACCOUNT',
       status: 'aktif',
     },
     {
       id: 5,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Revoke Role Admin',
-      kode: 'user_membership_revoke_role_admin',
-      deskripsi: 'Membersip Revoke Role Admin (user_membership_revoke_role_admin)',
+      nama: 'BALANCE BULK UPLOAD TOP UP MERCHANT',
       status: 'aktif',
     },
     {
       id: 6,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Update Admin',
-      kode: 'user_membership_update_admin',
-      deskripsi: 'Membersip Update Admin (user_membership_update_admin)',
+      nama: 'BALANCE TRANSACTION BARCODE',
       status: 'aktif',
     },
     {
       id: 7,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Remove Security Code Member',
-      kode: 'user_membership_remove_security_code_member',
-      deskripsi: 'Membership Remove Security Code Member (user_membership_remove_security_code_member)',
-      status: 'aktif',
+      nama: 'TEMPLATE NOTIFIKASI 1',
+      status: 'nonaktif',
     },
     {
       id: 8,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Reset Password Member',
-      kode: 'user_membership_reset_password_member',
-      deskripsi: 'Membership Reset Password Member (user_membership_reset_password_member)',
-      status: 'aktif',
-    },
-    {
-      id: 9,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Set Parent Member',
-      kode: 'user_membership_set_parent_member',
-      deskripsi: 'Membership Set Parent Member (user_membership_set_parent_member)',
-      status: 'aktif',
-    },
-    {
-      id: 10,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membersip Activate or Deactivate Member',
-      kode: 'user_membership_activate_deactivate_member',
-      deskripsi: 'Membersip Activate or Deactivate Member (user_membership_activate_deactivate_member)',
-      status: 'aktif',
-    },
-    {
-      id: 11,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Create Member',
-      kode: 'user_membership_create_member',
-      deskripsi: 'Membership Create Member (user_membership_create_member)',
-      status: 'aktif',
-    },
-    {
-      id: 12,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Get Member',
-      kode: 'user_membership_get_member',
-      deskripsi: 'Membership Get Member (user_membership_get_member)',
-      status: 'aktif',
-    },
-    {
-      id: 13,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Update Member',
-      kode: 'user_membership_update_member',
-      deskripsi: 'Membership Update Member (user_membership_update_member)',
-      status: 'aktif',
-    },
-    {
-      id: 14,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Grant Role Member',
-      kode: 'user_membership_grant_role_member',
-      deskripsi: 'Membership Grant Role Member (user_membership_grant_role_member)',
-      status: 'aktif',
-    },
-    {
-      id: 15,
-      service: 'user',
-      tipe: 'admin',
-      nama: 'Membership Revoke Role Member',
-      kode: 'user_membership_revoke_role_member',
-      deskripsi: 'Membership Revoke Role Member (user_membership_revoke_role_member)',
-      status: 'aktif',
-    },
-    {
-      id: 16,
-      service: 'user',
-      tipe: 'member',
-      nama: 'Membership View Profile',
-      kode: 'user_membership_view_profile',
-      deskripsi: 'Membership View Profile (user_membership_view_profile)',
-      status: 'aktif',
-    },
-    {
-      id: 17,
-      service: 'user',
-      tipe: 'member',
-      nama: 'Membership Edit Profile',
-      kode: 'user_membership_edit_profile',
-      deskripsi: 'Membership Edit Profile (user_membership_edit_profile)',
-      status: 'aktif',
-    },
-    {
-      id: 18,
-      service: 'user',
-      tipe: 'member',
-      nama: 'Membership Change Password',
-      kode: 'user_membership_change_password',
-      deskripsi: 'Membership Change Password (user_membership_change_password)',
-      status: 'aktif',
-    },
-    {
-      id: 19,
-      service: 'user',
-      tipe: 'member',
-      nama: 'Membership View Transactions',
-      kode: 'user_membership_view_transactions',
-      deskripsi: 'Membership View Transactions (user_membership_view_transactions)',
-      status: 'aktif',
-    },
-    {
-      id: 20,
-      service: 'user',
-      tipe: 'member',
-      nama: 'Membership View Balance',
-      kode: 'user_membership_view_balance',
-      deskripsi: 'Membership View Balance (user_membership_view_balance)',
-      status: 'aktif',
-    },
-    {
-      id: 21,
-      service: 'transaction',
-      tipe: 'admin',
-      nama: 'Transaction Create Admin',
-      kode: 'transaction_create_admin',
-      deskripsi: 'Transaction Create Admin (transaction_create_admin)',
-      status: 'aktif',
-    },
-    {
-      id: 22,
-      service: 'transaction',
-      tipe: 'admin',
-      nama: 'Transaction Get Admin',
-      kode: 'transaction_get_admin',
-      deskripsi: 'Transaction Get Admin (transaction_get_admin)',
-      status: 'aktif',
-    },
-    {
-      id: 23,
-      service: 'transaction',
-      tipe: 'admin',
-      nama: 'Transaction Update Admin',
-      kode: 'transaction_update_admin',
-      deskripsi: 'Transaction Update Admin (transaction_update_admin)',
-      status: 'aktif',
-    },
-    {
-      id: 24,
-      service: 'transaction',
-      tipe: 'admin',
-      nama: 'Transaction Delete Admin',
-      kode: 'transaction_delete_admin',
-      deskripsi: 'Transaction Delete Admin (transaction_delete_admin)',
-      status: 'aktif',
+      nama: 'TEMPLATE NOTIFIKASI 2',
+      status: 'nonaktif',
     },
   ];
 };
 
-const mockDataIzinAkses = generateMockDataIzinAkses();
+const mockKategoriTemplate = generateMockKategoriTemplate();
 
-export default function DataIzinAksesList() {
-  const router = useRouter();
+export default function KategoriTemplateList() {
   const pathname = usePathname();
   
   const [columnFilters, setColumnFilters] = useState([]);
@@ -253,10 +80,30 @@ export default function DataIzinAksesList() {
     pageIndex: 0,
     pageSize: 10,
   });
-  const [rowCount, setRowCount] = useState(mockDataIzinAkses.length);
   const [sorting, setSorting] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
+  // Modal states
+  const [formDialog, setFormDialog] = useState({
+    open: false,
+    mode: 'add', // 'add' or 'edit'
+    id: null,
+    nama: '',
+  });
+
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    id: null,
+    name: '',
+  });
+
+  const [deactivateDialog, setDeactivateDialog] = useState({
+    open: false,
+    id: null,
+    name: '',
+  });
 
   const handleToggleFilters = useCallback((nextOpen) => {
     if (typeof nextOpen === 'boolean') {
@@ -270,33 +117,46 @@ export default function DataIzinAksesList() {
     const value = event.target.value;
     setSearchValue(value);
     
-    // Update columnFilters for 'nama' field
+    // Update columnFilters
+    const filters = [];
     if (value) {
-      setColumnFilters([{ id: 'nama', value }]);
-    } else {
-      setColumnFilters([]);
+      filters.push({ id: 'nama', value });
     }
-  }, []);
+    if (statusFilter) {
+      filters.push({ id: 'status', value: statusFilter });
+    }
+    setColumnFilters(filters);
+  }, [statusFilter]);
+
+  const handleStatusFilterChange = useCallback((event) => {
+    const value = event.target.value;
+    setStatusFilter(value);
+    
+    // Update columnFilters
+    const filters = [];
+    if (searchValue) {
+      filters.push({ id: 'nama', value: searchValue });
+    }
+    if (value) {
+      filters.push({ id: 'status', value });
+    }
+    setColumnFilters(filters);
+  }, [searchValue]);
 
   const handleResetFilter = useCallback(() => {
     setSearchValue('');
+    setStatusFilter('');
     setColumnFilters([]);
   }, []);
 
-  const [deleteDialog, setDeleteDialog] = useState({
-    open: false,
-    id: null,
-    name: '',
-  });
-
   const hasActiveFilters = useMemo(
-    () => columnFilters.length > 0,
-    [columnFilters]
+    () => columnFilters.length > 0 || searchValue || statusFilter,
+    [columnFilters, searchValue, statusFilter]
   );
 
   // Filter data based on columnFilters
   const filteredData = useMemo(() => {
-    let filtered = [...mockDataIzinAkses];
+    let filtered = [...mockKategoriTemplate];
 
     // Apply column filters
     columnFilters.forEach((filter) => {
@@ -339,15 +199,22 @@ export default function DataIzinAksesList() {
     }));
   }, [sortedData, pagination]);
 
-  const handleView = useCallback((item) => {
-    // TODO: Implement view functionality
-    console.log('View data izin akses:', item);
+  const handleAdd = useCallback(() => {
+    setFormDialog({
+      open: true,
+      mode: 'add',
+      id: null,
+      nama: '',
+    });
   }, []);
 
   const handleEdit = useCallback((item) => {
-    // TODO: Implement edit functionality
-    console.log('Edit data izin akses:', item);
-    // router.push(`${pathname}/edit/${item.id}`);
+    setFormDialog({
+      open: true,
+      mode: 'edit',
+      id: item.id,
+      nama: item.nama,
+    });
   }, []);
 
   const handleDelete = useCallback((item) => {
@@ -358,15 +225,31 @@ export default function DataIzinAksesList() {
     });
   }, []);
 
+  const handleDeactivate = useCallback((item) => {
+    setDeactivateDialog({
+      open: true,
+      id: item.id,
+      name: item.nama,
+    });
+  }, []);
+
+  const handleFormSubmit = useCallback(() => {
+    // TODO: Implement API call to save/update
+    console.log('Form submit:', formDialog);
+    setFormDialog({ open: false, mode: 'add', id: null, nama: '' });
+  }, [formDialog]);
+
   const handleConfirmDelete = useCallback(() => {
-    // TODO: Implement delete functionality
-    console.log('Delete data izin akses:', deleteDialog.id);
+    // TODO: Implement API call to delete
+    console.log('Delete kategori template:', deleteDialog.id);
     setDeleteDialog({ open: false, id: null, name: '' });
   }, [deleteDialog]);
 
-  const handleAdd = useCallback(() => {
-    router.push(`${pathname}/new`);
-  }, [router, pathname]);
+  const handleConfirmDeactivate = useCallback(() => {
+    // TODO: Implement API call to deactivate
+    console.log('Deactivate kategori template:', deactivateDialog.id);
+    setDeactivateDialog({ open: false, id: null, name: '' });
+  }, [deactivateDialog]);
 
   const handlePageChange = useCallback((newPageIndex) => {
     setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
@@ -393,41 +276,9 @@ export default function DataIzinAksesList() {
         ),
       },
       {
-        accessorKey: 'service',
-        header: 'Service',
-        size: 120,
-        Cell: ({ cell }) => (
-          <Typography variant="body2">{cell.getValue()}</Typography>
-        ),
-      },
-      {
-        accessorKey: 'tipe',
-        header: 'Tipe',
-        size: 120,
-        Cell: ({ cell }) => (
-          <Typography variant="body2">{cell.getValue()}</Typography>
-        ),
-      },
-      {
         accessorKey: 'nama',
         header: 'Nama',
         size: 300,
-        Cell: ({ cell }) => (
-          <Typography variant="body2">{cell.getValue()}</Typography>
-        ),
-      },
-      {
-        accessorKey: 'kode',
-        header: 'Kode',
-        size: 300,
-        Cell: ({ cell }) => (
-          <Typography variant="body2">{cell.getValue()}</Typography>
-        ),
-      },
-      {
-        accessorKey: 'deskripsi',
-        header: 'Deskripsi',
-        size: 400,
         Cell: ({ cell }) => (
           <Typography variant="body2">{cell.getValue()}</Typography>
         ),
@@ -441,13 +292,14 @@ export default function DataIzinAksesList() {
         muiTableBodyCellProps: { align: 'center' },
         Cell: ({ cell }) => {
           const status = cell.getValue();
+          const isAktif = status === 'aktif';
           return (
             <Chip
-              label="Aktif"
+              label={isAktif ? 'Aktif' : 'Nonaktif'}
               size="small"
               sx={{
-                bgcolor: '#4caf50',
-                color: 'white',
+                bgcolor: isAktif ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)',
+                color: isAktif ? '#4caf50' : '#f44336',
                 fontWeight: 500,
                 fontSize: '0.75rem',
                 height: 24,
@@ -529,17 +381,7 @@ export default function DataIzinAksesList() {
     muiTablePaperProps: {
       elevation: 0,
       sx: {
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      },
-    },
-    muiTableContainerProps: {
-      sx: {
-        maxHeight: '100%',
-        flex: 1,
-        overflow: 'auto',
+        mb: 4,
       },
     },
     mrtTheme: (theme) => ({
@@ -550,31 +392,40 @@ export default function DataIzinAksesList() {
         header: 'Aksi',
       },
     },
-    renderRowActions: ({ row }) => (
-      <Box display="flex">
-        <IconButton
-          size="small"
-          color="info"
-          onClick={() => handleView(row.original)}
-        >
-          <Eye size={20} variant="Linear" />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="success"
-          onClick={() => handleEdit(row.original)}
-        >
-          <Edit size={20} variant="Linear" />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="error"
-          onClick={() => handleDelete(row.original)}
-        >
-          <Trash size={20} variant="Linear" />
-        </IconButton>
-      </Box>
-    ),
+    renderRowActions: ({ row }) => {
+      const isAktif = row.original.status === 'aktif';
+      return (
+        <Box display="flex">
+          <Tooltip title={isAktif ? 'Nonaktifkan' : 'Aktifkan'} arrow>
+            <IconButton
+              size="small"
+              color={isAktif ? 'error' : 'success'}
+              onClick={() => handleDeactivate(row.original)}
+            >
+              <Lock1 size={20} variant="Linear" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Edit" arrow>
+            <IconButton
+              size="small"
+              color="success"
+              onClick={() => handleEdit(row.original)}
+            >
+              <Edit size={20} variant="Linear" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Hapus" arrow>
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => handleDelete(row.original)}
+            >
+              <Trash size={20} variant="Linear" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      );
+    },
     renderBottomToolbar: () => (
       <TablePagination
         pageIndex={pagination.pageIndex}
@@ -593,8 +444,7 @@ export default function DataIzinAksesList() {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          height: '100%',
-          overflow: 'hidden',
+          minHeight: '100%',
         }}
       >
         {/* Toolbar dengan tombol Filter dan Tambah */}
@@ -661,10 +511,10 @@ export default function DataIzinAksesList() {
             flexShrink: 0,
           }}
         >
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <TextField
               fullWidth
-              placeholder="Cari nama atau kode izin akses..."
+              placeholder="Cari nama template..."
               value={searchValue}
               onChange={handleSearchChange}
               size="small"
@@ -680,24 +530,70 @@ export default function DataIzinAksesList() {
               }}
             />
           </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <Select
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              displayEmpty
+              fullWidth
+              size="small"
+              renderValue={(selected) => {
+                if (!selected) {
+                  return <Typography sx={{ color: 'text.secondary' }}>Status</Typography>;
+                }
+                return selected === 'aktif' ? 'Aktif' : 'Nonaktif';
+              }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300,
+                    overflowY: 'auto',
+                  },
+                },
+                anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                },
+                transformOrigin: {
+                  vertical: 'top',
+                  horizontal: 'left',
+                },
+              }}
+              sx={{
+                width: '100%',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'rgba(0, 0, 0, 0.23)',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }}
+            >
+              <MenuItem value="">Semua</MenuItem>
+              <MenuItem value="aktif">Aktif</MenuItem>
+              <MenuItem value="nonaktif">Nonaktif</MenuItem>
+            </Select>
+          </Grid>
         </FilterCollapse>
 
         {/* MaterialReactTable */}
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            minHeight: 0,
-            backgroundColor: 'white',
-            borderBottomLeftRadius: 8,
-            borderBottomRightRadius: 8,
-          }}
-        >
+        <Box sx={{ pb: 4 }}>
           <MaterialReactTable table={table} />
         </Box>
       </Box>
+
+      {/* Form Dialog (Add/Edit) */}
+      <KategoriTemplateForm
+        open={formDialog.open}
+        mode={formDialog.mode}
+        nama={formDialog.nama}
+        onClose={() => setFormDialog({ open: false, mode: 'add', id: null, nama: '' })}
+        onSubmit={handleFormSubmit}
+        onNamaChange={(value) => setFormDialog((prev) => ({ ...prev, nama: value }))}
+      />
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
@@ -711,6 +607,22 @@ export default function DataIzinAksesList() {
           </Typography>
         }
         confirmText="Hapus"
+        cancelText="Batal"
+        confirmColor="error"
+      />
+
+      {/* Deactivate Confirmation Dialog */}
+      <AlertDialog
+        open={deactivateDialog.open}
+        onClose={() => setDeactivateDialog({ open: false, id: null, name: '' })}
+        onConfirm={handleConfirmDeactivate}
+        title="Konfirmasi Nonaktifkan"
+        content={
+          <Typography variant="body1">
+            Apakah anda yakin akan menonaktifkan <strong>{deactivateDialog.name}</strong>?
+          </Typography>
+        }
+        confirmText="Nonaktifkan"
         cancelText="Batal"
         confirmColor="error"
       />

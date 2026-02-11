@@ -1,4 +1,4 @@
-import RoleList from "@/views/role/RoleList";
+import RoleList from "@/views/role/data-role/RoleList";
 
 // Force dynamic rendering to avoid prerendering issues with useSearchParams
 export const dynamic = 'force-dynamic';

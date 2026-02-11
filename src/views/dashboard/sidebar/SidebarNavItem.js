@@ -10,6 +10,7 @@ import {
   ListItemText,
   Paper,
   Popper,
+  Tooltip,
 } from '@mui/material';
 import { ArrowDown2 } from 'iconsax-react';
 
@@ -60,63 +61,73 @@ export default function SidebarNavItem({
     if (!desktopExpanded && hasChildren) setHoverOpen(false);
   };
 
-  return (
-    <Box>
-      <ListItemButton
-        ref={anchorRef}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+  const buttonContent = (
+    <ListItemButton
+      ref={anchorRef}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      sx={{
+        borderRadius: 2,
+        bgcolor: active ? 'rgba(21, 93, 252, 0.1)' : 'transparent',
+        color: active ? brandColor : '#262626',
+        '&:hover': {
+          bgcolor: active ? 'rgba(21, 93, 252, 0.15)' : '#f5f5f5',
+        },
+        py: 1.25,
+        justifyContent: desktopExpanded ? 'flex-start' : 'center',
+      }}
+    >
+      <ListItemIcon
         sx={{
-          borderRadius: 2,
-          bgcolor: active ? brandColor : 'transparent',
-          color: active ? 'white' : brandColor,
-          '&:hover': {
-            bgcolor: active ? brandColor : '#f5f5f5',
-          },
-          py: 1.25,
-          justifyContent: desktopExpanded ? 'flex-start' : 'center',
+          minWidth: 0,
+          mr: desktopExpanded ? 2 : 0,
+          color: 'inherit',
+          justifyContent: 'center',
         }}
       >
-        <ListItemIcon
-          sx={{
-            minWidth: 0,
-            mr: desktopExpanded ? 2 : 0,
-            color: 'inherit',
-            justifyContent: 'center',
-          }}
-        >
-          <Icon
-            size={22}
-            color={active ? '#fff' : brandColor}
-            variant={active ? 'Bold' : 'Linear'}
-          />
-        </ListItemIcon>
+        <Icon
+          size={22}
+          color={active ? brandColor : '#262626'}
+          variant={active ? 'Bold' : 'Linear'}
+        />
+      </ListItemIcon>
 
-        {desktopExpanded && (
-          <ListItemText
-            primary={item.label}
-            primaryTypographyProps={{
-              fontSize: '0.9rem',
-              fontWeight: active ? 600 : 500,
-              color: active ? 'white' : 'inherit',
+      {desktopExpanded && (
+        <ListItemText
+          primary={item.label}
+          primaryTypographyProps={{
+            fontSize: '0.9rem',
+            fontWeight: active ? 400 : 400,
+            color: active ? brandColor : 'inherit',
+          }}
+        />
+      )}
+
+      {desktopExpanded && hasChildren && (
+        <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
+          <ArrowDown2
+            size={18}
+            color={active ? brandColor : '#262626'}
+            style={{
+              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 150ms ease',
             }}
           />
-        )}
+        </Box>
+      )}
+    </ListItemButton>
+  );
 
-        {desktopExpanded && hasChildren && (
-          <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
-            <ArrowDown2
-              size={18}
-              color={active ? '#fff' : brandColor}
-              style={{
-                transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 150ms ease',
-              }}
-            />
-          </Box>
-        )}
-      </ListItemButton>
+  return (
+    <Box>
+      {!desktopExpanded && !hasChildren ? (
+        <Tooltip title={item.label} placement="right" arrow>
+          {buttonContent}
+        </Tooltip>
+      ) : (
+        buttonContent
+      )}
 
       {desktopExpanded && hasChildren && (
         <Collapse in={open} timeout="auto" unmountOnExit>
@@ -129,22 +140,22 @@ export default function SidebarNavItem({
                 <ListItemButton
                   key={child.id}
                   onClick={() => onNavigate(child.href)}
-                  sx={{
-                    borderRadius: 2,
-                    ml: 1,
-                    mb: 0.25,
-                    py: 1,
-                    bgcolor: childActive ? brandColor : 'transparent',
-                    color: childActive ? 'white' : brandColor,
-                    '&:hover': {
-                      bgcolor: childActive ? brandColor : '#f5f5f5',
-                    },
-                  }}
+                    sx={{
+                      borderRadius: 2,
+                      ml: 1,
+                      mb: 0.25,
+                      py: 1,
+                      bgcolor: 'transparent',
+                      color: childActive ? brandColor : '#262626',
+                      '&:hover': {
+                        bgcolor: '#f5f5f5',
+                      },
+                    }}
                 >
                   <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                     <ChildIcon
                       size={18}
-                      color={childActive ? '#fff' : brandColor}
+                      color={childActive ? brandColor : '#262626'}
                       variant={childActive ? 'Bold' : 'Linear'}
                     />
                   </ListItemIcon>
@@ -152,8 +163,8 @@ export default function SidebarNavItem({
                     primary={child.label}
                     primaryTypographyProps={{
                       fontSize: '0.85rem',
-                      fontWeight: childActive ? 600 : 500,
-                      color: childActive ? 'white' : 'inherit',
+                      fontWeight: childActive ? 400 : 400,
+                      color: childActive ? brandColor : 'inherit',
                     }}
                   />
                 </ListItemButton>
@@ -179,13 +190,14 @@ export default function SidebarNavItem({
           onMouseLeave={() => setHoverOpen(false)}
         >
           <Paper
-            elevation={6}
+            elevation={0}
             sx={{
               minWidth: 220,
               borderRadius: 2,
-              border: '1px solid rgba(8,8,8,0.08)',
+              border: '1px solid rgba(8,8,8,0.1)',
               overflow: 'hidden',
               py: 1,
+              boxShadow: 'none',
             }}
           >
             <Box
@@ -193,7 +205,7 @@ export default function SidebarNavItem({
                 px: 2,
                 pb: 1,
                 fontSize: '0.75rem',
-                fontWeight: 700,
+                fontWeight: 400,
                 color: 'rgba(8,8,8,0.6)',
                 letterSpacing: '0.06em',
                 textTransform: 'uppercase',
@@ -214,17 +226,17 @@ export default function SidebarNavItem({
                       borderRadius: 2,
                       mb: 0.25,
                       py: 1,
-                      bgcolor: childActive ? brandColor : 'transparent',
-                      color: childActive ? 'white' : brandColor,
+                      bgcolor: 'transparent',
+                      color: childActive ? brandColor : '#262626',
                       '&:hover': {
-                        bgcolor: childActive ? brandColor : '#f5f5f5',
+                        bgcolor: '#f5f5f5',
                       },
                     }}
                   >
                     <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                       <ChildIcon
                         size={18}
-                        color={childActive ? '#fff' : brandColor}
+                        color={childActive ? brandColor : '#262626'}
                         variant={childActive ? 'Bold' : 'Linear'}
                       />
                     </ListItemIcon>
@@ -232,8 +244,8 @@ export default function SidebarNavItem({
                       primary={child.label}
                       primaryTypographyProps={{
                         fontSize: '0.85rem',
-                        fontWeight: childActive ? 600 : 500,
-                        color: childActive ? 'white' : 'inherit',
+                        fontWeight: childActive ? 400 : 400,
+                        color: childActive ? brandColor : 'inherit',
                       }}
                     />
                   </ListItemButton>

@@ -9,7 +9,7 @@ export const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: colors.black,
+      main: '#155DFC',
       contrastText: colors.white,
     },
     secondary: {
@@ -86,7 +86,7 @@ export const theme = createTheme({
         root: {
           color: colors.black,
           '&.Mui-focused': {
-            color: colors.black,
+            color: '#155DFC',
           },
         },
       },
@@ -117,26 +117,60 @@ export const theme = createTheme({
           borderRadius: 8,
           textTransform: 'none',
           fontWeight: 600,
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+          '&:active': {
+            boxShadow: 'none',
+          },
+          '&:focus': {
+            boxShadow: 'none',
+          },
         },
         contained: {
-          backgroundColor: colors.black,
+          backgroundColor: '#155DFC',
           color: colors.white,
+          boxShadow: 'none',
           '&:hover': {
-            backgroundColor: colors.blackDark,
+            backgroundColor: '#0d4fc7',
+            boxShadow: 'none',
+          },
+          '&:active': {
+            boxShadow: 'none',
+          },
+          '&:focus': {
+            boxShadow: 'none',
           },
         },
         outlined: {
-          borderColor: colors.black,
-          color: colors.black,
+          borderColor: '#155DFC',
+          color: '#155DFC',
+          boxShadow: 'none',
           '&:hover': {
-            borderColor: colors.black,
-            backgroundColor: 'rgba(38, 38, 38, 0.04)',
+            borderColor: '#155DFC',
+            backgroundColor: 'rgba(21, 93, 252, 0.04)',
+            boxShadow: 'none',
+          },
+          '&:active': {
+            boxShadow: 'none',
+          },
+          '&:focus': {
+            boxShadow: 'none',
           },
         },
         text: {
-          color: colors.black,
+          color: '#155DFC',
+          boxShadow: 'none',
           '&:hover': {
-            backgroundColor: 'rgba(38, 38, 38, 0.04)',
+            backgroundColor: 'rgba(21, 93, 252, 0.04)',
+            boxShadow: 'none',
+          },
+          '&:active': {
+            boxShadow: 'none',
+          },
+          '&:focus': {
+            boxShadow: 'none',
           },
         },
       },
@@ -161,10 +195,10 @@ export const theme = createTheme({
           borderRadius: 8,
           color: colors.black,
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: colors.black,
+            borderColor: '#155DFC',
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: colors.black,
+            borderColor: '#155DFC',
             borderWidth: 1,
           },
         },

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Typography, Autocomplete, TextField } from '@mui/material';
+import { Box, Typography, Autocomplete, TextField, CircularProgress } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import MainCard from '@/components/MainCard';
 
@@ -18,10 +18,12 @@ const mockCompanies = [
 export default function CompanySelector() {
   const router = useRouter();
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCompanyChange = (_, newValue) => {
     if (newValue) {
       setSelectedCompany(newValue);
+      setIsLoading(true);
       // Redirect ke list role dengan companyId
       router.push(`/role/data-role/list?companyId=${newValue.id}`);
     }
@@ -44,10 +46,20 @@ export default function CompanySelector() {
           isOptionEqualToValue={(option, value) => option?.id === value?.id}
           value={selectedCompany}
           onChange={handleCompanyChange}
+          disabled={isLoading}
           renderInput={(params) => (
             <TextField
               {...params}
               placeholder="Pilih perusahaan"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   '&:hover fieldset': {
