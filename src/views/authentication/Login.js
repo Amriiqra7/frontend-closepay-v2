@@ -33,13 +33,13 @@ function LoginForm() {
   };
 
   return (
-    <Card elevation={0} sx={{ p: 4, borderRadius: 4, boxShadow: 0 }}>
+    <Card elevation={0} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 4, boxShadow: 0, width: '100%' }}>
       <CardContent>
         <Logo />
-        <Typography variant="h4" fontWeight={600} align="center" mb={1}>
+        <Typography variant="h4" fontWeight={600} align="center" mb={1} sx={{ fontSize: { xs: '1.75rem', sm: '2.125rem' } }}>
           Login
         </Typography>
-        <Typography variant="body2" align="center" color="text.secondary" mb={3}>
+        <Typography variant="body2" align="center" color="text.secondary" mb={3} sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
           Masukkan username/email dan password<br />
           Anda untuk masuk ke dashboard
         </Typography>
@@ -97,9 +97,10 @@ export default function Login() {
         sx={{
           width: '100%',
           maxWidth: 1100,
-          minHeight: 650,
+          minHeight: { xs: 'auto', md: 650 },
           borderRadius: 4,
           display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
           overflow: 'hidden',
         }}
       >
@@ -110,7 +111,8 @@ export default function Login() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: "100%"
+            width: "100%",
+            py: { xs: 3, md: 0 },
           }}
         >
           <LoginForm />
@@ -119,8 +121,8 @@ export default function Login() {
         <Box
           sx={{
             flex: 1,
-            minHeight: '100%',
-            display: 'flex',
+            minHeight: { xs: 200, md: '100%' },
+            display: { xs: 'none', md: 'flex' },
             alignItems: 'center',
             justifyContent: 'center',
             bgcolor: '#111',

@@ -113,13 +113,13 @@ export default function JumlahEmailZeptoList() {
         }}
       >
         <MainCard content={false}>
-          <Box sx={{ p: 3, position: 'relative' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+          <Box sx={{ p: { xs: 2, sm: 3 }, position: 'relative' }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'flex-start' }, mb: 3, gap: { xs: 2, sm: 0 } }}>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 Jumlah Email Zepto
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                 Ringkasan Jumlah dan Klasifikasi Email Zepto
               </Typography>
             </Box>
@@ -130,6 +130,7 @@ export default function JumlahEmailZeptoList() {
                 bgcolor: '#ff9800',
                 color: 'white',
                 textTransform: 'none',
+                alignSelf: { xs: 'flex-start', sm: 'auto' },
                 '&:hover': {
                   bgcolor: '#f57c00',
                 },
@@ -139,10 +140,10 @@ export default function JumlahEmailZeptoList() {
             </Button>
           </Box>
 
-          <Box sx={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 3, md: 4 }, alignItems: { xs: 'center', md: 'center' } }}>
             {/* Chart di sebelah kiri */}
-            <Box sx={{ flex: '0 0 auto' }}>
-              <Box sx={{ width: 300, height: 300 }}>
+            <Box sx={{ flex: '0 0 auto', width: { xs: '100%', md: 'auto' }, display: 'flex', justifyContent: 'center' }}>
+              <Box sx={{ width: { xs: '100%', sm: 300 }, height: { xs: 250, sm: 300 }, maxWidth: 300 }}>
                 <Chart
                   options={chartOptions}
                   series={chartSeries}
@@ -153,7 +154,7 @@ export default function JumlahEmailZeptoList() {
             </Box>
 
             {/* Info di sebelah kanan */}
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ flex: 1, width: { xs: '100%', md: 'auto' } }}>
               <Box sx={{ mb: 2 }}>
                 <Typography variant="body2" sx={{ mb: 1.5 }}>
                   Tersedia

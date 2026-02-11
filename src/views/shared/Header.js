@@ -64,7 +64,7 @@ export default function Header({
           transition: 'left 120ms ease, width 120ms ease',
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between', minHeight: '80px !important', py: 2.1 }}>
+        <Toolbar sx={{ justifyContent: 'space-between', minHeight: '80px !important', py: 2.1, px: { xs: 2, sm: 2 } }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -73,6 +73,8 @@ export default function Header({
             sx={{ 
               color: 'text.primary',
               bgcolor: 'grey.100',
+              ml: { xs: 0, sm: 0 },
+              mr: { xs: 1, sm: 2 },
               '&:hover': {
                 bgcolor: 'grey.200',
               },
@@ -178,10 +180,11 @@ export default function Header({
               sx={{
                 textTransform: 'none',
                 fontWeight: 400,
-                fontSize: '0.9rem',
-                px: 2.5,
+                fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                px: { xs: 1.5, sm: 2.5 },
                 py: 1.25,
-                mr: 1,
+                mr: { xs: 0.5, sm: 1 },
+                display: { xs: 'none', md: 'flex' },
                 bgcolor: 'rgba(21, 93, 252, 0.1)',
                 color: '#155DFC',
                 boxShadow: 'none',
@@ -325,6 +328,35 @@ export default function Header({
             Settings
           </Typography>
         </MenuItem>
+        
+        {/* Kembali ke Superadmin - hanya muncul di mobile jika ada selectedMenu */}
+        {selectedMenu && (
+          <Divider sx={{ display: { xs: 'block', md: 'none' } }} />
+        )}
+        {selectedMenu && (
+          <MenuItem 
+            onClick={() => {
+              handleBackToSuperadmin();
+              handleMenuClose();
+            }}
+            sx={{
+              py: 1.25,
+              px: 2,
+              gap: 1.5,
+              display: { xs: 'flex', md: 'none' },
+              bgcolor: 'rgba(21, 93, 252, 0.05)',
+              '&:hover': {
+                bgcolor: 'rgba(21, 93, 252, 0.1)',
+              }
+            }}
+          >
+            <ArrowLeft2 size={20} color="#155DFC" variant="Linear" />
+            <Typography variant="body2" sx={{ color: '#155DFC', fontWeight: 400 }}>
+              Kembali ke Superadmin
+            </Typography>
+          </MenuItem>
+        )}
+        
         <Divider />
         <MenuItem 
           onClick={handleMenuClose}

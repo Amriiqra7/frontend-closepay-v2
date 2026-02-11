@@ -29,6 +29,10 @@ export default function Sidebar({
   const handleNavigate = (href) => {
     if (!href) return;
     router.push(href);
+    // Close mobile drawer after navigation
+    if (mobileOpen) {
+      handleDrawerToggle();
+    }
   };
 
   const drawer = (

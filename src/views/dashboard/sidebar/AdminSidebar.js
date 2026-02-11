@@ -52,6 +52,10 @@ export default function AdminSidebar({
   const handleNavigate = (href) => {
     if (!href) return;
     router.push(href);
+    // Close mobile drawer after navigation
+    if (mobileOpen) {
+      handleDrawerToggle();
+    }
   };
 
   // Get menu config based on selected menu

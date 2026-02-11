@@ -8,10 +8,10 @@ export default function WelcomeBanner() {
     <Box
       sx={{
         borderRadius: 2,
-        p: 4,
+        p: { xs: 2, sm: 4 },
         position: 'relative',
         overflow: 'hidden',
-        minHeight: '200px',
+        minHeight: { xs: '180px', sm: '200px' },
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -34,12 +34,12 @@ export default function WelcomeBanner() {
         size="small"
         sx={{
           position: 'absolute',
-          top: 16,
-          left: 30,
+          top: { xs: 12, sm: 16 },
+          left: { xs: 16, sm: 30 },
           bgcolor: '#d32f2f',
           color: 'white',
           fontWeight: 600,
-          fontSize: '0.7rem',
+          fontSize: { xs: '0.65rem', sm: '0.7rem' },
           zIndex: 1,
         }}
       />
@@ -47,12 +47,13 @@ export default function WelcomeBanner() {
         sx={{
           position: 'relative',
           zIndex: 1,
-          mt: 3,
+          mt: { xs: 2, sm: 3 },
+          px: { xs: 2, sm: 0 },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
           gap: 1,
-          maxWidth: '60%',
+          maxWidth: { xs: '100%', sm: '60%' },
         }}
       >
         <Typography

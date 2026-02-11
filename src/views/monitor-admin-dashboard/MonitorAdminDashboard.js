@@ -50,15 +50,15 @@ export default function MonitorAdminDashboard() {
   return (
     <>
       <MainCard content={false}>
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h6" fontWeight={400} mb={2}>
+        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+          <Typography variant="h6" fontWeight={400} mb={2} sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
             Monitor Admin Dashboard
           </Typography>
-          <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
             Pilih perusahaan untuk mengakses dashboard admin
           </Typography>
           
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: { xs: '100%', sm: 600 } }}>
             <Autocomplete
               fullWidth
               size="large"

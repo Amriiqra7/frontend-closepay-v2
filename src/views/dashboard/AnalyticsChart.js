@@ -96,14 +96,14 @@ export default function AnalyticsChart() {
 
   return (
     <Card elevation={0} sx={{ borderRadius: 3, border: '1px solid #e0e0e0' }}>
-      <CardContent>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#000' }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#000', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
             Grafik Analitik
           </Typography>
         </Box>
         
-        <Box sx={{ height: 400 }}>
+        <Box sx={{ height: { xs: 300, sm: 400 }, width: '100%', overflowX: 'auto' }}>
           <Chart
             options={chartOptions}
             series={chartSeries}
@@ -112,7 +112,7 @@ export default function AnalyticsChart() {
           />
         </Box>
 
-        <Box sx={{ mt: 3, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        <Box sx={{ mt: { xs: 2, sm: 3 }, display: 'flex', flexWrap: 'wrap', gap: { xs: 0.5, sm: 1 } }}>
           <Chip label="Total (82)" sx={{ bgcolor: '#f5f5f5', fontWeight: 500 }} />
           <Chip label="Total Pengguna: 10.000" sx={{ bgcolor: '#f5f5f5', fontWeight: 500 }} />
           <Chip label="Merchant Aktif: 124" sx={{ bgcolor: '#f5f5f5', fontWeight: 500 }} />

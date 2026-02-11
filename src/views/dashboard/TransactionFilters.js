@@ -167,17 +167,17 @@ export default function TransactionFilters() {
   };
 
   const renderTransactionTable = () => (
-    <TableContainer>
-      <Table>
+    <TableContainer sx={{ overflowX: 'auto' }}>
+      <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow sx={{ bgcolor: '#fafafa' }}>
-            <TableCell sx={{ fontWeight: 600, color: '#000', py: 2 }}>ID Transaksi</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Tanggal</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Nama Member</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Outlet</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Area</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Nominal</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Status</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', py: 2, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID Transaksi</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', md: 'table-cell' } }}>Tanggal</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Nama Member</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', lg: 'table-cell' } }}>Outlet</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', lg: 'table-cell' } }}>Area</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Nominal</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -192,37 +192,37 @@ export default function TransactionFilters() {
                 }}
               >
                 <TableCell sx={{ py: 2 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.id}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                  <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.tanggal}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Avatar sx={{ width: 32, height: 32, bgcolor: '#1976d2', fontSize: '0.875rem' }}>
+                    <Avatar sx={{ width: { xs: 28, sm: 32 }, height: { xs: 28, sm: 32 }, bgcolor: '#1976d2', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                       {row.member.charAt(0)}
                     </Avatar>
-                    <Typography variant="body2" sx={{ color: '#000' }}>
+                    <Typography variant="body2" sx={{ color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                       {row.member}
                     </Typography>
                   </Box>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
+                  <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.outlet}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
+                  <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.area}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.nominal}
                   </Typography>
                 </TableCell>
@@ -252,17 +252,17 @@ export default function TransactionFilters() {
   );
 
   const renderOrderTable = () => (
-    <TableContainer>
-      <Table>
+    <TableContainer sx={{ overflowX: 'auto' }}>
+      <Table sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow sx={{ bgcolor: '#fafafa' }}>
-            <TableCell sx={{ fontWeight: 600, color: '#000', py: 2 }}>ID Pemesanan</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Nomor Pesanan</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Tanggal</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Outlet</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Area</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Total</TableCell>
-            <TableCell sx={{ fontWeight: 600, color: '#000' }}>Status</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', py: 2, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>ID Pemesanan</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Nomor Pesanan</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', md: 'table-cell' } }}>Tanggal</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', lg: 'table-cell' } }}>Outlet</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' }, display: { xs: 'none', lg: 'table-cell' } }}>Area</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Total</TableCell>
+            <TableCell sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -277,32 +277,32 @@ export default function TransactionFilters() {
                 }}
               >
                 <TableCell sx={{ py: 2 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.id}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#1976d2' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#1976d2', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.nomor}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
+                  <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.tanggal}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
+                  <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.outlet}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
+                  <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.area}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000' }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#000', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     {row.total}
                   </Typography>
                 </TableCell>
@@ -341,18 +341,19 @@ export default function TransactionFilters() {
       }}
     >
       <Box sx={{ bgcolor: '#fafafa', borderBottom: '1px solid #e0e0e0' }}>
-        <Box sx={{ px: 2.5, pt: 2 }}>
+        <Box sx={{ px: { xs: 1.5, sm: 2.5 }, pt: 2 }}>
           <Tabs 
             value={activeTab} 
             onChange={handleTabChange}
             sx={{
-              minHeight: 48,
+              minHeight: { xs: 40, sm: 48 },
               '& .MuiTab-root': {
-                minHeight: 48,
+                minHeight: { xs: 40, sm: 48 },
                 textTransform: 'none',
                 fontWeight: 600,
-                fontSize: '0.9375rem',
+                fontSize: { xs: '0.8rem', sm: '0.9375rem' },
                 color: '#666',
+                px: { xs: 1.5, sm: 2 },
                 '&.Mui-selected': {
                   color: '#1976d2',
                 },
@@ -370,7 +371,7 @@ export default function TransactionFilters() {
       </Box>
 
       <CardContent sx={{ p: 0 }}>
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: { xs: 1.5, sm: 3 } }}>
           {activeTab === 0 ? renderTransactionTable() : renderOrderTable()}
         </Box>
       </CardContent>
