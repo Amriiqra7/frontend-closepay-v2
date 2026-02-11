@@ -1,14 +1,11 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo } from "next/font/google";
 import "./globals.css";
+import ProviderWrapper from "./ProviderWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivo = Archivo({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
 });
 
 export const metadata = {
@@ -19,10 +16,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${archivo.variable} antialiased`} style={{ fontFamily: 'var(--font-archivo), sans-serif' }}>
+        <ProviderWrapper>{children}</ProviderWrapper>
       </body>
     </html>
   );

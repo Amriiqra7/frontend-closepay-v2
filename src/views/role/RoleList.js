@@ -1,0 +1,487 @@
+'use client';
+
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import {
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  Typography,
+  Grid,
+} from '@mui/material';
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from 'material-react-table';
+import { Add, Eye, Edit, Trash } from 'iconsax-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import TablePagination from '@/components/TablePagination';
+import AlertDialog from '@/components/AlertDialog';
+import FilterCollapse, { FilterButton } from '@/components/FilterCollapse';
+
+// Sample data - replace with actual API call
+// Generate 100 mock roles for testing pagination
+const generateMockRoles = () => {
+  const roles = [];
+  const sampleData = [
+    {
+      nama: 'Administrator',
+      deskripsi: 'Akses penuh ke semua fitur sistem',
+      jumlahPengguna: 5,
+      companyId: 1,
+    },
+    {
+      nama: 'Manager',
+      deskripsi: 'Akses untuk mengelola data perusahaan',
+      jumlahPengguna: 12,
+      companyId: 1,
+    },
+    {
+      nama: 'Operator',
+      deskripsi: 'Akses untuk input dan melihat data',
+      jumlahPengguna: 25,
+      companyId: 2,
+    },
+    {
+      nama: 'Viewer',
+      deskripsi: 'Hanya dapat melihat data',
+      jumlahPengguna: 8,
+      companyId: 2,
+    },
+  ];
+
+  // Generate 100 roles dengan companyId yang berbeda-beda
+  for (let i = 1; i <= 100; i++) {
+    const baseData = sampleData[(i - 1) % sampleData.length];
+    roles.push({
+      id: i,
+      nama: i <= sampleData.length ? baseData.nama : `${baseData.nama} ${Math.floor(i / sampleData.length)}`,
+      deskripsi: baseData.deskripsi,
+      jumlahPengguna: baseData.jumlahPengguna + Math.floor(Math.random() * 10),
+      companyId: baseData.companyId + Math.floor((i - 1) / 25) % 4, // Distribute across companies
+    });
+  }
+
+  return roles;
+};
+
+const mockRoles = generateMockRoles();
+
+export default function RoleList() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const companyId = searchParams?.get('companyId');
+  
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [rowCount, setRowCount] = useState(mockRoles.length);
+  const [sorting, setSorting] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  // Redirect ke halaman pemilihan company jika tidak ada companyId
+  useEffect(() => {
+    if (searchParams && !companyId) {
+      router.push('/role/data-role');
+    }
+  }, [companyId, router, searchParams]);
+
+  const handleToggleFilters = useCallback((nextOpen) => {
+    if (typeof nextOpen === 'boolean') {
+      setShowFilters(nextOpen);
+    } else {
+      setShowFilters((prev) => !prev);
+    }
+  }, []);
+
+  const handleSearchChange = useCallback((event) => {
+    const value = event.target.value;
+    setSearchValue(value);
+    
+    // Update columnFilters for 'nama' field
+    if (value) {
+      setColumnFilters([{ id: 'nama', value }]);
+    } else {
+      setColumnFilters([]);
+    }
+  }, []);
+
+  const handleResetFilter = useCallback(() => {
+    setSearchValue('');
+    setColumnFilters([]);
+  }, []);
+
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    id: null,
+    name: '',
+  });
+
+  const hasActiveFilters = useMemo(
+    () => columnFilters.length > 0,
+    [columnFilters]
+  );
+
+  // Filter data based on columnFilters and companyId
+  const filteredData = useMemo(() => {
+    let filtered = [...mockRoles];
+
+    // Filter by companyId first
+    if (companyId) {
+      filtered = filtered.filter((item) => item.companyId === parseInt(companyId));
+    }
+
+    // Then apply column filters
+    columnFilters.forEach((filter) => {
+      if (filter.value) {
+        filtered = filtered.filter((item) => {
+          const value = item[filter.id]?.toString().toLowerCase() || '';
+          return value.includes(filter.value.toLowerCase());
+        });
+      }
+    });
+
+    return filtered;
+  }, [columnFilters, companyId]);
+
+  // Sort data
+  const sortedData = useMemo(() => {
+    if (sorting.length === 0) return filteredData;
+
+    const sorted = [...filteredData];
+    const sort = sorting[0];
+    sorted.sort((a, b) => {
+      const aVal = a[sort.id] || '';
+      const bVal = b[sort.id] || '';
+      if (sort.desc) {
+        return bVal > aVal ? 1 : -1;
+      }
+      return aVal > bVal ? 1 : -1;
+    });
+
+    return sorted;
+  }, [filteredData, sorting]);
+
+  // Paginate data
+  const paginatedData = useMemo(() => {
+    const start = pagination.pageIndex * pagination.pageSize;
+    const end = start + pagination.pageSize;
+    return sortedData.slice(start, end).map((item, index) => ({
+      ...item,
+      index: start + index + 1,
+    }));
+  }, [sortedData, pagination]);
+
+  const handleView = useCallback((role) => {
+    // TODO: Implement view functionality
+    console.log('View role:', role);
+  }, []);
+
+  const handleEdit = useCallback((role) => {
+    // TODO: Implement edit functionality
+    console.log('Edit role:', role);
+    // router.push(`${pathname}/${role.id}/edit`);
+  }, []);
+
+  const handleDelete = useCallback((role) => {
+    setDeleteDialog({
+      open: true,
+      id: role.id,
+      name: role.nama,
+    });
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
+    // TODO: Implement delete functionality
+    console.log('Delete role:', deleteDialog.id);
+    setDeleteDialog({ open: false, id: null, name: '' });
+  }, [deleteDialog]);
+
+  const handleAdd = useCallback(() => {
+    if (companyId) {
+      router.push(`${pathname.replace('/list', '')}/new?companyId=${companyId}`);
+    } else {
+      router.push(`${pathname.replace('/list', '')}/new`);
+    }
+  }, [router, pathname, companyId]);
+
+  const handlePageChange = useCallback((newPageIndex) => {
+    setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
+  }, []);
+
+  const handlePageSizeChange = useCallback((newPageSize) => {
+    setPagination((prev) => ({ ...prev, pageSize: newPageSize, pageIndex: 0 }));
+  }, []);
+
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'index',
+        header: 'NO',
+        size: 60,
+        enableColumnFilter: false,
+        enableSorting: false,
+        muiTableHeadCellProps: { align: 'center' },
+        muiTableBodyCellProps: { align: 'center' },
+        Cell: ({ cell }) => (
+          <Typography variant="body2" align="center">
+            {cell.getValue()}
+          </Typography>
+        ),
+      },
+      {
+        accessorKey: 'nama',
+        header: 'Nama Peran',
+        size: 200,
+        Cell: ({ cell }) => (
+          <Typography variant="body2">{cell.getValue()}</Typography>
+        ),
+      },
+      {
+        accessorKey: 'deskripsi',
+        header: 'Deskripsi',
+        size: 300,
+        Cell: ({ cell }) => (
+          <Typography variant="body2">{cell.getValue()}</Typography>
+        ),
+      },
+      {
+        accessorKey: 'jumlahPengguna',
+        header: 'Jumlah Pengguna',
+        size: 150,
+        muiTableHeadCellProps: { align: 'center' },
+        muiTableBodyCellProps: { align: 'center' },
+        Cell: ({ cell }) => (
+          <Typography variant="body2" align="center">
+            {cell.getValue()}
+          </Typography>
+        ),
+      },
+    ],
+    []
+  );
+
+  const table = useMaterialReactTable({
+    columns,
+    data: paginatedData,
+    getRowId: (row) => row.id.toString(),
+    rowCount: sortedData.length,
+    state: {
+      columnFilters,
+      isLoading: false,
+      pagination,
+      sorting,
+    },
+    initialState: {
+      density: 'compact',
+    },
+    enableRowNumbers: false,
+    enableRowActions: true,
+    enableSorting: true,
+    enableEditing: false,
+    enablePagination: false,
+    enableColumnFilters: false,
+    enableColumnActions: false,
+    enableDensityToggle: false,
+    enableFullScreenToggle: false,
+    enableHiding: true,
+    enableTopToolbar: false,
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+    autoResetPageIndex: false,
+    positionActionsColumn: 'last',
+    onSortingChange: setSorting,
+    onColumnFiltersChange: (updater) => {
+      setColumnFilters(updater);
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    },
+    muiTableHeadCellProps: {
+      sx: (theme) => ({
+        fontSize: '12px !important',
+        backgroundColor: 'rgba(248, 249, 250, 1)',
+        borderTop: '1px solid rgba(232, 235, 238, 1) !important',
+        borderBottom: '2px solid rgba(232, 235, 238, 1) !important',
+        '& .MuiTableSortLabel-icon, & .MuiIconButton-root, & .MuiBadge-root': {
+          opacity: 0,
+          transition: 'opacity 0.2s ease-in-out',
+        },
+        '&:hover .MuiTableSortLabel-icon, &:hover .MuiIconButton-root, &:hover .MuiBadge-root': {
+          opacity: 1,
+        },
+        '& .MuiTableSortLabel-active .MuiTableSortLabel-icon': {
+          opacity: 1,
+        },
+      }),
+    },
+    muiTableBodyCellProps: {
+      sx: { fontSize: '12px !important' },
+    },
+    muiTableBodyProps: {
+      sx: (theme) => ({
+        '& tr:nth-of-type(even)': {
+          backgroundColor: 'rgba(248, 249, 250, 1) !important',
+        },
+      }),
+    },
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    mrtTheme: (theme) => ({
+      baseBackgroundColor: 'rgba(255, 255, 255, 1)',
+    }),
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        header: 'Aksi',
+      },
+    },
+    renderRowActions: ({ row }) => (
+      <Box display="flex">
+        <IconButton
+          size="small"
+          color="info"
+          onClick={() => handleView(row.original)}
+        >
+          <Eye size={20} variant="Linear" />
+        </IconButton>
+        <IconButton
+          size="small"
+          color="success"
+          onClick={() => handleEdit(row.original)}
+        >
+          <Edit size={20} variant="Linear" />
+        </IconButton>
+        <IconButton
+          size="small"
+          color="error"
+          onClick={() => handleDelete(row.original)}
+        >
+          <Trash size={20} variant="Linear" />
+        </IconButton>
+      </Box>
+    ),
+    renderBottomToolbar: () => (
+      <TablePagination
+        pageIndex={pagination.pageIndex}
+        pageSize={pagination.pageSize}
+        rowCount={sortedData.length}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        pageSizeOptions={[10, 25, 50, 100]}
+      />
+    ),
+  });
+
+  return (
+    <>
+      <Box>
+        {/* Toolbar dengan tombol Filter dan Tambah */}
+        <Box
+          sx={{
+            p: 2,
+            pt: 2,
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            columnGap: 1.5,
+            rowGap: 1.5,
+            backgroundColor: 'white',
+            borderBottom: '1px solid rgba(232, 235, 238, 1)',
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+          }}
+        >
+          <Box sx={{ flex: 1, minWidth: 220 }}>
+            <FilterButton
+              open={showFilters}
+              onToggle={handleToggleFilters}
+              hasActiveFilters={hasActiveFilters}
+              onReset={handleResetFilter}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1,
+              justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+            }}
+          >
+            <Button
+              variant="contained"
+              startIcon={<Add size={20} color='white' />}
+              onClick={handleAdd}
+              sx={{
+                textTransform: 'none',
+              }}
+            >
+              Tambah
+            </Button>
+          </Box>
+        </Box>
+
+        {/* FilterCollapse untuk input filter */}
+        <FilterCollapse
+          open={showFilters}
+          onToggle={handleToggleFilters}
+          hasActiveFilters={hasActiveFilters}
+          onReset={handleResetFilter}
+          buttonText="Filters"
+          showLabel={false}
+          hideHeader
+          containerSx={{
+            p: 2,
+            border: 'none',
+            backgroundColor: 'white',
+            borderBottom: '1px solid rgba(232, 235, 238, 1)',
+            mt: 0,
+          }}
+        >
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              fullWidth
+              placeholder="Cari peran hak akses..."
+              value={searchValue}
+              onChange={handleSearchChange}
+              size="small"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: 'primary.main',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'primary.main',
+                  },
+                },
+              }}
+            />
+          </Grid>
+        </FilterCollapse>
+
+        {/* MaterialReactTable */}
+        <MaterialReactTable table={table} />
+      </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, id: null, name: '' })}
+        onConfirm={handleConfirmDelete}
+        title="Konfirmasi Hapus"
+        content={
+          <Typography variant="body1">
+            Apakah anda yakin akan menghapus <strong>{deleteDialog.name}</strong>?
+          </Typography>
+        }
+        confirmText="Hapus"
+        cancelText="Batal"
+        confirmColor="error"
+      />
+    </>
+  );
+}
