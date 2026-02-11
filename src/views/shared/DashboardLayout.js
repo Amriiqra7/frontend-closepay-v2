@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Box, Toolbar } from '@mui/material';
 import Sidebar from '../dashboard/Sidebar';
 import AdminSidebar from '../dashboard/sidebar/AdminSidebar';
 import Header from './Header';
 import PageHeader from '@/components/PageHeader';
+import PageLoading from '@/components/PageLoading';
 import { useAdminMenu } from '@/contexts/AdminMenuContext';
 
 const drawerWidth = 280;
@@ -79,7 +80,9 @@ export default function DashboardLayout({ children }) {
           
           {/* Page Content - No overflow here, let parent handle scrolling */}
           <Box sx={{ mt: 2, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-            {children}
+            <Suspense fallback={<PageLoading />}>
+              {children}
+            </Suspense>
           </Box>
         </Box>
       </Box>

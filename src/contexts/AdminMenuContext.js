@@ -15,7 +15,10 @@ export function AdminMenuProvider({ children }) {
 
   // Load from localStorage after mount (client-side only)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    // Double check for window to avoid SSR issues
+    if (typeof window === 'undefined') return;
+    
+    try {
       const storedMenu = localStorage.getItem(STORAGE_KEY_MENU);
       const storedCompany = localStorage.getItem(STORAGE_KEY_COMPANY);
       
@@ -32,27 +35,39 @@ export function AdminMenuProvider({ children }) {
       }
       
       setIsHydrated(true);
+    } catch (error) {
+      // Silently fail if localStorage is not available
+      console.error('Error accessing localStorage:', error);
+      setIsHydrated(true);
     }
   }, []);
 
   // Sync state to localStorage whenever it changes (only after hydration)
   useEffect(() => {
-    if (isHydrated && typeof window !== 'undefined') {
+    if (!isHydrated || typeof window === 'undefined') return;
+    
+    try {
       if (selectedMenu) {
         localStorage.setItem(STORAGE_KEY_MENU, selectedMenu);
       } else {
         localStorage.removeItem(STORAGE_KEY_MENU);
       }
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
     }
   }, [selectedMenu, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated && typeof window !== 'undefined') {
+    if (!isHydrated || typeof window === 'undefined') return;
+    
+    try {
       if (selectedCompany) {
         localStorage.setItem(STORAGE_KEY_COMPANY, JSON.stringify(selectedCompany));
       } else {
         localStorage.removeItem(STORAGE_KEY_COMPANY);
       }
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
     }
   }, [selectedCompany, isHydrated]);
 
@@ -66,8 +81,12 @@ export function AdminMenuProvider({ children }) {
     setSelectedCompanyState(null);
     // Clear localStorage
     if (typeof window !== 'undefined') {
-      localStorage.removeItem(STORAGE_KEY_MENU);
-      localStorage.removeItem(STORAGE_KEY_COMPANY);
+      try {
+        localStorage.removeItem(STORAGE_KEY_MENU);
+        localStorage.removeItem(STORAGE_KEY_COMPANY);
+      } catch (error) {
+        console.error('Error clearing localStorage:', error);
+      }
     }
   };
 
