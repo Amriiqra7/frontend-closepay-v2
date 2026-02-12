@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from "next/navigation";
-import DashboardLayout from "@/views/shared/DashboardLayout";
+import DashboardLayout from "@/shared/layouts/DashboardLayout";
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();

@@ -1,4 +1,4 @@
-import RoleNew from "@/views/role/data-role/RoleNew";
+import RoleNew from "@/features/role/components/data-role/RoleNew";
 
 // Force dynamic rendering to avoid prerendering issues with useSearchParams
 export const dynamic = 'force-dynamic';

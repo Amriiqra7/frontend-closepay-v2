@@ -1,4 +1,4 @@
-import JumlahEmailZeptoList from '@/views/notifikasi/jumlah-email-zepto/JumlahEmailZeptoList';
+import JumlahEmailZeptoList from '@/features/notification/components/jumlah-email-zepto/JumlahEmailZeptoList';
 
 export default function JumlahEmailZeptoPage() {
   return <JumlahEmailZeptoList />;

@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
-import { theme } from '@/theme/theme';
+import { theme } from '@/shared/theme/theme';
 
 export default function ThemeRegistry({ children }) {
   // App Router + MUI/Emotion SSR:

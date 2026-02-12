@@ -1,4 +1,4 @@
-import CompanySelector from "@/views/role/data-role/CompanySelector";
+import CompanySelector from "@/features/role/components/data-role/CompanySelector";
 
 export default function DataRolePage() {
   return <CompanySelector />;
