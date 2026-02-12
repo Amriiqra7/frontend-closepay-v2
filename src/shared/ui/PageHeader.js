@@ -3,6 +3,8 @@
 import React from 'react';
 import { Box, Typography, Breadcrumbs, Link } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
+import { ArrowRight2 } from 'iconsax-react';
+import { ADMIN_MENU_CONFIG } from '@/shared/config/adminMenuConfig';
 
 // Mapping segment ke label yang lebih user-friendly
 // Hanya untuk segment yang perlu custom label
@@ -113,21 +115,108 @@ const formatSegmentLabel = (segment) => {
     .join(' ');
 };
 
+// Fungsi untuk mengecek apakah route valid (ada di menu config sebagai href)
+const isValidRoute = (path) => {
+  // Beranda selalu valid
+  if (path === '/dashboard') return true;
+  
+  // Fungsi rekursif untuk mencari route di menu config
+  const findRouteInMenu = (menuObj, targetPath) => {
+    // Cek subMenus
+    if (menuObj.subMenus) {
+      for (const subMenu of menuObj.subMenus) {
+        // Cek apakah href sama dengan targetPath
+        if (subMenu.href === targetPath) {
+          return true;
+        }
+        // Cek children jika ada (untuk nested menu level 3)
+        if (subMenu.children) {
+          for (const child of subMenu.children) {
+            if (child.href === targetPath) {
+              return true;
+            }
+            // Cek children level 4 jika ada
+            if (child.children) {
+              for (const grandChild of child.children) {
+                if (grandChild.href === targetPath) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
+  };
+
+  // Cek di semua menu utama
+  for (const menuKey in ADMIN_MENU_CONFIG) {
+    const menu = ADMIN_MENU_CONFIG[menuKey];
+    if (findRouteInMenu(menu, path)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+// Fungsi untuk mengecek apakah route adalah parent menu (hanya punya children, tidak punya halaman sendiri)
+const isParentMenuOnly = (path) => {
+  // Fungsi rekursif untuk mencari route di menu config
+  const findRouteInMenu = (menuObj, targetPath) => {
+    if (menuObj.subMenus) {
+      for (const subMenu of menuObj.subMenus) {
+        if (subMenu.href === targetPath) {
+          // Jika route ini punya children, berarti ini parent menu only
+          return subMenu.children && subMenu.children.length > 0;
+        }
+        if (subMenu.children) {
+          for (const child of subMenu.children) {
+            if (child.href === targetPath) {
+              // Jika route ini punya children, berarti ini parent menu only
+              return child.children && child.children.length > 0;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  };
+
+  // Cek di semua menu utama
+  for (const menuKey in ADMIN_MENU_CONFIG) {
+    const menu = ADMIN_MENU_CONFIG[menuKey];
+    if (findRouteInMenu(menu, path)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 // Fungsi untuk generate breadcrumb dari pathname
 const generateBreadcrumbs = (pathname) => {
   const segments = pathname.split('/').filter(Boolean);
   const breadcrumbs = [
-    { label: 'Beranda', href: '/dashboard' },
+    { label: 'Beranda', href: '/dashboard', disabled: false },
   ];
 
   let currentPath = '';
   segments.forEach((segment, index) => {
     currentPath += `/${segment}`;
     const label = formatSegmentLabel(segment);
+    const isLast = index === segments.length - 1;
+    
+    // Cek apakah route valid
+    const isValid = isValidRoute(currentPath);
+    // Cek apakah route adalah parent menu only (punya children tapi tidak punya halaman sendiri)
+    const isParentOnly = isParentMenuOnly(currentPath);
     
     breadcrumbs.push({
       label,
-      href: index === segments.length - 1 ? null : currentPath,
+      href: isLast ? null : currentPath,
+      disabled: !isLast && (!isValid || isParentOnly), // Disabled jika bukan last dan (route tidak valid atau parent menu only)
     });
   });
 
@@ -171,22 +260,30 @@ export default function PageHeader() {
         <Box sx={{ pb: 1 }}>
           <Breadcrumbs
             aria-label="breadcrumb"
+            separator={
+              <ArrowRight2 size={16} color="#9ca3af" />
+            }
             sx={{
               '& .MuiBreadcrumbs-separator': {
                 mx: 1,
+                display: 'flex',
+                alignItems: 'center',
+                color: '#9ca3af',
               },
             }}
           >
             {breadcrumbs.map((crumb, index) => {
               const isLast = index === breadcrumbs.length - 1;
               
-              if (isLast || !crumb.href) {
+              if (isLast || !crumb.href || crumb.disabled) {
                 return (
                   <Typography
                     key={index}
                     sx={{
                       fontSize: '0.875rem',
                       fontWeight: 500,
+                      color: crumb.disabled ? 'text.disabled' : 'text.primary',
+                      cursor: crumb.disabled ? 'default' : 'text',
                     }}
                   >
                     {crumb.label}
@@ -206,6 +303,10 @@ export default function PageHeader() {
                     border: 'none',
                     background: 'none',
                     padding: 0,
+                    color: 'text.primary',
+                    '&:hover': {
+                      color: 'text.primary',
+                    },
                   }}
                 >
                   {crumb.label}

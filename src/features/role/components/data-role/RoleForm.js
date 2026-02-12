@@ -46,7 +46,7 @@ export default function RoleForm() {
     >
       {/* Perusahaan */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Perusahaan<span style={{ color: "red" }}> *</span>
         </Typography>
         <Autocomplete
@@ -69,6 +69,17 @@ export default function RoleForm() {
                   ? errors.perusahaan
                   : ""
               }
+              InputProps={{
+                ...params.InputProps,
+                sx: { fontSize: '0.875rem' }
+              }}
+              inputProps={{
+                ...params.inputProps,
+                style: { fontSize: '0.875rem' }
+              }}
+              FormHelperTextProps={{
+                sx: { fontSize: '0.75rem' }
+              }}
             />
           )}
         />
@@ -76,7 +87,7 @@ export default function RoleForm() {
 
       {/* Nama */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Nama<span style={{ color: "red" }}> *</span>
         </Typography>
         <TextField
@@ -88,12 +99,21 @@ export default function RoleForm() {
           error={Boolean(touched.nama && errors.nama)}
           helperText={touched.nama && errors.nama}
           required
+          InputProps={{
+            sx: { fontSize: '0.875rem' }
+          }}
+          inputProps={{
+            style: { fontSize: '0.875rem' }
+          }}
+          FormHelperTextProps={{
+            sx: { fontSize: '0.75rem' }
+          }}
         />
       </Box>
 
       {/* User Tipe */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           User Tipe<span style={{ color: "red" }}> *</span>
         </Typography>
         <Autocomplete
@@ -116,6 +136,17 @@ export default function RoleForm() {
                   ? errors.userTipe
                   : ""
               }
+              InputProps={{
+                ...params.InputProps,
+                sx: { fontSize: '0.875rem' }
+              }}
+              inputProps={{
+                ...params.inputProps,
+                style: { fontSize: '0.875rem' }
+              }}
+              FormHelperTextProps={{
+                sx: { fontSize: '0.75rem' }
+              }}
             />
           )}
         />
@@ -123,7 +154,7 @@ export default function RoleForm() {
 
       {/* Deskripsi */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Deskripsi
         </Typography>
         <TextField
@@ -136,6 +167,15 @@ export default function RoleForm() {
           placeholder="Deskripsi"
           error={Boolean(touched.deskripsi && errors.deskripsi)}
           helperText={touched.deskripsi && errors.deskripsi}
+          InputProps={{
+            sx: { fontSize: '0.875rem' }
+          }}
+          inputProps={{
+            style: { fontSize: '0.875rem' }
+          }}
+          FormHelperTextProps={{
+            sx: { fontSize: '0.75rem' }
+          }}
         />
       </Box>
 
@@ -154,7 +194,7 @@ export default function RoleForm() {
           Pilih Izin Keamanan
         </Button>
         {touched.izinKeamanan && errors.izinKeamanan && (
-          <FormHelperText error sx={{ mt: 0.5 }}>
+          <FormHelperText error sx={{ mt: 0.5, fontSize: '0.75rem' }}>
             {errors.izinKeamanan}
           </FormHelperText>
         )}

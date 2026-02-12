@@ -69,7 +69,7 @@ export default function CompanyForm() {
 
             {/* Nama */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Nama<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -84,12 +84,21 @@ export default function CompanyForm() {
                     : "Nama perusahaan maksimal 100 karakter"
                 }
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* Inisial Perusahaan */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Inisial Perusahaan<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -100,12 +109,21 @@ export default function CompanyForm() {
                 error={Boolean(touched.companyInitial && errors.companyInitial)}
                 helperText={touched.companyInitial && errors.companyInitial}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* Alamat Perusahaan */}
             <Box sx={{ gridColumn: "1 / -1" }}>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Alamat Perusahaan<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -118,12 +136,21 @@ export default function CompanyForm() {
                 error={Boolean(touched.address && errors.address)}
                 helperText={touched.address && errors.address}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* Jenis Keuangan Perusahaan */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Jenis Keuangan Perusahaan<span style={{ color: "red" }}> *</span>
               </Typography>
               <FormControl fullWidth required>
@@ -133,27 +160,28 @@ export default function CompanyForm() {
                   onChange={(e) => setFieldValue("financialType", e.target.value)}
                   error={Boolean(touched.financialType && errors.financialType)}
                   displayEmpty
+                  sx={{ fontSize: '0.875rem' }}
                 >
-                  <MenuItem value="" disabled>
+                  <MenuItem value="" disabled sx={{ fontSize: '0.875rem' }}>
                     Pilih Jenis Keuangan
                   </MenuItem>
-                  <MenuItem value="Outlet 23">Outlet 23</MenuItem>
-                  <MenuItem value="Pandawa">Pandawa</MenuItem>
-                  <MenuItem value="Mizu">Mizu</MenuItem>
-                  <MenuItem value="Liquid">Liquid</MenuItem>
-                  <MenuItem value="Helen">Helen</MenuItem>
-                  <MenuItem value="Southgate">Southgate</MenuItem>
-                  <MenuItem value="KulkasBabe">KulkasBabe</MenuItem>
+                  <MenuItem value="Outlet 23" sx={{ fontSize: '0.875rem' }}>Outlet 23</MenuItem>
+                  <MenuItem value="Pandawa" sx={{ fontSize: '0.875rem' }}>Pandawa</MenuItem>
+                  <MenuItem value="Mizu" sx={{ fontSize: '0.875rem' }}>Mizu</MenuItem>
+                  <MenuItem value="Liquid" sx={{ fontSize: '0.875rem' }}>Liquid</MenuItem>
+                  <MenuItem value="Helen" sx={{ fontSize: '0.875rem' }}>Helen</MenuItem>
+                  <MenuItem value="Southgate" sx={{ fontSize: '0.875rem' }}>Southgate</MenuItem>
+                  <MenuItem value="KulkasBabe" sx={{ fontSize: '0.875rem' }}>KulkasBabe</MenuItem>
                 </Select>
               </FormControl>
-              <FormHelperText error={Boolean(touched.financialType && errors.financialType)}>
+              <FormHelperText error={Boolean(touched.financialType && errors.financialType)} sx={{ fontSize: '0.75rem' }}>
                 {touched.financialType && errors.financialType}
               </FormHelperText>
             </Box>
 
             {/* Rekening Penagihan */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Rekening Penagihan<span style={{ color: "red" }}> *</span>
               </Typography>
               <FormControl fullWidth required>
@@ -163,20 +191,21 @@ export default function CompanyForm() {
                   onChange={(e) => setFieldValue("billingAccount", e.target.value)}
                   error={Boolean(touched.billingAccount && errors.billingAccount)}
                   displayEmpty
+                  sx={{ fontSize: '0.875rem' }}
                 >
-                  <MenuItem value="" disabled>
+                  <MenuItem value="" disabled sx={{ fontSize: '0.875rem' }}>
                     Pilih Rekening Penagihan
                   </MenuItem>
-                  <MenuItem value="Pandawa">Pandawa</MenuItem>
-                  <MenuItem value="Outlet 23">Outlet 23</MenuItem>
-                  <MenuItem value="Mizu">Mizu</MenuItem>
-                  <MenuItem value="Liquid">Liquid</MenuItem>
-                  <MenuItem value="Helen">Helen</MenuItem>
-                  <MenuItem value="Southgate">Southgate</MenuItem>
-                  <MenuItem value="KulkasBabe">KulkasBabe</MenuItem>
+                  <MenuItem value="Pandawa" sx={{ fontSize: '0.875rem' }}>Pandawa</MenuItem>
+                  <MenuItem value="Outlet 23" sx={{ fontSize: '0.875rem' }}>Outlet 23</MenuItem>
+                  <MenuItem value="Mizu" sx={{ fontSize: '0.875rem' }}>Mizu</MenuItem>
+                  <MenuItem value="Liquid" sx={{ fontSize: '0.875rem' }}>Liquid</MenuItem>
+                  <MenuItem value="Helen" sx={{ fontSize: '0.875rem' }}>Helen</MenuItem>
+                  <MenuItem value="Southgate" sx={{ fontSize: '0.875rem' }}>Southgate</MenuItem>
+                  <MenuItem value="KulkasBabe" sx={{ fontSize: '0.875rem' }}>KulkasBabe</MenuItem>
                 </Select>
               </FormControl>
-              <FormHelperText error={Boolean(touched.billingAccount && errors.billingAccount)}>
+              <FormHelperText error={Boolean(touched.billingAccount && errors.billingAccount)} sx={{ fontSize: '0.75rem' }}>
                 {touched.billingAccount && errors.billingAccount}
               </FormHelperText>
             </Box>
@@ -197,7 +226,7 @@ export default function CompanyForm() {
           >
             {/* Nama PIC */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Nama PIC<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -208,12 +237,21 @@ export default function CompanyForm() {
                 error={Boolean(touched.picName && errors.picName)}
                 helperText={touched.picName && errors.picName}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* Email */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Email<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -225,12 +263,21 @@ export default function CompanyForm() {
                 error={Boolean(touched.picEmail && errors.picEmail)}
                 helperText={touched.picEmail && errors.picEmail}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* No Telepon */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 No telepon<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -241,12 +288,21 @@ export default function CompanyForm() {
                 error={Boolean(touched.picPhone && errors.picPhone)}
                 helperText={touched.picPhone && errors.picPhone}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* Username */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Username<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -257,12 +313,21 @@ export default function CompanyForm() {
                 error={Boolean(touched.picUsername && errors.picUsername)}
                 helperText={touched.picUsername && errors.picUsername}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
 
             {/* Password */}
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Password<span style={{ color: "red" }}> *</span>
               </Typography>
               <TextField
@@ -274,6 +339,15 @@ export default function CompanyForm() {
                 error={Boolean(touched.picPassword && errors.picPassword)}
                 helperText={touched.picPassword && errors.picPassword}
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
+                FormHelperTextProps={{
+                  sx: { fontSize: '0.75rem' }
+                }}
               />
             </Box>
           </Box>
@@ -285,10 +359,10 @@ export default function CompanyForm() {
         <Typography variant="h6" fontWeight="bold" mb={2}>
           Aplikasi
         </Typography>
-        
+
         {/* Homepage */}
         <Box sx={{ mb: 3 }}>
-          <Typography variant="body2" sx={{ mb: 0.5 }}>
+          <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
             Homepage<span style={{ color: "red" }}> *</span>
           </Typography>
           <FormControl fullWidth required>
@@ -298,28 +372,29 @@ export default function CompanyForm() {
               onChange={(e) => setFieldValue("homepage", e.target.value)}
               error={Boolean(touched.homepage && errors.homepage)}
               displayEmpty
+              sx={{ fontSize: '0.875rem' }}
             >
-              <MenuItem value="" disabled>
+              <MenuItem value="" disabled sx={{ fontSize: '0.875rem' }}>
                 Pilih Homepage
               </MenuItem>
-              <MenuItem value="D-wallet">D-wallet</MenuItem>
-              <MenuItem value="Dashboard">Dashboard</MenuItem>
-              <MenuItem value="Transaksi">Transaksi</MenuItem>
-              <MenuItem value="Laporan">Laporan</MenuItem>
-              <MenuItem value="Pengaturan">Pengaturan</MenuItem>
-              <MenuItem value="Manajemen">Manajemen</MenuItem>
-              <MenuItem value="Keuangan">Keuangan</MenuItem>
-              <MenuItem value="Pengguna">Pengguna</MenuItem>
+              <MenuItem value="D-wallet" sx={{ fontSize: '0.875rem' }}>D-wallet</MenuItem>
+              <MenuItem value="Dashboard" sx={{ fontSize: '0.875rem' }}>Dashboard</MenuItem>
+              <MenuItem value="Transaksi" sx={{ fontSize: '0.875rem' }}>Transaksi</MenuItem>
+              <MenuItem value="Laporan" sx={{ fontSize: '0.875rem' }}>Laporan</MenuItem>
+              <MenuItem value="Pengaturan" sx={{ fontSize: '0.875rem' }}>Pengaturan</MenuItem>
+              <MenuItem value="Manajemen" sx={{ fontSize: '0.875rem' }}>Manajemen</MenuItem>
+              <MenuItem value="Keuangan" sx={{ fontSize: '0.875rem' }}>Keuangan</MenuItem>
+              <MenuItem value="Pengguna" sx={{ fontSize: '0.875rem' }}>Pengguna</MenuItem>
             </Select>
           </FormControl>
-          <FormHelperText error={Boolean(touched.homepage && errors.homepage)}>
+          <FormHelperText error={Boolean(touched.homepage && errors.homepage)} sx={{ fontSize: '0.75rem' }}>
             {touched.homepage && errors.homepage}
           </FormHelperText>
         </Box>
 
         {/* Menu Perusahaan */}
         <Box>
-          <Typography variant="body2" sx={{ mb: 1 }}>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: '0.875rem' }}>
             Menu Perusahaan
           </Typography>
           <Box
@@ -354,6 +429,7 @@ export default function CompanyForm() {
                     width: "100%",
                     "& .MuiFormControlLabel-label": {
                       flex: 1,
+                      fontSize: '0.875rem',
                     },
                   }}
                 />

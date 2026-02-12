@@ -47,7 +47,7 @@ export default function DataIzinAksesForm() {
     >
       {/* Servis */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Servis<span style={{ color: "red" }}> *</span>
         </Typography>
         <FormControl fullWidth size="small" error={Boolean(touched.servis && errors.servis)}>
@@ -55,25 +55,26 @@ export default function DataIzinAksesForm() {
             value={values.servis || ""}
             onChange={(e) => setFieldValue("servis", e.target.value)}
             displayEmpty
+            sx={{ fontSize: '0.875rem' }}
           >
-            <MenuItem value="" disabled>
-              <em>Pilih servis</em>
+            <MenuItem value="" disabled sx={{ fontSize: '0.875rem' }}>
+              Pilih servis
             </MenuItem>
             {mockServices.map((service) => (
-              <MenuItem key={service.id} value={service.nama}>
+              <MenuItem key={service.id} value={service.nama} sx={{ fontSize: '0.875rem' }}>
                 {service.nama}
               </MenuItem>
             ))}
           </Select>
           {touched.servis && errors.servis && (
-            <FormHelperText>{errors.servis}</FormHelperText>
+            <FormHelperText sx={{ fontSize: '0.75rem' }}>{errors.servis}</FormHelperText>
           )}
         </FormControl>
       </Box>
 
       {/* Nama */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Nama<span style={{ color: "red" }}> *</span>
         </Typography>
         <TextField
@@ -85,12 +86,21 @@ export default function DataIzinAksesForm() {
           error={Boolean(touched.nama && errors.nama)}
           helperText={touched.nama && errors.nama}
           required
+          InputProps={{
+            sx: { fontSize: '0.875rem' }
+          }}
+          inputProps={{
+            style: { fontSize: '0.875rem' }
+          }}
+          FormHelperTextProps={{
+            sx: { fontSize: '0.75rem' }
+          }}
         />
       </Box>
 
       {/* User Tipe */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           User Tipe<span style={{ color: "red" }}> *</span>
         </Typography>
         <FormControl fullWidth size="small" error={Boolean(touched.userTipe && errors.userTipe)}>
@@ -98,25 +108,26 @@ export default function DataIzinAksesForm() {
             value={values.userTipe || ""}
             onChange={(e) => setFieldValue("userTipe", e.target.value)}
             displayEmpty
+            sx={{ fontSize: '0.875rem' }}
           >
-            <MenuItem value="" disabled>
-              <em>Pilih user tipe</em>
+            <MenuItem value="" disabled sx={{ fontSize: '0.875rem' }}>
+              Pilih user tipe
             </MenuItem>
             {mockUserTypes.map((type) => (
-              <MenuItem key={type.id} value={type.nama}>
+              <MenuItem key={type.id} value={type.nama} sx={{ fontSize: '0.875rem' }}>
                 {type.nama}
               </MenuItem>
             ))}
           </Select>
           {touched.userTipe && errors.userTipe && (
-            <FormHelperText>{errors.userTipe}</FormHelperText>
+            <FormHelperText sx={{ fontSize: '0.75rem' }}>{errors.userTipe}</FormHelperText>
           )}
         </FormControl>
       </Box>
 
       {/* Kode */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Kode<span style={{ color: "red" }}> *</span>
         </Typography>
         <TextField
@@ -128,12 +139,21 @@ export default function DataIzinAksesForm() {
           error={Boolean(touched.kode && errors.kode)}
           helperText={touched.kode && errors.kode}
           required
+          InputProps={{
+            sx: { fontSize: '0.875rem' }
+          }}
+          inputProps={{
+            style: { fontSize: '0.875rem' }
+          }}
+          FormHelperTextProps={{
+            sx: { fontSize: '0.75rem' }
+          }}
         />
       </Box>
 
       {/* Grup */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Grup<span style={{ color: "red" }}> *</span>
         </Typography>
         <Autocomplete
@@ -156,6 +176,17 @@ export default function DataIzinAksesForm() {
               placeholder="Pilih grup atau ketik sendiri"
               error={Boolean(touched.grup && errors.grup)}
               helperText={touched.grup && errors.grup}
+              InputProps={{
+                ...params.InputProps,
+                sx: { fontSize: '0.875rem' }
+              }}
+              inputProps={{
+                ...params.inputProps,
+                style: { fontSize: '0.875rem' }
+              }}
+              FormHelperTextProps={{
+                sx: { fontSize: '0.75rem' }
+              }}
             />
           )}
         />
@@ -163,7 +194,7 @@ export default function DataIzinAksesForm() {
 
       {/* Deskripsi */}
       <Box>
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
+        <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
           Deskripsi
         </Typography>
         <TextField
@@ -176,6 +207,15 @@ export default function DataIzinAksesForm() {
           placeholder="Deskripsi"
           error={Boolean(touched.deskripsi && errors.deskripsi)}
           helperText={touched.deskripsi && errors.deskripsi}
+          InputProps={{
+            sx: { fontSize: '0.875rem' }
+          }}
+          inputProps={{
+            style: { fontSize: '0.875rem' }
+          }}
+          FormHelperTextProps={{
+            sx: { fontSize: '0.75rem' }
+          }}
         />
       </Box>
     </Box>

@@ -168,6 +168,18 @@ export default function AdminSidebar({
         label: subMenu.label,
         href: subMenu.href,
         icon: subMenu.icon || menuConfig.icon, // Use icon from sub-menu, fallback to parent menu icon
+        children: subMenu.children ? subMenu.children.map((child) => ({
+          id: child.id,
+          label: child.label,
+          href: child.href,
+          icon: child.icon || subMenu.icon,
+          children: child.children ? child.children.map((grandChild) => ({
+            id: grandChild.id,
+            label: grandChild.label,
+            href: grandChild.href,
+            icon: grandChild.icon || child.icon,
+          })) : undefined,
+        })) : undefined,
       })),
     });
   }

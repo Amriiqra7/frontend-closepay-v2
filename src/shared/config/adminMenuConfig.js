@@ -58,7 +58,36 @@ export const ADMIN_MENU_CONFIG = {
     description: 'Data Perusahaan, Data User, Personalisasi Perusahaan, Data Menu',
     subMenus: [
       { id: 'data-perusahaan', label: 'Data Perusahaan', href: '/admin/utama/data-perusahaan', icon: Buildings2 },
-      { id: 'data-user', label: 'Data User', href: '/admin/utama/data-user', icon: User },
+      { 
+        id: 'data-user', 
+        label: 'Data User', 
+        href: '/admin/utama/data-user', 
+        icon: User,
+        children: [
+          { id: 'user-admin', label: 'User Admin', href: '/admin/utama/data-user/user-admin', icon: Profile2User },
+          { 
+            id: 'user-member', 
+            label: 'User Member', 
+            href: '/admin/utama/data-user/user-member', 
+            icon: Profile,
+            children: [
+              { id: 'data-user-member', label: 'Data user member', href: '/admin/utama/data-user/user-member/data-user-member', icon: User },
+              { id: 'konfig-user-member', label: 'Konfig User Member', href: '/admin/utama/data-user/user-member/konfig-user-member', icon: Setting2 },
+              { id: 'log-aktivitas-login-member', label: 'Log Aktivitas login member', href: '/admin/utama/data-user/user-member/log-aktivitas-login-member', icon: DocumentText },
+            ]
+          },
+          { 
+            id: 'user-merchant', 
+            label: 'User Merchant', 
+            href: '/admin/utama/data-user/user-merchant', 
+            icon: Shop,
+            children: [
+              { id: 'data-user-merchant', label: 'Data User Merchant', href: '/admin/utama/data-user/user-merchant/data-user-merchant', icon: User },
+              { id: 'konfig-user-merchant', label: 'Konfig user merchant', href: '/admin/utama/data-user/user-merchant/konfig-user-merchant', icon: Setting2 },
+            ]
+          },
+        ]
+      },
       { id: 'personalisasi-perusahaan', label: 'Personalisasi Perusahaan', href: '/admin/utama/personalisasi-perusahaan', icon: Setting2 },
       { id: 'data-menu', label: 'Data Menu', href: '/admin/utama/data-menu', icon: MenuBoard },
     ],
@@ -72,6 +101,14 @@ export const ADMIN_MENU_CONFIG = {
       // Menu dari Utama
       { id: 'data-perusahaan', label: 'Data Perusahaan', href: '/admin/utama/data-perusahaan', icon: Buildings2 },
       { id: 'data-user', label: 'Data User', href: '/admin/utama/data-user', icon: User },
+      { id: 'user-admin', label: 'User Admin', href: '/admin/utama/data-user/user-admin', icon: Profile2User },
+      { id: 'user-member', label: 'User Member', href: '/admin/utama/data-user/user-member', icon: Profile },
+      { id: 'data-user-member', label: 'Data user member', href: '/admin/utama/data-user/user-member/data-user-member', icon: User },
+      { id: 'konfig-user-member', label: 'Konfig User Member', href: '/admin/utama/data-user/user-member/konfig-user-member', icon: Setting2 },
+      { id: 'log-aktivitas-login-member', label: 'Log Aktivitas login member', href: '/admin/utama/data-user/user-member/log-aktivitas-login-member', icon: DocumentText },
+      { id: 'user-merchant', label: 'User Merchant', href: '/admin/utama/data-user/user-merchant', icon: Shop },
+      { id: 'data-user-merchant', label: 'Data User Merchant', href: '/admin/utama/data-user/user-merchant/data-user-merchant', icon: User },
+      { id: 'konfig-user-merchant', label: 'Konfig user merchant', href: '/admin/utama/data-user/user-merchant/konfig-user-merchant', icon: Setting2 },
       { id: 'personalisasi-perusahaan', label: 'Personalisasi Perusahaan', href: '/admin/utama/personalisasi-perusahaan', icon: Setting2 },
       { id: 'data-menu', label: 'Data Menu', href: '/admin/utama/data-menu', icon: MenuBoard },
       // Menu dari Balance

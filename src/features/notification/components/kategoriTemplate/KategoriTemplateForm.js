@@ -64,7 +64,7 @@ export default function KategoriTemplateForm({
             })}
           >
             <Box>
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontSize: '0.875rem' }}>
                 Nama
                 <Typography component="span" sx={{ color: 'red', ml: 0.5 }}>
                   *
@@ -76,6 +76,12 @@ export default function KategoriTemplateForm({
                 onChange={(e) => onNamaChange(e.target.value)}
                 placeholder="Nama"
                 required
+                InputProps={{
+                  sx: { fontSize: '0.875rem' }
+                }}
+                inputProps={{
+                  style: { fontSize: '0.875rem' }
+                }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '&:hover fieldset': {

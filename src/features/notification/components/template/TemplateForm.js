@@ -71,7 +71,7 @@ export default function TemplateForm() {
         <MainCard content={false}>
           <Box sx={{ p: 3 }}>
             <Box sx={{ mb: 3 }}>
-              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500 }}>
+              <Typography variant="body2" sx={{ mb: 0.5, fontWeight: 500, fontSize: '0.875rem' }}>
                 Template Key
                 <Typography component="span" sx={{ color: 'red', ml: 0.5 }}>
                   *
@@ -84,6 +84,7 @@ export default function TemplateForm() {
                 displayEmpty
                 size="small"
                 sx={{
+                  fontSize: '0.875rem',
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: 'rgba(0, 0, 0, 0.23)',
                   },
@@ -95,11 +96,11 @@ export default function TemplateForm() {
                   },
                 }}
               >
-                <MenuItem value="" disabled>
+                <MenuItem value="" disabled sx={{ fontSize: '0.875rem' }}>
                   <em>Pilih</em>
                 </MenuItem>
                 {mockTemplateKeys.map((key) => (
-                  <MenuItem key={key} value={key}>
+                  <MenuItem key={key} value={key} sx={{ fontSize: '0.875rem' }}>
                     {key}
                   </MenuItem>
                 ))}
