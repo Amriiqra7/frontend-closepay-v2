@@ -29,6 +29,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import TablePagination from '@/shared/ui/TablePagination';
 import AlertDialog from '@/shared/ui/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/shared/ui/FilterCollapse';
+import { handleDeleteWithToast, toastPromise } from '@/shared/utils/toast';
 
 const MotionPaper = motion(Paper);
 
@@ -225,22 +226,88 @@ export default function TemplateList() {
     });
   }, []);
 
-  const handleConfirmDelete = useCallback(() => {
-    // TODO: Implement API call to delete
-    console.log('Delete template:', deleteDialog.id);
-    setDeleteDialog({ open: false, id: null, name: '' });
+  const handleConfirmDelete = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const deletePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Delete template:', deleteDialog.id);
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menghapus template'));
+          }
+        }, 1000);
+      });
+
+      await handleDeleteWithToast(
+        deletePromise,
+        'Template',
+        deleteDialog.name
+      );
+      setDeleteDialog({ open: false, id: null, name: '' });
+    } catch (err) {
+      // Error already handled by toast
+      setDeleteDialog({ open: false, id: null, name: '' });
+    }
   }, [deleteDialog]);
 
-  const handleConfirmDeactivate = useCallback(() => {
-    // TODO: Implement API call to deactivate
-    console.log('Deactivate template:', deactivateDialog.id);
-    setDeactivateDialog({ open: false, id: null, name: '' });
+  const handleConfirmDeactivate = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const deactivatePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Deactivate template:', deactivateDialog.id);
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menonaktifkan template'));
+          }
+        }, 1000);
+      });
+
+      await toastPromise(
+        deactivatePromise,
+        {
+          loading: 'Menonaktifkan template...',
+          success: `Template "${deactivateDialog.name}" berhasil dinonaktifkan`,
+          error: (err) => `Gagal menonaktifkan template: ${err.message || 'Terjadi kesalahan'}`,
+        }
+      );
+      setDeactivateDialog({ open: false, id: null, name: '' });
+    } catch (err) {
+      // Error already handled by toast
+      setDeactivateDialog({ open: false, id: null, name: '' });
+    }
   }, [deactivateDialog]);
 
-  const handleConfirmUbahJenisUser = useCallback(() => {
-    // TODO: Implement API call to update jenis user
-    console.log('Ubah jenis user:', ubahJenisUserDialog.id, ubahJenisUserDialog.jenisUser);
-    setUbahJenisUserDialog({ open: false, id: null, namaTemplate: '', jenisUser: '' });
+  const handleConfirmUbahJenisUser = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const updatePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Ubah jenis user:', ubahJenisUserDialog.id, ubahJenisUserDialog.jenisUser);
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal mengubah jenis user'));
+          }
+        }, 1000);
+      });
+
+      await toastPromise(
+        updatePromise,
+        {
+          loading: 'Mengubah jenis user...',
+          success: `Jenis user template "${ubahJenisUserDialog.namaTemplate}" berhasil diubah`,
+          error: (err) => `Gagal mengubah jenis user: ${err.message || 'Terjadi kesalahan'}`,
+        }
+      );
+      setUbahJenisUserDialog({ open: false, id: null, namaTemplate: '', jenisUser: '' });
+    } catch (err) {
+      // Error already handled by toast
+      setUbahJenisUserDialog({ open: false, id: null, namaTemplate: '', jenisUser: '' });
+    }
   }, [ubahJenisUserDialog]);
 
   const handleAdd = useCallback(() => {

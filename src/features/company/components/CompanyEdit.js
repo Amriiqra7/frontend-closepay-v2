@@ -15,6 +15,7 @@ import { usePathname, useRouter, useParams } from "next/navigation";
 import CompanyForm from "./CompanyForm";
 import { initialValues, validationSchema } from "./CompanyValidation";
 import { useEffect, useState } from "react";
+import { handleUpdateWithToast, showErrorToast } from "@/shared/utils/toast";
 
 // Placeholder API - replace with actual API service
 const CompanyAPI = {
@@ -79,7 +80,7 @@ export default function CompanyEdit() {
         setInitialData(data);
       } catch (err) {
         console.error('Error fetching company:', err);
-        alert('Gagal memuat data perusahaan');
+        showErrorToast('Gagal memuat data perusahaan');
         router.back();
       } finally {
         setLoading(false);
@@ -96,13 +97,13 @@ export default function CompanyEdit() {
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       try {
-        await CompanyAPI.update(companyId, values);
-        // Show success message (you can add toast notification here)
-        alert("Data perusahaan berhasil diperbarui");
+        await handleUpdateWithToast(
+          CompanyAPI.update(companyId, values),
+          'perusahaan'
+        );
         router.push(pathname.replace(`/${companyId}/edit`, ''));
       } catch (err) {
-        // Show error message
-        alert(`Gagal memperbarui data!\n${err.message}`);
+        // Error already handled by toast
       } finally {
         setSubmitting(false);
       }

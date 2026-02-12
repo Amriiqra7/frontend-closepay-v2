@@ -21,6 +21,9 @@ import TablePagination from '@/shared/ui/TablePagination';
 import AlertDialog from '@/shared/ui/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/shared/ui/FilterCollapse';
 import CompanyDetailDialog from './CompanyDetailDialog';
+import CompanySettingsDialog from './CompanySettingsDialog';
+import CompanyMenuSettingsDialog from './CompanyMenuSettingsDialog';
+import { handleDeleteWithToast } from '@/shared/utils/toast';
 
 // Sample data - replace with actual API call
 // Generate 100 mock companies for testing pagination
@@ -90,6 +93,8 @@ export default function Company() {
   const [searchValue, setSearchValue] = useState('');
   const [companyInitialFilter, setCompanyInitialFilter] = useState('');
   const [detailDialog, setDetailDialog] = useState({ open: false, company: null });
+  const [settingsDialog, setSettingsDialog] = useState({ open: false, company: null });
+  const [menuSettingsDialog, setMenuSettingsDialog] = useState({ open: false, company: null });
 
   const handleToggleFilters = useCallback((nextOpen) => {
     if (typeof nextOpen === 'boolean') {
@@ -195,16 +200,18 @@ export default function Company() {
   }, []);
 
   const handleAturMenu = useCallback((company) => {
-    // TODO: Implement atur menu functionality
-    console.log('Atur menu company:', company);
-    router.push(`${pathname}/${company.id}/menu`);
-  }, [router, pathname]);
+    setMenuSettingsDialog({
+      open: true,
+      company: company,
+    });
+  }, []);
 
   const handlePengaturanPerusahaan = useCallback((company) => {
-    // TODO: Implement pengaturan perusahaan functionality
-    console.log('Pengaturan perusahaan:', company);
-    router.push(`${pathname}/${company.id}/settings`);
-  }, [router, pathname]);
+    setSettingsDialog({
+      open: true,
+      company: company,
+    });
+  }, []);
 
   const handleMasukKeCompany = useCallback((company) => {
     // Set admin menu to 'advance' and company
@@ -232,10 +239,37 @@ export default function Company() {
     });
   }, []);
 
-  const handleConfirmDelete = useCallback(() => {
-    // TODO: Implement delete functionality
-    console.log('Delete company:', deleteDialog.id);
-    setDeleteDialog({ open: false, id: null, name: '' });
+  const handleConfirmDelete = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      // const deletePromise = CompanyAPI.delete(deleteDialog.id);
+      
+      // Simulate API call
+      const deletePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Delete company:', deleteDialog.id);
+          // Simulate random error for testing (remove in production)
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menghapus data'));
+          }
+        }, 1000);
+      });
+
+      await handleDeleteWithToast(
+        deletePromise,
+        'Perusahaan',
+        deleteDialog.name
+      );
+      
+      setDeleteDialog({ open: false, id: null, name: '' });
+      // Optionally reload the page or refetch data
+      // window.location.reload();
+    } catch (err) {
+      // Error already handled by toast
+      setDeleteDialog({ open: false, id: null, name: '' });
+    }
   }, [deleteDialog]);
 
   const handleAdd = useCallback(() => {
@@ -431,6 +465,20 @@ export default function Company() {
             <Setting2 size={20} variant="Linear" color="#9c27b0" />
           </IconButton>
         </Tooltip>
+        <Tooltip title="Atur Menu" arrow>
+          <IconButton
+            size="small"
+            onClick={() => handleAturMenu(row.original)}
+            sx={{
+              color: '#00bcd4',
+              '&:hover': {
+                bgcolor: 'rgba(0, 188, 212, 0.08)',
+              },
+            }}
+          >
+            <Menu size={20} variant="Linear" color="#00bcd4" />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Masuk ke Company" arrow>
           <IconButton
             size="small"
@@ -605,6 +653,28 @@ export default function Company() {
         open={detailDialog.open}
         onClose={() => setDetailDialog({ open: false, company: null })}
         company={detailDialog.company}
+      />
+
+      {/* Settings Dialog */}
+      <CompanySettingsDialog
+        open={settingsDialog.open}
+        onClose={() => setSettingsDialog({ open: false, company: null })}
+        companyName={settingsDialog.company?.nama}
+        onMenuClick={(menuId) => {
+          console.log('Settings menu clicked:', menuId, 'for company:', settingsDialog.company);
+          // TODO: Implement navigation or action based on menuId
+        }}
+      />
+
+      {/* Menu Settings Dialog */}
+      <CompanyMenuSettingsDialog
+        open={menuSettingsDialog.open}
+        onClose={() => setMenuSettingsDialog({ open: false, company: null })}
+        companyName={menuSettingsDialog.company?.nama}
+        onMenuClick={(menuId) => {
+          console.log('Menu settings clicked:', menuId, 'for company:', menuSettingsDialog.company);
+          // TODO: Implement navigation or action based on menuId
+        }}
       />
     </>
   );

@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import MainCard from '@/shared/ui/MainCard';
+import { handleCreateWithToast, handleUpdateWithToast } from '@/shared/utils/toast';
 
 // Mock data untuk template key options
 const mockTemplateKeys = [
@@ -33,10 +34,30 @@ export default function TemplateForm() {
 
   const [templateKey, setTemplateKey] = useState('');
 
-  const handleSubmit = () => {
-    // TODO: Implement API call to save/update
-    console.log('Save template:', { templateKey, templateId });
-    router.back();
+  const handleSubmit = async () => {
+    try {
+      // TODO: Replace with actual API call
+      const apiPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Save template:', { templateKey, templateId });
+          // Simulate random error for testing (remove in production)
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menyimpan template'));
+          }
+        }, 1000);
+      });
+
+      if (isEdit) {
+        await handleUpdateWithToast(apiPromise, 'template');
+      } else {
+        await handleCreateWithToast(apiPromise, 'template');
+      }
+      router.back();
+    } catch (err) {
+      // Error already handled by toast
+    }
   };
 
   const handleBack = () => {

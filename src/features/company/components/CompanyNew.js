@@ -13,6 +13,7 @@ import { Form, FormikProvider, useFormik } from "formik";
 import { usePathname, useRouter } from "next/navigation";
 import CompanyForm from "./CompanyForm";
 import { initialValues, validationSchema } from "./CompanyValidation";
+import { handleCreateWithToast } from "@/shared/utils/toast";
 
 // Placeholder API - replace with actual API service
 const CompanyAPI = {
@@ -37,13 +38,13 @@ export default function CompanyNew() {
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       try {
-        await CompanyAPI.create(values);
-        // Show success message (you can add toast notification here)
-        alert("Data perusahaan berhasil disimpan");
+        await handleCreateWithToast(
+          CompanyAPI.create(values),
+          'perusahaan'
+        );
         router.push(pathname.replace("/new", ""));
       } catch (err) {
-        // Show error message
-        alert(`Gagal menyimpan data!\n${err.message}`);
+        // Error already handled by toast
       } finally {
         setSubmitting(false);
       }

@@ -14,6 +14,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import RoleForm from "./RoleForm";
 import { initialValues, validationSchema } from "./RoleValidation";
+import { handleCreateWithToast } from "@/shared/utils/toast";
 
 // Placeholder API - replace with actual API service
 const RoleAPI = {
@@ -61,9 +62,10 @@ export default function RoleNew() {
           perusahaanId: values.perusahaan?.id || null,
           userTipeId: values.userTipe?.id || null,
         };
-        await RoleAPI.create(apiValues);
-        // Show success message (you can add toast notification here)
-        alert("Data peran hak akses berhasil disimpan");
+        await handleCreateWithToast(
+          RoleAPI.create(apiValues),
+          'peran hak akses'
+        );
         // Redirect kembali ke list dengan companyId jika ada
         if (companyId) {
           router.push(`/role/data-role/list?companyId=${companyId}`);
@@ -71,8 +73,7 @@ export default function RoleNew() {
           router.push(pathname.replace("/new", ""));
         }
       } catch (err) {
-        // Show error message
-        alert(`Gagal menyimpan data!\n${err.message}`);
+        // Error already handled by toast
       } finally {
         setSubmitting(false);
       }

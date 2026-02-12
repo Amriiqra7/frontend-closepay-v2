@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import RoleForm from "./RoleForm";
 import { initialValues, validationSchema } from "./RoleValidation";
 import PageLoading from "@/shared/ui/PageLoading";
+import { handleUpdateWithToast, showErrorToast } from "@/shared/utils/toast";
 
 // Mock companies untuk dropdown
 const mockCompanies = [
@@ -98,7 +99,7 @@ export default function RoleEdit() {
         setInitialData(formData);
       } catch (err) {
         console.error('Error fetching role:', err);
-        alert('Gagal memuat data role');
+        showErrorToast('Gagal memuat data role');
         router.back();
       } finally {
         setLoading(false);
@@ -121,9 +122,10 @@ export default function RoleEdit() {
           perusahaanId: values.perusahaan?.id || null,
           userTipeId: values.userTipe?.id || null,
         };
-        await RoleAPI.update(roleId, apiValues);
-        // Show success message (you can add toast notification here)
-        alert("Data peran hak akses berhasil diperbarui");
+        await handleUpdateWithToast(
+          RoleAPI.update(roleId, apiValues),
+          'peran hak akses'
+        );
         // Redirect kembali ke list dengan companyId jika ada
         if (companyId) {
           router.push(`/role/data-role/list?companyId=${companyId}`);
@@ -131,8 +133,7 @@ export default function RoleEdit() {
           router.push(pathname.replace(`/${roleId}/edit`, '/list'));
         }
       } catch (err) {
-        // Show error message
-        alert(`Gagal memperbarui data!\n${err.message}`);
+        // Error already handled by toast
       } finally {
         setSubmitting(false);
       }

@@ -289,7 +289,7 @@ export default function AdminMenuDialog({
                     <Box
                       className="menu-icon"
                       sx={{
-                        color: '#9e9e9e',
+                        color: '#4a4a4a',
                         transition: 'color 0.2s ease-in-out',
                         '& svg': {
                           color: 'inherit',
@@ -308,7 +308,7 @@ export default function AdminMenuDialog({
                       className="menu-label"
                       sx={{
                         fontSize: '0.875rem',
-                        color: '#9e9e9e',
+                        color: '#4a4a4a',
                         transition: 'color 0.2s ease-in-out',
                       }}
                     >

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import DataIzinAksesForm from "./DataIzinAksesForm";
 import { initialValues, validationSchema } from "./DataIzinAksesValidation";
 import PageLoading from "@/shared/ui/PageLoading";
+import { handleUpdateWithToast, showErrorToast } from "@/shared/utils/toast";
 
 // Placeholder API - replace with actual API service
 const DataIzinAksesAPI = {
@@ -66,7 +67,7 @@ export default function DataIzinAksesEdit() {
         setInitialData(data);
       } catch (err) {
         console.error('Error fetching data izin akses:', err);
-        alert('Gagal memuat data izin akses');
+        showErrorToast('Gagal memuat data izin akses');
         router.back();
       } finally {
         setLoading(false);
@@ -83,14 +84,14 @@ export default function DataIzinAksesEdit() {
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       try {
-        await DataIzinAksesAPI.update(dataIzinAksesId, values);
-        // Show success message (you can add toast notification here)
-        alert("Data izin akses berhasil diperbarui");
+        await handleUpdateWithToast(
+          DataIzinAksesAPI.update(dataIzinAksesId, values),
+          'izin akses'
+        );
         // Redirect kembali ke list
         router.push(pathname.replace(`/${dataIzinAksesId}/edit`, ''));
       } catch (err) {
-        // Show error message
-        alert(`Gagal memperbarui data!\n${err.message}`);
+        // Error already handled by toast
       } finally {
         setSubmitting(false);
       }

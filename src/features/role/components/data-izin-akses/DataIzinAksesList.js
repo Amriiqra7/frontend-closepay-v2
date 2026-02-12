@@ -21,6 +21,7 @@ import TablePagination from '@/shared/ui/TablePagination';
 import AlertDialog from '@/shared/ui/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/shared/ui/FilterCollapse';
 import DataIzinAksesDetailDialog from './DataIzinAksesDetailDialog';
+import { handleDeleteWithToast } from '@/shared/utils/toast';
 
 // Sample data based on the image
 const generateMockDataIzinAkses = () => {
@@ -365,26 +366,33 @@ export default function DataIzinAksesList() {
   const handleConfirmDelete = useCallback(async () => {
     try {
       // TODO: Replace with actual API call
-      // await DataIzinAksesAPI.delete(deleteDialog.id);
+      // const deletePromise = DataIzinAksesAPI.delete(deleteDialog.id);
       
       // Simulate API call
-      await new Promise((resolve) => {
+      const deletePromise = new Promise((resolve, reject) => {
         setTimeout(() => {
           console.log('Delete data izin akses:', deleteDialog.id);
-          resolve({ success: true });
-        }, 500);
+          // Simulate random error for testing (remove in production)
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menghapus data'));
+          }
+        }, 1000);
       });
+
+      await handleDeleteWithToast(
+        deletePromise,
+        'Izin Akses',
+        deleteDialog.name
+      );
       
-      // Show success message (you can add toast notification here)
-      alert(`Data izin akses "${deleteDialog.name}" berhasil dihapus`);
-      
-      // Close dialog
       setDeleteDialog({ open: false, id: null, name: '' });
-      
       // Optionally reload the page or refetch data
       // window.location.reload();
     } catch (err) {
-      alert(`Gagal menghapus data!\n${err.message}`);
+      // Error already handled by toast
+      setDeleteDialog({ open: false, id: null, name: '' });
     }
   }, [deleteDialog]);
 

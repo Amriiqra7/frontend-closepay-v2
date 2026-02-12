@@ -23,6 +23,7 @@ import TablePagination from '@/shared/ui/TablePagination';
 import AlertDialog from '@/shared/ui/AlertDialog';
 import FilterCollapse, { FilterButton } from '@/shared/ui/FilterCollapse';
 import KategoriTemplateForm from './KategoriTemplateForm';
+import { handleCreateWithToast, handleUpdateWithToast, handleDeleteWithToast, toastPromise } from '@/shared/utils/toast';
 
 // Sample data - replace with actual API call
 const generateMockKategoriTemplate = () => {
@@ -233,22 +234,84 @@ export default function KategoriTemplateList() {
     });
   }, []);
 
-  const handleFormSubmit = useCallback(() => {
-    // TODO: Implement API call to save/update
-    console.log('Form submit:', formDialog);
-    setFormDialog({ open: false, mode: 'add', id: null, nama: '' });
+  const handleFormSubmit = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const apiPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Form submit:', formDialog);
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menyimpan kategori template'));
+          }
+        }, 1000);
+      });
+
+      if (formDialog.mode === 'add') {
+        await handleCreateWithToast(apiPromise, 'kategori template');
+      } else {
+        await handleUpdateWithToast(apiPromise, 'kategori template');
+      }
+      setFormDialog({ open: false, mode: 'add', id: null, nama: '' });
+    } catch (err) {
+      // Error already handled by toast
+    }
   }, [formDialog]);
 
-  const handleConfirmDelete = useCallback(() => {
-    // TODO: Implement API call to delete
-    console.log('Delete kategori template:', deleteDialog.id);
-    setDeleteDialog({ open: false, id: null, name: '' });
+  const handleConfirmDelete = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const deletePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Delete kategori template:', deleteDialog.id);
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menghapus kategori template'));
+          }
+        }, 1000);
+      });
+
+      await handleDeleteWithToast(
+        deletePromise,
+        'Kategori Template',
+        deleteDialog.name
+      );
+      setDeleteDialog({ open: false, id: null, name: '' });
+    } catch (err) {
+      // Error already handled by toast
+      setDeleteDialog({ open: false, id: null, name: '' });
+    }
   }, [deleteDialog]);
 
-  const handleConfirmDeactivate = useCallback(() => {
-    // TODO: Implement API call to deactivate
-    console.log('Deactivate kategori template:', deactivateDialog.id);
-    setDeactivateDialog({ open: false, id: null, name: '' });
+  const handleConfirmDeactivate = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const deactivatePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          console.log('Deactivate kategori template:', deactivateDialog.id);
+          if (Math.random() > 0.1) {
+            resolve({ success: true });
+          } else {
+            reject(new Error('Gagal menonaktifkan kategori template'));
+          }
+        }, 1000);
+      });
+
+      await toastPromise(
+        deactivatePromise,
+        {
+          loading: 'Menonaktifkan kategori template...',
+          success: `Kategori template "${deactivateDialog.name}" berhasil dinonaktifkan`,
+          error: (err) => `Gagal menonaktifkan kategori template: ${err.message || 'Terjadi kesalahan'}`,
+        }
+      );
+      setDeactivateDialog({ open: false, id: null, name: '' });
+    } catch (err) {
+      // Error already handled by toast
+      setDeactivateDialog({ open: false, id: null, name: '' });
+    }
   }, [deactivateDialog]);
 
   const handlePageChange = useCallback((newPageIndex) => {

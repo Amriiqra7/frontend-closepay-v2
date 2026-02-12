@@ -15,6 +15,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import MainCard from '@/shared/ui/MainCard';
+import { handleUpdateWithToast } from '@/shared/utils/toast';
 
 // Dynamic import untuk menghindari SSR issues dengan ApexCharts
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -44,16 +45,46 @@ export default function JumlahEmailZeptoList() {
     setUpdateDialog({ open: false, tersedia: '', tersisa: '' });
   }, []);
 
-  const handleUpdate = useCallback(() => {
-    // TODO: Implement API call to update
-    const newTersedia = parseInt(updateDialog.tersedia.replace(/\./g, '')) || tersedia;
-    const newTersisa = parseInt(updateDialog.tersisa.replace(/\./g, '')) || tersisa;
-    const newDigunakan = newTersedia - newTersisa;
+  const handleUpdate = useCallback(async () => {
+    try {
+      // TODO: Replace with actual API call
+      const updatePromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const newTersedia = parseInt(updateDialog.tersedia.replace(/\./g, '')) || tersedia;
+          const newTersisa = parseInt(updateDialog.tersisa.replace(/\./g, '')) || tersisa;
+          
+          // Validate: tersisa should not be greater than tersedia
+          if (newTersisa > newTersedia) {
+            reject(new Error('Tersisa tidak boleh lebih besar dari Tersedia'));
+            return;
+          }
+          
+          // Simulate random error for testing (remove in production)
+          if (Math.random() > 0.1) {
+            resolve({ 
+              tersedia: newTersedia, 
+              tersisa: newTersisa,
+              digunakan: newTersedia - newTersisa
+            });
+          } else {
+            reject(new Error('Gagal memperbarui data'));
+          }
+        }, 1000);
+      });
 
-    setTersedia(newTersedia);
-    setTersisa(newTersisa);
-    setDigunakan(newDigunakan);
-    handleCloseUpdateDialog();
+      const result = await handleUpdateWithToast(
+        updatePromise,
+        'Jumlah Email Zepto'
+      );
+
+      // Update state after successful API call
+      setTersedia(result.tersedia);
+      setTersisa(result.tersisa);
+      setDigunakan(result.digunakan);
+      handleCloseUpdateDialog();
+    } catch (err) {
+      // Error already handled by toast
+    }
   }, [updateDialog, tersedia, tersisa, handleCloseUpdateDialog]);
 
   const chartOptions = {

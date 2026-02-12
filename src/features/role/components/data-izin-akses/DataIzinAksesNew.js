@@ -13,6 +13,7 @@ import { Form, FormikProvider, useFormik } from "formik";
 import { usePathname, useRouter } from "next/navigation";
 import DataIzinAksesForm from "./DataIzinAksesForm";
 import { initialValues, validationSchema } from "./DataIzinAksesValidation";
+import { handleCreateWithToast } from "@/shared/utils/toast";
 
 // Placeholder API - replace with actual API service
 const DataIzinAksesAPI = {
@@ -37,14 +38,14 @@ export default function DataIzinAksesNew() {
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true);
       try {
-        await DataIzinAksesAPI.create(values);
-        // Show success message (you can add toast notification here)
-        alert("Data izin akses berhasil disimpan");
+        await handleCreateWithToast(
+          DataIzinAksesAPI.create(values),
+          'izin akses'
+        );
         // Redirect kembali ke list
         router.push(pathname.replace("/new", ""));
       } catch (err) {
-        // Show error message
-        alert(`Gagal menyimpan data!\n${err.message}`);
+        // Error already handled by toast
       } finally {
         setSubmitting(false);
       }
