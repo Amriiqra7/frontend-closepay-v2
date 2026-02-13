@@ -142,12 +142,37 @@ export default function AdminSidebar({
         };
       }
       
-      groupedMenus[groupKey].items.push({
+      // Include children if they exist
+      const menuItem = {
         id: subMenu.id,
         label: subMenu.label,
         href: subMenu.href,
         icon: subMenu.icon || groupInfo.icon, // Use icon from sub-menu, fallback to parent menu icon
-      });
+      };
+      
+      if (subMenu.children) {
+        menuItem.children = subMenu.children.map((child) => {
+          const childItem = {
+            id: child.id,
+            label: child.label,
+            href: child.href,
+            icon: child.icon || subMenu.icon,
+          };
+          
+          if (child.children) {
+            childItem.children = child.children.map((grandChild) => ({
+              id: grandChild.id,
+              label: grandChild.label,
+              href: grandChild.href,
+              icon: grandChild.icon || child.icon,
+            }));
+          }
+          
+          return childItem;
+        });
+      }
+      
+      groupedMenus[groupKey].items.push(menuItem);
     });
 
     // Convert grouped menus to sections

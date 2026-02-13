@@ -17,101 +17,86 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Popover,
+  Menu,
+  Divider,
 } from '@mui/material';
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from 'material-react-table';
-import { Add, Eye, Edit, Archive, Refresh2 } from 'iconsax-react';
+import { Add, Eye, Edit, Archive, Refresh2, People, DocumentUpload, Tag, DocumentDownload, MoreCircle } from 'iconsax-react';
 import dynamic from 'next/dynamic';
 import TablePagination from '@/shared/ui/TablePagination';
 import FilterCollapse, { FilterButton } from '@/shared/ui/FilterCollapse';
 import MainCard from '@/shared/ui/MainCard';
 import AlertDialog from '@/shared/ui/AlertDialog';
-import UserAdminDetailDialog from './UserAdminDetailDialog';
 import { showSuccessToast } from '@/shared/utils/toast';
+import DownloadDataDialog from './DownloadDataDialog';
+import UploadDataTermsDialog from './UploadDataTermsDialog';
+import UploadDataDialog from './UploadDataDialog';
+import UpdateTagsDialog from './UpdateTagsDialog';
+import UserMemberDetailDialog from './UserMemberDetailDialog';
+import ManageParentAccountDialog from './ManageParentAccountDialog';
 
 // Dynamic import untuk menghindari SSR issues dengan ApexCharts
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 // Sample data - replace with actual API call
-const generateMockUsers = () => {
-  const users = [];
+const generateMockMembers = () => {
+  const members = [];
   const sampleData = [
     {
-      nama: 'jhonchenko1',
+      nama: 'Member 1',
       noId: '060501123',
-      email: 'asdasdasdsa@localhost.sample',
-      username: 'adminniktest',
+      email: 'member1@example.com',
+      username: 'member1',
       noTelp: '0823295123',
       status: 'Aktif',
     },
     {
-      nama: 'Admin Test',
+      nama: 'Member 2',
       noId: '321',
-      email: 'solusi@solusi.solusi',
-      username: '001',
+      email: 'member2@example.com',
+      username: 'member2',
       noTelp: '082231381528',
       status: 'Aktif',
     },
     {
-      nama: 'contohmas',
+      nama: 'Member 3',
       noId: '15926',
-      email: 'contoh@example.com',
-      username: 'contohya0487',
+      email: 'member3@example.com',
+      username: 'member3',
       noTelp: '081234567890',
       status: 'Aktif',
     },
   ];
 
-  // Mock role accesses
-  const mockRoleAccesses = [
-    {
-      id: 1,
-      tipe: 'Admin',
-      nama: 'Admin Utama',
-      deskripsi: 'Admin dengan akses penuh',
-      status: 'Aktif',
-      diizinkan: true,
-    },
-    {
-      id: 2,
-      tipe: 'Admin Sub Company',
-      nama: 'Admin Sub Company A',
-      deskripsi: 'Admin untuk sub company A',
-      status: 'Aktif',
-      diizinkan: true,
-    },
-  ];
-
   for (let i = 1; i <= 50; i++) {
     const baseData = sampleData[(i - 1) % sampleData.length];
-    users.push({
+    members.push({
       id: i,
       nama: `${baseData.nama} ${i > 3 ? i : ''}`.trim(),
       noId: `${baseData.noId}${i}`,
-      email: `user${i}@example.com`,
+      email: `member${i}@example.com`,
       username: `${baseData.username}${i}`,
       noTelp: `08${String(Math.floor(Math.random() * 9000000000) + 1000000000)}`,
       status: i % 10 === 0 ? 'Arsip' : 'Aktif',
-      // Form fields
-      jenisIdentitas: 'ktp',
-      noIdentitas: `1234567890${i}`,
-      jenisKelamin: i % 2 === 0 ? 'laki-laki' : 'perempuan',
-      tanggalLahir: new Date(1990, 0, 1 + (i % 28)),
-      tempatLahir: 'Jakarta',
-      alamat: `Alamat ${i}`,
-      // Role accesses - setiap user memiliki beberapa role access
-      roleAccesses: i % 2 === 0 ? [mockRoleAccesses[0], mockRoleAccesses[1]] : [mockRoleAccesses[0]],
+      // Additional fields for detail dialog
+      noIdentitas: `ID${String(i).padStart(6, '0')}`,
+      nis: `NIS${String(i).padStart(6, '0')}`,
+      tanggalLahir: new Date(1990 + (i % 30), i % 12, (i % 28) + 1),
+      tempatLahir: `Kota ${i}`,
+      alamat: `Jl. Contoh No. ${i}, RT ${i % 10}/RW ${(i % 5) + 1}`,
+      tags: i % 3 === 0 ? 'tag1' : i % 3 === 1 ? 'tag2' : 'tag3',
     });
   }
 
-  return users;
+  return members;
 };
 
-const mockUsers = generateMockUsers();
+const mockMembers = generateMockMembers();
 
-export default function UserAdminList() {
+export default function UserMemberList() {
   const router = useRouter();
   const [columnFilters, setColumnFilters] = useState([]);
   const [pagination, setPagination] = useState({
@@ -126,12 +111,20 @@ export default function UserAdminList() {
   const [timeRange, setTimeRange] = useState('7');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [datePickerAnchor, setDatePickerAnchor] = useState(null);
+  const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
+  const [uploadTermsDialogOpen, setUploadTermsDialogOpen] = useState(false);
+  const [uploadDataDialogOpen, setUploadDataDialogOpen] = useState(false);
+  const [updateTagsDialogOpen, setUpdateTagsDialogOpen] = useState(false);
+  const [archiveMode, setArchiveMode] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [archiveMultipleDialogOpen, setArchiveMultipleDialogOpen] = useState(false);
 
   // Analytics data
   const analyticsData = useMemo(() => {
-    const total = mockUsers.length;
-    const aktif = mockUsers.filter((u) => u.status === 'Aktif').length;
-    const arsip = mockUsers.filter((u) => u.status === 'Arsip').length;
+    const total = mockMembers.length;
+    const aktif = mockMembers.filter((u) => u.status === 'Aktif').length;
+    const arsip = mockMembers.filter((u) => u.status === 'Arsip').length;
 
     return {
       total,
@@ -179,7 +172,7 @@ export default function UserAdminList() {
         fontSize: '12px',
       },
       y: {
-        formatter: (val) => `${val} user`,
+        formatter: (val) => `${val} member`,
       },
     },
     stroke: {
@@ -303,7 +296,7 @@ export default function UserAdminList() {
         },
         theme: 'light',
         y: {
-          formatter: (val) => `${Math.round(val)} user`,
+          formatter: (val) => `${Math.round(val)} member`,
         },
       },
     };
@@ -379,7 +372,7 @@ export default function UserAdminList() {
 
   // Filter data
   const filteredData = useMemo(() => {
-    let filtered = [...mockUsers];
+    let filtered = [...mockMembers];
 
     columnFilters.forEach((filter) => {
       if (filter.value) {
@@ -422,59 +415,126 @@ export default function UserAdminList() {
   }, [sortedData, pagination]);
 
   // State untuk dialog
-  const [detailDialog, setDetailDialog] = useState({ open: false, user: null });
-  const [archiveDialog, setArchiveDialog] = useState({ open: false, user: null });
-  const [resetPasswordDialog, setResetPasswordDialog] = useState({ open: false, user: null });
+  const [detailDialog, setDetailDialog] = useState({ open: false, member: null });
+  const [archiveDialog, setArchiveDialog] = useState({ open: false, member: null });
+  const [resetPasswordDialog, setResetPasswordDialog] = useState({ open: false, member: null });
+  const [manageParentAccountDialog, setManageParentAccountDialog] = useState({ open: false, member: null });
 
-  const handleView = useCallback((user) => {
-    setDetailDialog({ open: true, user });
+  const handleView = useCallback((member) => {
+    setDetailDialog({ open: true, member });
   }, []);
 
-  const handleEdit = useCallback((user) => {
-    router.push(`/admin/utama/data-user/user-admin/${user.noId}/edit`);
+  const handleEdit = useCallback((member) => {
+    router.push(`/admin/utama/data-user/user-member/data-user/${member.noId}/edit`);
   }, [router]);
 
-  const handleArchive = useCallback((user) => {
-    setArchiveDialog({ open: true, user });
+  const handleArchive = useCallback((member) => {
+    setArchiveDialog({ open: true, member });
   }, []);
 
-  const handleResetPassword = useCallback((user) => {
-    setResetPasswordDialog({ open: true, user });
+  const handleResetPassword = useCallback((member) => {
+    setResetPasswordDialog({ open: true, member });
+  }, []);
+
+  const handleManageParentAccount = useCallback((member) => {
+    setManageParentAccountDialog({ open: true, member });
   }, []);
 
   const handleConfirmArchive = useCallback(async () => {
-    if (!archiveDialog.user) return;
+    if (!archiveDialog.member) return;
     
     try {
       // TODO: Implement archive API call
-      // await UserAdminAPI.archive(archiveDialog.user.id);
-      
-      showSuccessToast(`User admin "${archiveDialog.user.nama}" berhasil diarsipkan`);
-      setArchiveDialog({ open: false, user: null });
+      showSuccessToast(`Member "${archiveDialog.member.nama}" berhasil diarsipkan`);
+      setArchiveDialog({ open: false, member: null });
       // TODO: Refresh data
     } catch (error) {
       // Error handling sudah di toast
     }
-  }, [archiveDialog.user]);
+  }, [archiveDialog.member]);
 
   const handleConfirmResetPassword = useCallback(async () => {
-    if (!resetPasswordDialog.user) return;
+    if (!resetPasswordDialog.member) return;
     
     try {
       // TODO: Implement reset password API call
-      // await UserAdminAPI.resetPassword(resetPasswordDialog.user.id);
-      
-      showSuccessToast(`Password user admin "${resetPasswordDialog.user.nama}" berhasil direset`);
-      setResetPasswordDialog({ open: false, user: null });
+      showSuccessToast(`Password member "${resetPasswordDialog.member.nama}" berhasil direset`);
+      setResetPasswordDialog({ open: false, member: null });
       // TODO: Refresh data
     } catch (error) {
       // Error handling sudah di toast
     }
-  }, [resetPasswordDialog.user]);
+  }, [resetPasswordDialog.member]);
 
   const handleAdd = useCallback(() => {
-    router.push('/admin/utama/data-user/user-admin/new');
+    router.push('/admin/utama/data-user/user-member/data-user/new');
   }, [router]);
+
+  const handleUploadData = useCallback(() => {
+    setUploadTermsDialogOpen(true);
+  }, []);
+
+  const handleManageTags = useCallback(() => {
+    router.push('/admin/utama/data-user/user-member/data-user/tags');
+  }, [router]);
+
+  const handleUpdateTags = useCallback(() => {
+    setUpdateTagsDialogOpen(true);
+  }, []);
+
+  const handleManageParentAccounts = useCallback(() => {
+    router.push('/admin/utama/data-user/user-member/data-user/parent-member');
+  }, [router]);
+
+  const selectedRowsCount = useMemo(() => {
+    return Object.keys(rowSelection).filter(key => rowSelection[key]).length;
+  }, [rowSelection]);
+
+  const handleArchiveMembers = useCallback(() => {
+    if (archiveMode && selectedRowsCount > 0) {
+      // Jika sudah ada yang dipilih, buka dialog konfirmasi
+      setArchiveMultipleDialogOpen(true);
+    } else {
+      // Aktifkan mode archive (tampilkan checkbox)
+      setArchiveMode(true);
+      setRowSelection({});
+    }
+  }, [archiveMode, selectedRowsCount]);
+
+  const handleCancelArchiveMode = useCallback(() => {
+    setArchiveMode(false);
+    setRowSelection({});
+  }, []);
+
+  const handleConfirmArchiveMultiple = useCallback(async () => {
+    try {
+      // TODO: Implement archive multiple API call
+      showSuccessToast(`${selectedRowsCount} member berhasil diarsipkan`);
+      setArchiveMultipleDialogOpen(false);
+      setArchiveMode(false);
+      setRowSelection({});
+      // TODO: Refresh data
+    } catch (error) {
+      // Error handling sudah di toast
+    }
+  }, [selectedRowsCount]);
+
+  const handleDownloadData = useCallback(() => {
+    setDownloadDialogOpen(true);
+  }, []);
+
+  const handleDownloadFormat = useCallback((format) => {
+    showSuccessToast(`Data berhasil diunduh dalam format ${format}`);
+    // TODO: Implement actual download
+  }, []);
+
+  const handleMoreMenuOpen = useCallback((event) => {
+    setMoreMenuAnchor(event.currentTarget);
+  }, []);
+
+  const handleMoreMenuClose = useCallback(() => {
+    setMoreMenuAnchor(null);
+  }, []);
 
   const handlePageChange = useCallback((newPageIndex) => {
     setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
@@ -587,12 +647,16 @@ export default function UserAdminList() {
       isLoading: false,
       pagination,
       sorting,
+      rowSelection: archiveMode ? rowSelection : {},
     },
     initialState: {
       density: 'compact',
     },
     enableRowNumbers: false,
-    enableRowActions: true,
+    enableRowActions: !archiveMode,
+    enableRowSelection: archiveMode,
+    enableSelectAll: archiveMode,
+    enableMultiRowSelection: archiveMode,
     enableSorting: true,
     enableEditing: false,
     enablePagination: false,
@@ -607,6 +671,7 @@ export default function UserAdminList() {
     manualFiltering: true,
     autoResetPageIndex: false,
     positionActionsColumn: 'last',
+    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: (updater) => {
       setColumnFilters(updater);
@@ -618,7 +683,6 @@ export default function UserAdminList() {
         fontWeight: 600,
         color: '#374151',
         backgroundColor: '#f9fafb',
-        // borderTop: '1px solid #e5e7eb',
         borderBottom: '2px solid #e5e7eb',
         '& .MuiTableSortLabel-icon, & .MuiIconButton-root, & .MuiBadge-root': {
           opacity: 0,
@@ -632,6 +696,27 @@ export default function UserAdminList() {
         },
       },
     },
+    muiSelectAllCheckboxProps: ({ table }) => {
+      const isAllSelected = table.getIsAllRowsSelected();
+      const isSomeSelected = table.getIsSomeRowsSelected();
+      return {
+        checked: isAllSelected,
+        indeterminate: isSomeSelected,
+        color: 'error',
+        sx: {
+          padding: '4px',
+          '&.Mui-checked': {
+            color: '#d32f2f !important',
+          },
+          '&.MuiCheckbox-indeterminate': {
+            color: '#d32f2f !important',
+          },
+          '& .MuiSvgIcon-root': {
+            fontSize: '1.5rem',
+          },
+        },
+      };
+    },
     muiTableBodyCellProps: {
       sx: { fontSize: '12px !important' },
     },
@@ -644,6 +729,40 @@ export default function UserAdminList() {
           backgroundColor: '#f3f4f6 !important',
         },
       },
+    },
+    muiTableBodyRowProps: ({ row }) => {
+      const isSelected = row.getIsSelected();
+      return {
+        selected: isSelected,
+        sx: {
+          backgroundColor: isSelected ? 'rgba(211, 47, 47, 0.08) !important' : 'transparent',
+          '&.Mui-selected': {
+            backgroundColor: 'rgba(211, 47, 47, 0.08) !important',
+            '&:hover': {
+              backgroundColor: 'rgba(211, 47, 47, 0.12) !important',
+            },
+          },
+          '&:hover': {
+            backgroundColor: isSelected ? 'rgba(211, 47, 47, 0.12) !important' : '#f3f4f6 !important',
+          },
+        },
+      };
+    },
+    muiSelectCheckboxProps: ({ row }) => {
+      const isSelected = row.getIsSelected();
+      return {
+        checked: isSelected,
+        color: 'error',
+        sx: {
+          padding: '4px',
+          '&.Mui-checked': {
+            color: '#d32f2f !important',
+          },
+          '& .MuiSvgIcon-root': {
+            fontSize: '1.5rem',
+          },
+        },
+      };
     },
     muiTablePaperProps: {
       elevation: 0,
@@ -684,6 +803,20 @@ export default function UserAdminList() {
             }}
           >
             <Edit size={20} variant="Linear" color="#ed6c02" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Pengaturan akun induk" arrow>
+          <IconButton
+            size="small"
+            onClick={() => handleManageParentAccount(row.original)}
+            sx={{
+              color: '#9c27b0',
+              '&:hover': {
+                bgcolor: 'rgba(156, 39, 176, 0.08)',
+              },
+            }}
+          >
+            <People size={20} variant="Linear" color="#9c27b0" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Archive" arrow>
@@ -732,15 +865,15 @@ export default function UserAdminList() {
     <Box sx={{ width: '100%' }}>
       {/* Analytics Section */}
       <Box sx={{ display: 'flex', gap: 3, mb: 4, flexDirection: { xs: 'column', md: 'row' }, width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
-        {/* User Analytics - Donut Chart */}
+        {/* Member Analytics - Donut Chart */}
         <Box sx={{ flex: '0 0 40%', minWidth: 0 }}>
           <MainCard sx={{ height: '500px', display: 'flex', flexDirection: 'column', boxShadow: 'none' }}>
             <Box sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, color: '#111827' }}>
-                Analitik User
+                Analitik Member
               </Typography>
               <Typography variant="body2" sx={{ color: '#6b7280', mb: 3 }}>
-                Ringkasan jumlah dan klasifikasi user
+                Ringkasan jumlah dan klasifikasi member
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, flex: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -753,7 +886,7 @@ export default function UserAdminList() {
                 </Box>
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="h6" sx={{ fontWeight: 600, color: '#111827' }}>
-                    Total User
+                    Total Member
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 700, color: '#111827' }}>
                     {analyticsData.total}
@@ -809,10 +942,10 @@ export default function UserAdminList() {
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexShrink: 0 }}>
                 <Box>
                   <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, color: '#111827' }}>
-                    Analitik Pertumbuhan Admin
+                    Analitik Pertumbuhan Member
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#6b7280' }}>
-                    Pertumbuhan admin
+                    Pertumbuhan member
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
@@ -923,7 +1056,7 @@ export default function UserAdminList() {
 
       {/* Table Section */}
       <Box sx={{ width: '100%'}}>
-        {/* Toolbar dengan tombol Filter dan Tambah */}
+        {/* Toolbar dengan tombol Filter dan Action Buttons */}
         <Box
           sx={{
             p: 2,
@@ -950,21 +1083,207 @@ export default function UserAdminList() {
           <Box
             sx={{
               display: 'flex',
-              flexWrap: 'wrap',
+              alignItems: 'center',
               gap: 1,
               justifyContent: { xs: 'flex-start', sm: 'flex-end' },
             }}
           >
-            <Button
-              variant="contained"
-              startIcon={<Add size={20} color="white" />}
-              onClick={handleAdd}
-              sx={{
-                textTransform: 'none',
+            {archiveMode && (
+              <Button
+                variant="outlined"
+                onClick={handleCancelArchiveMode}
+                sx={{
+                  textTransform: 'none',
+                  borderColor: '#6b7280',
+                  color: '#6b7280',
+                  '&:hover': {
+                    borderColor: '#4b5563',
+                    bgcolor: '#f9fafb',
+                  },
+                }}
+              >
+                Batal
+              </Button>
+            )}
+            {!archiveMode && (
+              <Button
+                variant="contained"
+                startIcon={<Add size={20} color="white" />}
+                onClick={handleAdd}
+                sx={{
+                  textTransform: 'none',
+                }}
+              >
+                Tambah
+              </Button>
+            )}
+            {archiveMode && selectedRowsCount > 0 && (
+              <Button
+                variant="contained"
+                startIcon={<Archive size={20} color="white" />}
+                onClick={handleArchiveMembers}
+                sx={{
+                  textTransform: 'none',
+                  bgcolor: '#d32f2f',
+                  '&:hover': {
+                    bgcolor: '#b71c1c',
+                  },
+                }}
+              >
+                Arsip Member ({selectedRowsCount})
+              </Button>
+            )}
+            <Tooltip title="Unduh Data" arrow>
+              <IconButton
+                onClick={handleDownloadData}
+                sx={{
+                  color: '#10b981',
+                  border: '1px solid #10b981',
+                  bgcolor: '#ecfdf5',
+                  '&:hover': {
+                    bgcolor: '#d1fae5',
+                    borderColor: '#059669',
+                  },
+                }}
+              >
+                <DocumentDownload size={20} color="#10b981" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Aksi Lainnya" arrow>
+              <IconButton
+                onClick={handleMoreMenuOpen}
+                sx={{
+                  color: '#6b7280',
+                  border: '1px solid #e5e7eb',
+                  bgcolor: '#ffffff',
+                  '&:hover': {
+                    bgcolor: '#f9fafb',
+                    borderColor: '#d1d5db',
+                  },
+                }}
+              >
+                <MoreCircle size={20} color="#6b7280" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorEl={moreMenuAnchor}
+              open={Boolean(moreMenuAnchor)}
+              onClose={handleMoreMenuClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+                  minWidth: 220,
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                },
               }}
             >
-              Tambah
-            </Button>
+              <MenuItem
+                onClick={() => {
+                  handleUploadData();
+                  handleMoreMenuClose();
+                }}
+                sx={{
+                  py: 1.5,
+                  '&:hover': {
+                    bgcolor: '#f0f9ff',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <DocumentUpload size={20} color="#0ea5e9" />
+                  <Typography variant="body2" sx={{ color: '#0ea5e9', fontWeight: 500 }}>
+                    Upload Data Member
+                  </Typography>
+                </Box>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleManageTags();
+                  handleMoreMenuClose();
+                }}
+                sx={{
+                  py: 1.5,
+                  '&:hover': {
+                    bgcolor: '#fef3c7',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Tag size={20} color="#f59e0b" />
+                  <Typography variant="body2" sx={{ color: '#f59e0b', fontWeight: 500 }}>
+                    Kelola Tags Member
+                  </Typography>
+                </Box>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleUpdateTags();
+                  handleMoreMenuClose();
+                }}
+                sx={{
+                  py: 1.5,
+                  '&:hover': {
+                    bgcolor: '#dbeafe',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Tag size={20} color="#3b82f6" />
+                  <Typography variant="body2" sx={{ color: '#3b82f6', fontWeight: 500 }}>
+                    Update Tags Member
+                  </Typography>
+                </Box>
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={() => {
+                  handleManageParentAccounts();
+                  handleMoreMenuClose();
+                }}
+                sx={{
+                  py: 1.5,
+                  '&:hover': {
+                    bgcolor: '#f3e8ff',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <People size={20} color="#9c27b0" />
+                  <Typography variant="body2" sx={{ color: '#9c27b0', fontWeight: 500 }}>
+                    Pengelolaan Akun Induk
+                  </Typography>
+                </Box>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleArchiveMembers();
+                  handleMoreMenuClose();
+                }}
+                sx={{
+                  py: 1.5,
+                  '&:hover': {
+                    bgcolor: '#fee2e2',
+                  },
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Archive size={20} color="#d32f2f" />
+                  <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 500 }}>
+                    {archiveMode && selectedRowsCount > 0 
+                      ? `Arsip Member (${selectedRowsCount})`
+                      : 'Arsip Member'}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            </Menu>
           </Box>
         </Box>
 
@@ -1110,27 +1429,27 @@ export default function UserAdminList() {
         </FilterCollapse>
 
         {/* MaterialReactTable */}
-        <Box sx={{ pb: 5 }}>
+        <Box sx={{ pb: 5 }} key={`table-wrapper-${archiveMode}-${JSON.stringify(rowSelection)}`}>
           <MaterialReactTable table={table} />
         </Box>
       </Box>
 
       {/* Detail Dialog */}
-      <UserAdminDetailDialog
+      <UserMemberDetailDialog
         open={detailDialog.open}
-        onClose={() => setDetailDialog({ open: false, user: null })}
-        user={detailDialog.user}
+        onClose={() => setDetailDialog({ open: false, member: null })}
+        member={detailDialog.member}
       />
 
       {/* Archive Confirmation Dialog */}
       <AlertDialog
         open={archiveDialog.open}
-        onClose={() => setArchiveDialog({ open: false, user: null })}
+        onClose={() => setArchiveDialog({ open: false, member: null })}
         onConfirm={handleConfirmArchive}
         title="Konfirmasi Archive"
         content={
           <Typography variant="body1">
-            Apakah anda yakin akan mengarsipkan user admin <strong>{archiveDialog.user?.nama}</strong>?
+            Apakah anda yakin akan mengarsipkan member <strong>{archiveDialog.member?.nama}</strong>?
           </Typography>
         }
         confirmText="Ya, Archive"
@@ -1141,17 +1460,73 @@ export default function UserAdminList() {
       {/* Reset Password Confirmation Dialog */}
       <AlertDialog
         open={resetPasswordDialog.open}
-        onClose={() => setResetPasswordDialog({ open: false, user: null })}
+        onClose={() => setResetPasswordDialog({ open: false, member: null })}
         onConfirm={handleConfirmResetPassword}
         title="Konfirmasi Reset Password"
         content={
           <Typography variant="body1">
-            Apakah anda yakin akan mereset password user admin <strong>{resetPasswordDialog.user?.nama}</strong>?
+            Apakah anda yakin akan mereset password member <strong>{resetPasswordDialog.member?.nama}</strong>?
           </Typography>
         }
         confirmText="Ya, Reset"
         cancelText="Batal"
         confirmColor="primary"
+      />
+
+      {/* Download Data Dialog */}
+      <DownloadDataDialog
+        open={downloadDialogOpen}
+        onClose={() => setDownloadDialogOpen(false)}
+        onDownload={handleDownloadFormat}
+      />
+
+      {/* Upload Data Terms Dialog */}
+      <UploadDataTermsDialog
+        open={uploadTermsDialogOpen}
+        onClose={() => setUploadTermsDialogOpen(false)}
+        onStartUpload={() => {
+          setUploadTermsDialogOpen(false);
+          setUploadDataDialogOpen(true);
+        }}
+      />
+
+      {/* Upload Data Dialog */}
+      <UploadDataDialog
+        open={uploadDataDialogOpen}
+        onClose={() => setUploadDataDialogOpen(false)}
+        onShowTerms={() => {
+          setUploadDataDialogOpen(false);
+          setUploadTermsDialogOpen(true);
+        }}
+      />
+
+      {/* Update Tags Dialog */}
+      <UpdateTagsDialog
+        open={updateTagsDialogOpen}
+        onClose={() => setUpdateTagsDialogOpen(false)}
+      />
+
+      {/* Archive Multiple Confirmation Dialog */}
+      <AlertDialog
+        open={archiveMultipleDialogOpen}
+        onClose={() => setArchiveMultipleDialogOpen(false)}
+        onConfirm={handleConfirmArchiveMultiple}
+        title="Konfirmasi Archive"
+        content={
+          <Typography variant="body1">
+            Apakah anda yakin akan mengarsipkan <strong>{selectedRowsCount}</strong> member yang dipilih?
+          </Typography>
+        }
+        confirmText="Ya, Archive"
+        cancelText="Batal"
+        confirmColor="error"
+      />
+
+      {/* Manage Parent Account Dialog */}
+      <ManageParentAccountDialog
+        open={manageParentAccountDialog.open}
+        onClose={() => setManageParentAccountDialog({ open: false, member: null })}
+        member={manageParentAccountDialog.member}
       />
     </Box>
   );

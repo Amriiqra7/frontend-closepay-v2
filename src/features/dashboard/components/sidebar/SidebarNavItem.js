@@ -177,7 +177,7 @@ export default function SidebarNavItem({
                 >
                   <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                     <ChildIcon
-                      size={18}
+                      size={22}
                       color={childActive ? brandColor : '#262626'}
                       variant={childActive ? 'Bold' : 'Linear'}
                     />
@@ -185,7 +185,7 @@ export default function SidebarNavItem({
                   <ListItemText
                     primary={child.label}
                     primaryTypographyProps={{
-                      fontSize: '0.85rem',
+                      fontSize: '0.9rem',
                       fontWeight: childActive ? 400 : 400,
                       color: childActive ? brandColor : 'inherit',
                       }}
@@ -228,7 +228,7 @@ export default function SidebarNavItem({
                             >
                               <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                                 <GrandChildIcon
-                                  size={16}
+                                  size={22}
                                   color={grandChildActive ? brandColor : '#262626'}
                                   variant={grandChildActive ? 'Bold' : 'Linear'}
                                 />
@@ -236,7 +236,7 @@ export default function SidebarNavItem({
                               <ListItemText
                                 primary={grandChild.label}
                                 primaryTypographyProps={{
-                                  fontSize: '0.8rem',
+                                  fontSize: '0.9rem',
                                   fontWeight: grandChildActive ? 400 : 400,
                                   color: grandChildActive ? brandColor : 'inherit',
                     }}
@@ -321,7 +321,7 @@ export default function SidebarNavItem({
                   >
                     <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                       <ChildIcon
-                        size={18}
+                        size={22}
                         color={childActive ? brandColor : '#262626'}
                         variant={childActive ? 'Bold' : 'Linear'}
                       />
@@ -329,7 +329,7 @@ export default function SidebarNavItem({
                     <ListItemText
                       primary={child.label}
                       primaryTypographyProps={{
-                        fontSize: '0.85rem',
+                        fontSize: '0.9rem',
                         fontWeight: childActive ? 400 : 400,
                         color: childActive ? brandColor : 'inherit',
                         }}
@@ -364,7 +364,7 @@ export default function SidebarNavItem({
                             >
                               <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                                 <GrandChildIcon
-                                  size={16}
+                                  size={22}
                                   color={grandChildActive ? brandColor : '#262626'}
                                   variant={grandChildActive ? 'Bold' : 'Linear'}
                                 />
@@ -372,7 +372,7 @@ export default function SidebarNavItem({
                               <ListItemText
                                 primary={grandChild.label}
                                 primaryTypographyProps={{
-                                  fontSize: '0.8rem',
+                                  fontSize: '0.9rem',
                                   fontWeight: grandChildActive ? 400 : 400,
                                   color: grandChildActive ? brandColor : 'inherit',
                       }}

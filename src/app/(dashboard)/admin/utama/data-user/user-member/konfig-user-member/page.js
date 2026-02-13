@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import UserMemberConfigList from '@/features/user-member/components/UserMemberConfigList';
 
-export default function KonfigUserMemberPage() {
-  return <AdminDashboard title="Konfig User Member" />;
+export default function UserMemberConfigPage() {
+  return <UserMemberConfigList />;
 }
