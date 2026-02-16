@@ -660,9 +660,15 @@ export default function Company() {
         open={settingsDialog.open}
         onClose={() => setSettingsDialog({ open: false, company: null })}
         companyName={settingsDialog.company?.nama}
-        onMenuClick={(menuId) => {
-          console.log('Settings menu clicked:', menuId, 'for company:', settingsDialog.company);
-          // TODO: Implement navigation or action based on menuId
+        companyId={settingsDialog.company?.id}
+        onMenuClick={(menuId, companyId) => {
+          if (menuId === 'credential-rekening' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/credential-rekening`);
+          } else {
+            console.log('Settings menu clicked:', menuId, 'for company:', settingsDialog.company);
+            // TODO: Implement navigation or action based on menuId
+          }
         }}
       />
 

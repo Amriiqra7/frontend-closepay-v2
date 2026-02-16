@@ -22,6 +22,116 @@ function isPathActive(pathname, href) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+// Separate component for child items to avoid hooks in map
+function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChildrenActive }) {
+  const ChildIcon = child.icon;
+  const childHasChildren = Array.isArray(child.children) && child.children.length > 0;
+  const childActive = isPathActive(pathname, child.href) || 
+    (childHasChildren && checkChildrenActive(child.children));
+  const [childOpen, setChildOpen] = React.useState(childActive);
+
+  React.useEffect(() => {
+    if (childActive && childHasChildren) setChildOpen(true);
+  }, [childActive, childHasChildren]);
+
+  return (
+    <Box>
+      <ListItemButton
+        onClick={() => {
+          if (childHasChildren) {
+            setChildOpen((v) => !v);
+          } else {
+            onNavigate(child.href);
+          }
+        }}
+        sx={{
+          borderRadius: 2,
+          ml: 1,
+          mb: 0.25,
+          py: 1,
+          bgcolor: 'transparent',
+          color: childActive ? brandColor : '#262626',
+          '&:hover': {
+            bgcolor: '#f5f5f5',
+          },
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
+          <ChildIcon
+            size={22}
+            color={childActive ? brandColor : '#262626'}
+            variant={childActive ? 'Bold' : 'Linear'}
+          />
+        </ListItemIcon>
+        <ListItemText
+          primary={child.label}
+          primaryTypographyProps={{
+            fontSize: '0.9rem',
+            fontWeight: childActive ? 400 : 400,
+            color: childActive ? brandColor : 'inherit',
+          }}
+        />
+        {childHasChildren && (
+          <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
+            <ArrowDown2
+              size={16}
+              color={childActive ? brandColor : '#262626'}
+              style={{
+                transform: childOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 150ms ease',
+              }}
+            />
+          </Box>
+        )}
+      </ListItemButton>
+      {childHasChildren && (
+        <Collapse in={childOpen} timeout="auto" unmountOnExit>
+          <List disablePadding sx={{ pl: 3, pt: 0.25, pb: 0.5 }}>
+            {child.children.map((grandChild) => {
+              const GrandChildIcon = grandChild.icon;
+              const grandChildActive = isPathActive(pathname, grandChild.href);
+
+              return (
+                <ListItemButton
+                  key={grandChild.id}
+                  onClick={() => onNavigate(grandChild.href)}
+                  sx={{
+                    borderRadius: 2,
+                    ml: 1,
+                    mb: 0.25,
+                    py: 0.75,
+                    bgcolor: 'transparent',
+                    color: grandChildActive ? brandColor : '#262626',
+                    '&:hover': {
+                      bgcolor: '#f5f5f5',
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
+                    <GrandChildIcon
+                      size={22}
+                      color={grandChildActive ? brandColor : '#262626'}
+                      variant={grandChildActive ? 'Bold' : 'Linear'}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={grandChild.label}
+                    primaryTypographyProps={{
+                      fontSize: '0.9rem',
+                      fontWeight: grandChildActive ? 400 : 400,
+                      color: grandChildActive ? brandColor : 'inherit',
+                    }}
+                  />
+                </ListItemButton>
+              );
+            })}
+          </List>
+        </Collapse>
+      )}
+    </Box>
+  );
+}
+
 export default function SidebarNavItem({
   item,
   pathname,
@@ -49,6 +159,7 @@ export default function SidebarNavItem({
   const [open, setOpen] = React.useState(active);
   const [hoverOpen, setHoverOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+  const hoverTimeoutRef = React.useRef(null);
 
   React.useEffect(() => {
     // keep parent expanded when navigating into its subtree
@@ -64,12 +175,49 @@ export default function SidebarNavItem({
   };
 
   const handleMouseEnter = () => {
-    if (!desktopExpanded && hasChildren) setHoverOpen(true);
+    if (!desktopExpanded && hasChildren) {
+      // Clear any pending close timeout
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = null;
+      }
+      setHoverOpen(true);
+    }
   };
 
   const handleMouseLeave = () => {
-    if (!desktopExpanded && hasChildren) setHoverOpen(false);
+    if (!desktopExpanded && hasChildren) {
+      // Add delay before closing to allow user to move mouse to popover
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoverOpen(false);
+      }, 200);
+    }
   };
+
+  const handlePopperMouseEnter = () => {
+    // Clear any pending close timeout when mouse enters popper
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoverOpen(true);
+  };
+
+  const handlePopperMouseLeave = () => {
+    // Add delay before closing
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoverOpen(false);
+    }, 200);
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const buttonContent = (
     <ListItemButton
@@ -142,114 +290,16 @@ export default function SidebarNavItem({
       {desktopExpanded && hasChildren && (
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List disablePadding sx={{ pl: 2, pt: 0.5, pb: 0.75 }}>
-            {item.children.map((child) => {
-              const ChildIcon = child.icon;
-              const childHasChildren = Array.isArray(child.children) && child.children.length > 0;
-              const childActive = isPathActive(pathname, child.href) || 
-                (childHasChildren && checkChildrenActive(child.children));
-              const [childOpen, setChildOpen] = React.useState(childActive);
-
-              React.useEffect(() => {
-                if (childActive && childHasChildren) setChildOpen(true);
-              }, [childActive, childHasChildren]);
-
-              return (
-                <Box key={child.id}>
-                <ListItemButton
-                    onClick={() => {
-                      if (childHasChildren) {
-                        setChildOpen((v) => !v);
-                      } else {
-                        onNavigate(child.href);
-                      }
-                    }}
-                    sx={{
-                      borderRadius: 2,
-                      ml: 1,
-                      mb: 0.25,
-                      py: 1,
-                      bgcolor: 'transparent',
-                      color: childActive ? brandColor : '#262626',
-                      '&:hover': {
-                        bgcolor: '#f5f5f5',
-                      },
-                    }}
-                >
-                  <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
-                    <ChildIcon
-                      size={22}
-                      color={childActive ? brandColor : '#262626'}
-                      variant={childActive ? 'Bold' : 'Linear'}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={child.label}
-                    primaryTypographyProps={{
-                      fontSize: '0.9rem',
-                      fontWeight: childActive ? 400 : 400,
-                      color: childActive ? brandColor : 'inherit',
-                      }}
-                    />
-                    {childHasChildren && (
-                      <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
-                        <ArrowDown2
-                          size={16}
-                          color={childActive ? brandColor : '#262626'}
-                          style={{
-                            transform: childOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                            transition: 'transform 150ms ease',
-                          }}
-                        />
-                      </Box>
-                    )}
-                  </ListItemButton>
-                  {childHasChildren && (
-                    <Collapse in={childOpen} timeout="auto" unmountOnExit>
-                      <List disablePadding sx={{ pl: 3, pt: 0.25, pb: 0.5 }}>
-                        {child.children.map((grandChild) => {
-                          const GrandChildIcon = grandChild.icon;
-                          const grandChildActive = isPathActive(pathname, grandChild.href);
-
-                          return (
-                            <ListItemButton
-                              key={grandChild.id}
-                              onClick={() => onNavigate(grandChild.href)}
-                              sx={{
-                                borderRadius: 2,
-                                ml: 1,
-                                mb: 0.25,
-                                py: 0.75,
-                                bgcolor: 'transparent',
-                                color: grandChildActive ? brandColor : '#262626',
-                                '&:hover': {
-                                  bgcolor: '#f5f5f5',
-                                },
-                              }}
-                            >
-                              <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
-                                <GrandChildIcon
-                                  size={22}
-                                  color={grandChildActive ? brandColor : '#262626'}
-                                  variant={grandChildActive ? 'Bold' : 'Linear'}
-                                />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={grandChild.label}
-                                primaryTypographyProps={{
-                                  fontSize: '0.9rem',
-                                  fontWeight: grandChildActive ? 400 : 400,
-                                  color: grandChildActive ? brandColor : 'inherit',
-                    }}
-                  />
-                </ListItemButton>
-                          );
-                        })}
-                      </List>
-                    </Collapse>
-                  )}
-                </Box>
-              );
-            })}
+            {item.children.map((child) => (
+              <SidebarNavChildItem
+                key={child.id}
+                child={child}
+                pathname={pathname}
+                onNavigate={onNavigate}
+                brandColor={brandColor}
+                checkChildrenActive={checkChildrenActive}
+              />
+            ))}
           </List>
         </Collapse>
       )}
@@ -266,18 +316,22 @@ export default function SidebarNavItem({
             { name: 'preventOverflow', options: { padding: 8 } },
           ]}
           sx={{ zIndex: (theme) => theme.zIndex.drawer + 2 }}
-          onMouseEnter={() => setHoverOpen(true)}
-          onMouseLeave={() => setHoverOpen(false)}
+          onMouseEnter={handlePopperMouseEnter}
+          onMouseLeave={handlePopperMouseLeave}
         >
           <Paper
             elevation={0}
+            onMouseEnter={handlePopperMouseEnter}
+            onMouseLeave={handlePopperMouseLeave}
             sx={{
               minWidth: 220,
               borderRadius: 2,
               border: '1px solid rgba(8,8,8,0.1)',
               overflow: 'hidden',
+              overflowY: 'auto',
+              maxHeight: 'calc(100vh - 100px)',
               py: 1,
-              boxShadow: 'none',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
           >
             <Box

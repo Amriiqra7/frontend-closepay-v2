@@ -61,10 +61,6 @@ export default function AdminSidebar({
   // Get menu config based on selected menu
   const menuConfig = selectedMenu ? ADMIN_MENU_CONFIG[selectedMenu] : null;
 
-  if (!menuConfig) {
-    return null;
-  }
-
   // Map menu path to group info (for advance menu grouping)
   const getGroupInfoFromPath = (href) => {
     if (href.startsWith('/admin/utama/')) {
@@ -126,8 +122,10 @@ export default function AdminSidebar({
     },
   ];
 
-  // If advance menu, group sub-menus by their parent menu
-  if (selectedMenu === 'advance') {
+  // Only build menu sections if menuConfig exists
+  if (menuConfig) {
+    // If advance menu, group sub-menus by their parent menu
+    if (selectedMenu === 'advance') {
     const groupedMenus = {};
     
     menuConfig.subMenus.forEach((subMenu) => {
@@ -175,38 +173,39 @@ export default function AdminSidebar({
       groupedMenus[groupKey].items.push(menuItem);
     });
 
-    // Convert grouped menus to sections
-    Object.values(groupedMenus).forEach((group) => {
-      sidebarSections.push({
-        id: `group-${group.label.toLowerCase().replace(/\s+/g, '-')}`,
-        label: group.label.toUpperCase(),
-        items: group.items,
+      // Convert grouped menus to sections
+      Object.values(groupedMenus).forEach((group) => {
+        sidebarSections.push({
+          id: `group-${group.label.toLowerCase().replace(/\s+/g, '-')}`,
+          label: group.label.toUpperCase(),
+          items: group.items,
+        });
       });
-    });
-  } else {
-    // For non-advance menus, display normally
-    sidebarSections.push({
-      id: 'admin-menu',
-      label: menuConfig.label.toUpperCase(),
-      items: menuConfig.subMenus.map((subMenu) => ({
-        id: subMenu.id,
-        label: subMenu.label,
-        href: subMenu.href,
-        icon: subMenu.icon || menuConfig.icon, // Use icon from sub-menu, fallback to parent menu icon
-        children: subMenu.children ? subMenu.children.map((child) => ({
-          id: child.id,
-          label: child.label,
-          href: child.href,
-          icon: child.icon || subMenu.icon,
-          children: child.children ? child.children.map((grandChild) => ({
-            id: grandChild.id,
-            label: grandChild.label,
-            href: grandChild.href,
-            icon: grandChild.icon || child.icon,
+    } else {
+      // For non-advance menus, display normally
+      sidebarSections.push({
+        id: 'admin-menu',
+        label: menuConfig.label.toUpperCase(),
+        items: menuConfig.subMenus.map((subMenu) => ({
+          id: subMenu.id,
+          label: subMenu.label,
+          href: subMenu.href,
+          icon: subMenu.icon || menuConfig.icon, // Use icon from sub-menu, fallback to parent menu icon
+          children: subMenu.children ? subMenu.children.map((child) => ({
+            id: child.id,
+            label: child.label,
+            href: child.href,
+            icon: child.icon || subMenu.icon,
+            children: child.children ? child.children.map((grandChild) => ({
+              id: grandChild.id,
+              label: grandChild.label,
+              href: grandChild.href,
+              icon: grandChild.icon || child.icon,
+            })) : undefined,
           })) : undefined,
-        })) : undefined,
-      })),
-    });
+        })),
+      });
+    }
   }
 
   const drawer = (
