@@ -8,6 +8,9 @@ import {
   DocumentText,
   Sms,
   Monitor,
+  Wallet3,
+  Bank,
+  Book,
 } from 'iconsax-react';
 
 /**
@@ -30,6 +33,24 @@ export const SIDEBAR_SECTIONS = [
         label: 'Perusahaan',
         href: '/company',
         icon: Buildings2,
+      },
+      {
+        id: 'master-saldo',
+        label: 'Master Saldo',
+        href: '/master-saldo',
+        icon: Wallet3,
+      },
+      {
+        id: 'master-bank',
+        label: 'Master Bank',
+        href: '/master-bank',
+        icon: Bank,
+      },
+      {
+        id: 'master-berita-info',
+        label: 'Master Berita & Info',
+        href: '/master-berita-info',
+        icon: Book,
       },
       {
         id: 'role',

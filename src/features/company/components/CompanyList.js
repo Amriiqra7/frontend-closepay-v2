@@ -722,9 +722,26 @@ export default function Company() {
         open={menuSettingsDialog.open}
         onClose={() => setMenuSettingsDialog({ open: false, company: null })}
         companyName={menuSettingsDialog.company?.nama}
-        onMenuClick={(menuId) => {
-          console.log('Menu settings clicked:', menuId, 'for company:', menuSettingsDialog.company);
-          // TODO: Implement navigation or action based on menuId
+        companyId={menuSettingsDialog.company?.id}
+        onMenuClick={(menuId, companyId) => {
+          if (menuId === 'nama-menu-web-admin' && companyId) {
+            setMenuSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/atur-nama-menu-web-admin`);
+          } else if (menuId === 'nama-menu-app-member' && companyId) {
+            setMenuSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/atur-nama-menu-app-member`);
+          } else if (menuId === 'nama-menu-app-merchant' && companyId) {
+            setMenuSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/atur-nama-menu-app-merchant`);
+          } else if (menuId === 'menu-app-member' && companyId) {
+            setMenuSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/atur-menu-app-member`);
+          } else if (menuId === 'menu-app-merchant' && companyId) {
+            setMenuSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/atur-menu-app-merchant`);
+          } else {
+            console.log('Menu settings clicked:', menuId, 'for company:', menuSettingsDialog.company);
+          }
         }}
       />
     </>

@@ -172,6 +172,9 @@ const isValidRoute = (path) => {
     '/company',
     '/role',
     '/notifikasi',
+    '/master-saldo',
+    '/master-bank',
+    '/master-berita-info',
   ];
   if (validSuperadminRoutes.includes(path)) {
     return true;
@@ -277,6 +280,9 @@ const isSuperadminRoute = (pathname) => {
     '/role',
     '/notifikasi',
     '/monitor-admin-dashboard',
+    '/master-saldo',
+    '/master-bank',
+    '/master-berita-info',
   ];
   
   // Cek apakah pathname adalah superadmin route atau dimulai dengan superadmin route
@@ -363,7 +369,7 @@ export default function PageHeader() {
       const companyId = segments[companyIndex + 1];
       
       // Skip jika segment adalah 'new', 'edit', atau route khusus lainnya
-      if (companyId === 'new' || companyId === 'edit' || companyId === 'credential-rekening' || companyId === 'kustom-nama-saldo' || companyId === 'konfigurasi-topup-va' || companyId === 'konfigurasi-waktu-withdrawal' || companyId === 'atur-limit-topup' || companyId === 'konfigurasi-auto-payment-invoice' || companyId === 'perizinan-login-user' || companyId === 'konfigurasi-waktu-settlement-qris' || companyId === 'konfigurasi-icon-powered-by' || companyId === 'konfigurasi-kekuatan-kata-sandi' || companyId === 'konfigurasi-akun-induk' || companyId === 'konfigurasi-penawaran-email-telepon' || companyId === 'konfigurasi-perizinan-otp-login' || companyId === 'konfigurasi-kustom-nama-pengirim-email' || companyId === 'konfigurasi-login-member-google' || companyId === 'konfigurasi-akun-peran-hak-akses') {
+      if (companyId === 'new' || companyId === 'edit' || companyId === 'credential-rekening' || companyId === 'kustom-nama-saldo' || companyId === 'konfigurasi-topup-va' || companyId === 'konfigurasi-waktu-withdrawal' || companyId === 'atur-limit-topup' || companyId === 'konfigurasi-auto-payment-invoice' || companyId === 'perizinan-login-user' || companyId === 'konfigurasi-waktu-settlement-qris' || companyId === 'konfigurasi-icon-powered-by' || companyId === 'konfigurasi-kekuatan-kata-sandi' || companyId === 'konfigurasi-akun-induk' || companyId === 'konfigurasi-penawaran-email-telepon' || companyId === 'konfigurasi-perizinan-otp-login' || companyId === 'konfigurasi-kustom-nama-pengirim-email' || companyId === 'konfigurasi-login-member-google' || companyId === 'konfigurasi-akun-peran-hak-akses' || companyId === 'atur-nama-menu-web-admin' || companyId === 'atur-menu-app-member' || companyId === 'atur-nama-menu-app-member' || companyId === 'atur-menu-app-merchant' || companyId === 'atur-nama-menu-app-merchant') {
         return;
       }
       

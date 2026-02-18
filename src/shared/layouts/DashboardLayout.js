@@ -30,6 +30,9 @@ const SUPERADMIN_ROUTES = [
   '/role',
   '/notifikasi',
   '/monitor-admin-dashboard',
+  '/master-saldo',
+  '/master-bank',
+  '/master-berita-info',
 ];
 
 // Helper function to check if route is valid for selected menu

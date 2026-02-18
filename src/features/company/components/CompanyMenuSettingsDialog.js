@@ -50,11 +50,12 @@ export default function CompanyMenuSettingsDialog({
   open,
   onClose,
   companyName,
+  companyId,
   onMenuClick,
 }) {
   const handleMenuClick = (menuId) => {
     if (onMenuClick) {
-      onMenuClick(menuId);
+      onMenuClick(menuId, companyId);
     }
   };
 
