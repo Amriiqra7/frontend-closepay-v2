@@ -6,17 +6,47 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ArrowRight2 } from 'iconsax-react';
 import { ADMIN_MENU_CONFIG } from '@/shared/config/adminMenuConfig';
 
+// Helper function to generate mock company data (same as CompanyList.js)
+const generateMockCompany = (id) => {
+  const sampleData = [
+    {
+      nama: 'Bougenvile Blok',
+      inisialPerusahaan: 'BB',
+    },
+    {
+      nama: 'Kantin FKi 12',
+      inisialPerusahaan: 'KF12',
+    },
+  ];
+  
+  const companyId = parseInt(id);
+  // Logic sama dengan CompanyList.js: baseData = sampleData[(i - 1) % sampleData.length]
+  const baseData = sampleData[(companyId - 1) % sampleData.length];
+  
+  // Logic sama dengan CompanyList.js: nama = i <= sampleData.length ? baseData.nama : `${baseData.nama} ${Math.floor(i / sampleData.length)}`
+  const nama = companyId <= sampleData.length 
+    ? baseData.nama 
+    : `${baseData.nama} ${Math.floor(companyId / sampleData.length)}`;
+  
+  return {
+    id: companyId,
+    nama: nama,
+  };
+};
+
 // Placeholder API - replace with actual API service
 const CompanyAPI = {
   getById: async (id) => {
     // Simulate API call - replace with actual API
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Mock data - replace with actual API call
-        resolve({
-          id: parseInt(id),
-          nama: 'Bougenvile Blok',
-        });
+        try {
+          // Use mock data generator to get company name based on ID
+          const company = generateMockCompany(id);
+          resolve(company);
+        } catch (err) {
+          reject(err);
+        }
       }, 100);
     });
   },
@@ -333,28 +363,37 @@ export default function PageHeader() {
       const companyId = segments[companyIndex + 1];
       
       // Skip jika segment adalah 'new', 'edit', atau route khusus lainnya
-      if (companyId === 'new' || companyId === 'edit' || companyId === 'credential-rekening') {
+      if (companyId === 'new' || companyId === 'edit' || companyId === 'credential-rekening' || companyId === 'kustom-nama-saldo' || companyId === 'konfigurasi-topup-va' || companyId === 'konfigurasi-waktu-withdrawal' || companyId === 'atur-limit-topup' || companyId === 'konfigurasi-auto-payment-invoice' || companyId === 'perizinan-login-user' || companyId === 'konfigurasi-waktu-settlement-qris' || companyId === 'konfigurasi-icon-powered-by' || companyId === 'konfigurasi-kekuatan-kata-sandi' || companyId === 'konfigurasi-akun-induk' || companyId === 'konfigurasi-penawaran-email-telepon' || companyId === 'konfigurasi-perizinan-otp-login' || companyId === 'konfigurasi-kustom-nama-pengirim-email' || companyId === 'konfigurasi-login-member-google' || companyId === 'konfigurasi-akun-peran-hak-akses') {
         return;
       }
       
-      // Cek apakah ID sudah di-fetch
-      if (!companyNameMap[companyId]) {
-        // Fetch nama perusahaan
-        CompanyAPI.getById(companyId)
-          .then((data) => {
-            setCompanyNameMap((prev) => ({
-              ...prev,
-              [companyId]: data.nama || companyId,
-            }));
-          })
-          .catch((err) => {
-            // Jika error, gunakan ID
-            setCompanyNameMap((prev) => ({
-              ...prev,
-              [companyId]: companyId,
-            }));
-          });
+      // Pastikan companyId adalah angka (ID perusahaan)
+      if (isNaN(companyId)) {
+        return;
       }
+      
+      // Always fetch to ensure we have the correct company name for this ID
+      // This ensures that when navigating to a different company, the name updates correctly
+      CompanyAPI.getById(companyId)
+        .then((data) => {
+          setCompanyNameMap((prev) => {
+            // Only update if the name is different or doesn't exist
+            if (prev[companyId] !== data.nama) {
+              return {
+                ...prev,
+                [companyId]: data.nama || companyId,
+              };
+            }
+            return prev;
+          });
+        })
+        .catch((err) => {
+          // Jika error, gunakan ID
+          setCompanyNameMap((prev) => ({
+            ...prev,
+            [companyId]: companyId,
+          }));
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);

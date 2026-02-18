@@ -12,8 +12,9 @@ import {
   RadioGroup,
   FormControl,
   FormControlLabel,
+  Button,
 } from '@mui/material';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import MainCard from '@/shared/ui/MainCard';
 import { formatRupiah } from '@/shared/utils/format';
 import { tabOptions } from '../constants/tabOptions';
@@ -29,6 +30,7 @@ import AddFeeDialog from './AddFeeDialog';
 export default function CompanyCredentialRekening() {
   const params = useParams();
   const companyId = params?.id;
+  const router = useRouter();
 
   const [activeTab, setActiveTab] = useState('va');
   const [accountType, setAccountType] = useState('direct-bank');
@@ -373,6 +375,26 @@ export default function CompanyCredentialRekening() {
               </Box>
             </Grid>
           </Grid>
+        </Box>
+
+        {/* Button Kembali */}
+        <Box sx={{ p: 3, pt: 0, display: 'flex', justifyContent: 'flex-start' }}>
+          <Button
+            variant="outlined"
+            onClick={() => router.back()}
+            sx={{
+              textTransform: 'none',
+              color: 'error.main',
+              borderColor: 'error.main',
+              px: 3,
+              '&:hover': {
+                borderColor: 'error.main',
+                bgcolor: 'error.lighter',
+              },
+            }}
+          >
+            Kembali
+          </Button>
         </Box>
       </MainCard>
 

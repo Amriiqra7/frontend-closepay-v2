@@ -665,6 +665,51 @@ export default function Company() {
           if (menuId === 'credential-rekening' && companyId) {
             setSettingsDialog({ open: false, company: null });
             router.push(`${pathname}/${companyId}/credential-rekening`);
+          } else if (menuId === 'kustom-nama-saldo' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/kustom-nama-saldo`);
+          } else if (menuId === 'topup-va' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-topup-va`);
+          } else if (menuId === 'waktu-withdrawal' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-waktu-withdrawal`);
+          } else if (menuId === 'limit-topup' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/atur-limit-topup`);
+          } else if (menuId === 'auto-payment' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-auto-payment-invoice`);
+          } else if (menuId === 'perizinan-login' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/perizinan-login-user`);
+          } else if (menuId === 'settlement-qris' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-waktu-settlement-qris`);
+          } else if (menuId === 'icon-powered-by' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-icon-powered-by`);
+          } else if (menuId === 'kekuatan-password' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-kekuatan-kata-sandi`);
+          } else if (menuId === 'akun-induk' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-akun-induk`);
+          } else if (menuId === 'penawaran-email-telepon' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-penawaran-email-telepon`);
+          } else if (menuId === 'otp-login' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-perizinan-otp-login`);
+          } else if (menuId === 'kustom-nama-pengirim' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-kustom-nama-pengirim-email`);
+          } else if (menuId === 'google-login' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-login-member-google`);
+          } else if (menuId === 'akun-peran-hak-akses' && companyId) {
+            setSettingsDialog({ open: false, company: null });
+            router.push(`${pathname}/${companyId}/konfigurasi-akun-peran-hak-akses`);
           } else {
             console.log('Settings menu clicked:', menuId, 'for company:', settingsDialog.company);
             // TODO: Implement navigation or action based on menuId
