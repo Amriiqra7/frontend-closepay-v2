@@ -33,6 +33,8 @@ const SUPERADMIN_ROUTES = [
   '/master-saldo',
   '/master-bank',
   '/master-berita-info',
+  '/master-perangkat',
+  '/manajemen-keuangan',
 ];
 
 // Helper function to check if route is valid for selected menu

@@ -11,6 +11,8 @@ import {
   Wallet3,
   Bank,
   Book,
+  Mobile,
+  MoneyRecive,
 } from 'iconsax-react';
 
 /**
@@ -51,6 +53,18 @@ export const SIDEBAR_SECTIONS = [
         label: 'Master Berita & Info',
         href: '/master-berita-info',
         icon: Book,
+      },
+      {
+        id: 'master-perangkat',
+        label: 'Manajemen Perangkat',
+        href: '/master-perangkat',
+        icon: Mobile,
+      },
+      {
+        id: 'manajemen-keuangan',
+        label: 'Manajemen Keuangan',
+        href: '/manajemen-keuangan',
+        icon: MoneyRecive,
       },
       {
         id: 'role',

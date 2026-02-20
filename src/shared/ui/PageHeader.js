@@ -93,6 +93,8 @@ const segmentLabelMap = {
   'transaksi': 'Manajemen Transaksi',
   'ppob': 'Manajemen PPOB',
   'credential-rekening': 'Credential Rekening Perusahaan',
+  'master-perangkat': 'Manajemen Perangkat',
+  'manajemen-keuangan': 'Manajemen Keuangan',
   // Tambahkan mapping lainnya sesuai kebutuhan
 };
 
@@ -139,7 +141,27 @@ const customTitleMap = {
   '/admin/info-berita': 'Manajemen Info dan Berita',
   '/admin/sport-center': 'Manajemen Sport Center',
   '/admin/aksesibilitas': 'Manajemen Aksesibilitas',
+  '/master-perangkat': 'Manajemen Perangkat',
+  '/manajemen-keuangan': 'Manajemen Keuangan',
   // Tambahkan title custom lainnya di sini jika diperlukan
+};
+
+// Helper untuk mendapatkan title berdasarkan pathname
+const getTitleFromPathname = (pathname) => {
+  // Cek custom title map dulu
+  if (customTitleMap[pathname]) {
+    return customTitleMap[pathname];
+  }
+  
+  // Handle dynamic routes
+  if (pathname.startsWith('/manajemen-keuangan/tagihan-perusahaan/')) {
+    if (pathname.includes('/riwayat-pembayaran')) {
+      return 'Riwayat Pembayaran Tagihan';
+    }
+    return 'Tagihan Perusahaan';
+  }
+  
+  return null;
 };
 
 // Fungsi untuk format segment menjadi label yang readable
@@ -175,6 +197,8 @@ const isValidRoute = (path) => {
     '/master-saldo',
     '/master-bank',
     '/master-berita-info',
+    '/master-perangkat',
+    '/manajemen-keuangan',
   ];
   if (validSuperadminRoutes.includes(path)) {
     return true;
@@ -182,6 +206,11 @@ const isValidRoute = (path) => {
   
   // Route pattern untuk /company/[id] dan /company/[id]/...
   if (path.startsWith('/company/')) {
+    return true;
+  }
+  
+  // Route pattern untuk /manajemen-keuangan/tagihan-perusahaan/[companyId] dan /manajemen-keuangan/tagihan-perusahaan/[companyId]/...
+  if (path.startsWith('/manajemen-keuangan/tagihan-perusahaan/')) {
     return true;
   }
   
@@ -283,6 +312,8 @@ const isSuperadminRoute = (pathname) => {
     '/master-saldo',
     '/master-bank',
     '/master-berita-info',
+    '/master-perangkat',
+    '/manajemen-keuangan',
   ];
   
   // Cek apakah pathname adalah superadmin route atau dimulai dengan superadmin route
@@ -345,6 +376,12 @@ const generateBreadcrumbs = (pathname, companyNameMap = {}) => {
 
 // Fungsi untuk mendapatkan title
 const getTitle = (pathname, breadcrumbs) => {
+  // Cek apakah ada custom title dari helper function
+  const titleFromPathname = getTitleFromPathname(pathname);
+  if (titleFromPathname) {
+    return titleFromPathname;
+  }
+  
   // Cek apakah ada custom title
   if (customTitleMap[pathname]) {
     return customTitleMap[pathname];
