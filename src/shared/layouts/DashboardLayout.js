@@ -35,6 +35,7 @@ const SUPERADMIN_ROUTES = [
   '/master-berita-info',
   '/master-perangkat',
   '/manajemen-keuangan',
+  '/data-log',
 ];
 
 // Helper function to check if route is valid for selected menu

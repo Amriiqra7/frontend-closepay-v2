@@ -96,81 +96,73 @@ export default function ConfigurationForm({
           <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 2, fontSize: '0.875rem' }}>
             {selectedBank.name} Credential
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Prefix"
-                value={credentials.prefix}
-                onChange={(e) => onCredentialChange('prefix', e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '0.875rem',
-                    bgcolor: 'background.paper',
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.875rem',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Client ID"
-                value={credentials.clientId}
-                onChange={(e) => onCredentialChange('clientId', e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '0.875rem',
-                    bgcolor: 'background.paper',
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.875rem',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Client Secret"
-                type="password"
-                value={credentials.clientSecret}
-                onChange={(e) => onCredentialChange('clientSecret', e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '0.875rem',
-                    bgcolor: 'background.paper',
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.875rem',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Host"
-                value={credentials.host}
-                onChange={(e) => onCredentialChange('host', e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontSize: '0.875rem',
-                    bgcolor: 'background.paper',
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.875rem',
-                  },
-                }}
-              />
-            </Grid>
-          </Grid>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Prefix"
+              value={credentials.prefix}
+              onChange={(e) => onCredentialChange('prefix', e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '0.875rem',
+                  bgcolor: 'background.paper',
+                },
+                '& .MuiInputLabel-root': {
+                  fontSize: '0.875rem',
+                },
+              }}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Client ID"
+              value={credentials.clientId}
+              onChange={(e) => onCredentialChange('clientId', e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '0.875rem',
+                  bgcolor: 'background.paper',
+                },
+                '& .MuiInputLabel-root': {
+                  fontSize: '0.875rem',
+                },
+              }}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Client Secret"
+              type="password"
+              value={credentials.clientSecret}
+              onChange={(e) => onCredentialChange('clientSecret', e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '0.875rem',
+                  bgcolor: 'background.paper',
+                },
+                '& .MuiInputLabel-root': {
+                  fontSize: '0.875rem',
+                },
+              }}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              label="Host"
+              value={credentials.host}
+              onChange={(e) => onCredentialChange('host', e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '0.875rem',
+                  bgcolor: 'background.paper',
+                },
+                '& .MuiInputLabel-root': {
+                  fontSize: '0.875rem',
+                },
+              }}
+            />
+          </Box>
         </Box>
 
         <Divider sx={{ my: 3 }} />

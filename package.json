@@ -14,6 +14,7 @@
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
     "@mui/x-date-pickers": "^8.27.0",
+    "@uiw/react-json-view": "^2.0.0-alpha.41",
     "apexcharts": "^5.3.6",
     "dayjs": "^1.11.19",
     "formik": "^2.4.9",

@@ -199,6 +199,7 @@ const isValidRoute = (path) => {
     '/master-berita-info',
     '/master-perangkat',
     '/manajemen-keuangan',
+    '/data-log',
   ];
   if (validSuperadminRoutes.includes(path)) {
     return true;
@@ -211,6 +212,11 @@ const isValidRoute = (path) => {
   
   // Route pattern untuk /manajemen-keuangan/tagihan-perusahaan/[companyId] dan /manajemen-keuangan/tagihan-perusahaan/[companyId]/...
   if (path.startsWith('/manajemen-keuangan/tagihan-perusahaan/')) {
+    return true;
+  }
+  
+  // Route pattern untuk /data-log/...
+  if (path.startsWith('/data-log/')) {
     return true;
   }
   
@@ -314,6 +320,7 @@ const isSuperadminRoute = (pathname) => {
     '/master-berita-info',
     '/master-perangkat',
     '/manajemen-keuangan',
+    '/data-log',
   ];
   
   // Cek apakah pathname adalah superadmin route atau dimulai dengan superadmin route

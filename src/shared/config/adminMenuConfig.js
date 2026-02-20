@@ -454,6 +454,50 @@ const GLOBAL_MENU_ITEMS = {
     href: '/admin/ppob/manajemen-ppob',
     icon: Flash,
   },
+  'data-log': {
+    id: 'data-log',
+    label: 'Data Log',
+    href: '/data-log',
+    icon: DocumentText,
+    children: [
+      {
+        id: 'data-log-top-up-va',
+        label: 'Data Log Top Up VA',
+        href: '/data-log/data-log-top-up-va',
+        icon: Document,
+      },
+      {
+        id: 'data-log-transfer-bank',
+        label: 'Data Log Transfer Bank',
+        href: '/data-log/data-log-transfer-bank',
+        icon: Document,
+      },
+      {
+        id: 'data-log-ppob',
+        label: 'Data Log PPOB',
+        href: '/data-log/data-log-ppob',
+        icon: Document,
+      },
+    ],
+  },
+  'data-log-top-up-va': {
+    id: 'data-log-top-up-va',
+    label: 'Data Log Top Up VA',
+    href: '/data-log/data-log-top-up-va',
+    icon: Document,
+  },
+  'data-log-transfer-bank': {
+    id: 'data-log-transfer-bank',
+    label: 'Data Log Transfer Bank',
+    href: '/data-log/data-log-transfer-bank',
+    icon: Document,
+  },
+  'data-log-ppob': {
+    id: 'data-log-ppob',
+    label: 'Data Log PPOB',
+    href: '/data-log/data-log-ppob',
+    icon: Document,
+  },
 };
 
 /**
@@ -822,6 +866,17 @@ export const ADMIN_MENU_CONFIG = {
     description: 'Manajemen PPOB',
     subMenus: [
       getMenuItem('manajemen-ppob'),
+    ],
+  },
+  'data-log': {
+    id: 'data-log',
+    label: 'Data Log',
+    icon: DocumentText,
+    description: 'Data Log Top Up VA, Data Log Transfer Bank, Data Log PPOB',
+    subMenus: [
+      getMenuItem('data-log-top-up-va'),
+      getMenuItem('data-log-transfer-bank'),
+      getMenuItem('data-log-ppob'),
     ],
   },
 };

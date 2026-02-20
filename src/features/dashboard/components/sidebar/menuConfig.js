@@ -13,6 +13,7 @@ import {
   Book,
   Mobile,
   MoneyRecive,
+  Document,
 } from 'iconsax-react';
 
 /**
@@ -83,6 +84,32 @@ export const SIDEBAR_SECTIONS = [
             label: 'Data Role',
             href: '/role/data-role',
             icon: DocumentText,
+          },
+        ],
+      },
+      {
+        id: 'data-log',
+        label: 'Data Log',
+        href: '/data-log',
+        icon: DocumentText,
+        children: [
+          {
+            id: 'data-log-top-up-va',
+            label: 'Data Log Top Up VA',
+            href: '/data-log/data-log-top-up-va',
+            icon: Document,
+          },
+          {
+            id: 'data-log-transfer-bank',
+            label: 'Data Log Transfer Bank',
+            href: '/data-log/data-log-transfer-bank',
+            icon: Document,
+          },
+          {
+            id: 'data-log-ppob',
+            label: 'Data Log PPOB',
+            href: '/data-log/data-log-ppob',
+            icon: Document,
           },
         ],
       },
