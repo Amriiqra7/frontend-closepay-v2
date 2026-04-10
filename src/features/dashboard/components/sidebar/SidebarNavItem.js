@@ -14,11 +14,10 @@ import {
 } from '@mui/material';
 import { ArrowDown2 } from 'iconsax-react';
 
-function isPathActive(pathname, href) {
+function isPathActive(pathname, href, matchMode = 'prefix') {
   if (!href) return false;
   if (href === '/') return pathname === '/';
-  
-  // Simple path matching - routes are now properly structured as /admin/[menu]/[sub-menu]
+  if (matchMode === 'exact') return pathname === href;
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -26,7 +25,7 @@ function isPathActive(pathname, href) {
 function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChildrenActive }) {
   const ChildIcon = child.icon;
   const childHasChildren = Array.isArray(child.children) && child.children.length > 0;
-  const childActive = isPathActive(pathname, child.href) || 
+  const childActive = isPathActive(pathname, child.href, child.matchMode) || 
     (childHasChildren && checkChildrenActive(child.children));
   const [childOpen, setChildOpen] = React.useState(childActive);
 
@@ -89,7 +88,7 @@ function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChi
           <List disablePadding sx={{ pl: 3, pt: 0.25, pb: 0.5 }}>
             {child.children.map((grandChild) => {
               const GrandChildIcon = grandChild.icon;
-              const grandChildActive = isPathActive(pathname, grandChild.href);
+              const grandChildActive = isPathActive(pathname, grandChild.href, grandChild.matchMode);
 
               return (
                 <ListItemButton
@@ -144,16 +143,16 @@ export default function SidebarNavItem({
 
   // Recursively check if any child or grandchild is active
   const checkChildrenActive = (children) => {
-    if (!children) return false;
-    return children.some((child) => {
-      if (isPathActive(pathname, child.href)) return true;
+      if (!children) return false;
+      return children.some((child) => {
+      if (isPathActive(pathname, child.href, child.matchMode)) return true;
       if (child.children) return checkChildrenActive(child.children);
       return false;
     });
   };
 
   const active =
-    isPathActive(pathname, item.href) ||
+    isPathActive(pathname, item.href, item.matchMode) ||
     (hasChildren && checkChildrenActive(item.children));
 
   const [open, setOpen] = React.useState(active);
@@ -351,7 +350,7 @@ export default function SidebarNavItem({
               {item.children.map((child) => {
                 const ChildIcon = child.icon;
                 const childHasChildren = Array.isArray(child.children) && child.children.length > 0;
-                const childActive = isPathActive(pathname, child.href) || 
+                const childActive = isPathActive(pathname, child.href, child.matchMode) || 
                   (childHasChildren && checkChildrenActive(child.children));
 
                 return (
@@ -399,7 +398,7 @@ export default function SidebarNavItem({
                       <List disablePadding sx={{ pl: 2 }}>
                         {child.children.map((grandChild) => {
                           const GrandChildIcon = grandChild.icon;
-                          const grandChildActive = isPathActive(pathname, grandChild.href);
+                          const grandChildActive = isPathActive(pathname, grandChild.href, grandChild.matchMode);
 
                           return (
                             <ListItemButton

@@ -44,6 +44,16 @@ import {
   DocumentDownload,
   ReceiptSearch,
   ReceiptEdit,
+  Chart2,
+  Box1,
+  ArchiveBook,
+  TruckFast,
+  ClipboardText,
+  Warning2,
+  BoxTick,
+  Note,
+  Building4,
+  MessageQuestion,
 } from 'iconsax-react';
 
 /**
@@ -190,6 +200,84 @@ const GLOBAL_MENU_ITEMS = {
     href: '/admin/balance/data-log-va',
     icon: Document,
   },
+  'tagihan': {
+    id: 'tagihan',
+    label: 'Tagihan',
+    href: '/admin/invoice',
+    icon: DocumentText,
+    children: [
+      {
+        id: 'tagihan-master',
+        label: 'Tagihan Master',
+        href: '/admin/invoice/tagihan-master',
+        icon: DocumentText,
+      },
+      {
+        id: 'tagihan-tunggal',
+        label: 'Tagihan Tunggal',
+        href: '/admin/invoice/tagihan-tunggal',
+        icon: Document,
+      },
+      {
+        id: 'data-tagihan',
+        label: 'Data Tagihan',
+        href: '/admin/invoice/data-tagihan',
+        icon: DocumentCopy,
+        children: [
+          {
+            id: 'tagihan-admin',
+            label: 'Tagihan Admin',
+            href: '/admin/invoice/data-tagihan/tagihan-admin',
+            icon: DocumentCopy,
+          },
+          {
+            id: 'tagihan-member',
+            label: 'Tagihan Member',
+            href: '/admin/invoice/data-tagihan/tagihan-member',
+            icon: DocumentCopy,
+          },
+          {
+            id: 'tagihan-merchant',
+            label: 'Tagihan Merchant',
+            href: '/admin/invoice/data-tagihan/tagihan-merchant',
+            icon: DocumentCopy,
+          },
+        ],
+      },
+      {
+        id: 'data-transaksi-tagihan',
+        label: 'Data Transaksi Tagihan',
+        href: '/admin/invoice/data-transaksi-tagihan',
+        icon: TransactionMinus,
+      },
+      {
+        id: 'retribusi-merchant',
+        label: 'Retribusi Merchant',
+        href: '/admin/invoice/retribusi-merchant',
+        icon: Receipt21,
+        children: [
+          {
+            id: 'atur-petugas-retribusi',
+            label: 'Atur Petugas Retribusi',
+            href: '/admin/invoice/retribusi-merchant/atur-petugas-retribusi',
+            icon: User,
+          },
+          {
+            id: 'distribusi-kode-qr-merchant',
+            label: 'Distribusi Kode QR Merchant',
+            href: '/admin/invoice/retribusi-merchant/distribusi-kode-qr-merchant',
+            icon: Eye,
+          },
+          {
+            id: 'konfigurasi-template-retribusi',
+            label: 'Konfigurasi Template Retribusi',
+            href: '/admin/invoice/retribusi-merchant/konfigurasi-template-retribusi',
+            icon: ReceiptEdit,
+          },
+        ],
+      },
+    ],
+  },
   'tagihan-master': {
     id: 'tagihan-master',
     label: 'Tagihan Master',
@@ -208,10 +296,86 @@ const GLOBAL_MENU_ITEMS = {
     href: '/admin/invoice/data-tagihan',
     icon: DocumentCopy,
   },
+  'data-tagihan': {
+    id: 'data-tagihan',
+    label: 'Data Tagihan',
+    href: '/admin/invoice/data-tagihan',
+    icon: DocumentCopy,
+    children: [
+      {
+        id: 'tagihan-admin',
+        label: 'Tagihan Admin',
+        href: '/admin/invoice/data-tagihan/tagihan-admin',
+        icon: DocumentCopy,
+      },
+      {
+        id: 'tagihan-member',
+        label: 'Tagihan Member',
+        href: '/admin/invoice/data-tagihan/tagihan-member',
+        icon: DocumentCopy,
+      },
+      {
+        id: 'tagihan-merchant',
+        label: 'Tagihan Merchant',
+        href: '/admin/invoice/data-tagihan/tagihan-merchant',
+        icon: DocumentCopy,
+      },
+    ],
+  },
+  'tagihan-admin': {
+    id: 'tagihan-admin',
+    label: 'Tagihan Admin',
+    href: '/admin/invoice/data-tagihan/tagihan-admin',
+    icon: DocumentCopy,
+  },
+  'tagihan-member': {
+    id: 'tagihan-member',
+    label: 'Tagihan Member',
+    href: '/admin/invoice/data-tagihan/tagihan-member',
+    icon: DocumentCopy,
+  },
+  'tagihan-merchant': {
+    id: 'tagihan-merchant',
+    label: 'Tagihan Merchant',
+    href: '/admin/invoice/data-tagihan/tagihan-merchant',
+    icon: DocumentCopy,
+  },
+  'data-transaksi-tagihan': {
+    id: 'data-transaksi-tagihan',
+    label: 'Data Transaksi Tagihan',
+    href: '/admin/invoice/data-transaksi-tagihan',
+    icon: TransactionMinus,
+  },
+  'retribusi-merchant': {
+    id: 'retribusi-merchant',
+    label: 'Retribusi Merchant',
+    href: '/admin/invoice/retribusi-merchant',
+    icon: Receipt21,
+    children: [
+      {
+        id: 'atur-petugas-retribusi',
+        label: 'Atur Petugas Retribusi',
+        href: '/admin/invoice/retribusi-merchant/atur-petugas-retribusi',
+        icon: User,
+      },
+      {
+        id: 'distribusi-kode-qr-merchant',
+        label: 'Distribusi Kode QR Merchant',
+        href: '/admin/invoice/retribusi-merchant/distribusi-kode-qr-merchant',
+        icon: Eye,
+      },
+      {
+        id: 'konfigurasi-template-retribusi',
+        label: 'Konfigurasi Template Retribusi',
+        href: '/admin/invoice/retribusi-merchant/konfigurasi-template-retribusi',
+        icon: ReceiptEdit,
+      },
+    ],
+  },
   'atur-petugas-retribusi': {
     id: 'atur-petugas-retribusi',
     label: 'Atur Petugas Retribusi',
-    href: '/admin/retribusi/atur-petugas-retribusi',
+    href: '/admin/invoice/retribusi-merchant/atur-petugas-retribusi',
     icon: User,
   },
   'kode-qr-merchant': {
@@ -220,10 +384,16 @@ const GLOBAL_MENU_ITEMS = {
     href: '/admin/retribusi/kode-qr-merchant',
     icon: Eye,
   },
+  'distribusi-kode-qr-merchant': {
+    id: 'distribusi-kode-qr-merchant',
+    label: 'Distribusi Kode QR Merchant',
+    href: '/admin/invoice/retribusi-merchant/distribusi-kode-qr-merchant',
+    icon: Eye,
+  },
   'konfigurasi-template-retribusi': {
     id: 'konfigurasi-template-retribusi',
     label: 'Konfigurasi Template Retribusi',
-    href: '/admin/retribusi/konfigurasi-template-retribusi',
+    href: '/admin/invoice/retribusi-merchant/konfigurasi-template-retribusi',
     icon: ReceiptEdit,
   },
   'data-tagihan-retribusi': {
@@ -343,8 +513,132 @@ const GLOBAL_MENU_ITEMS = {
   'data-fnb': {
     id: 'data-fnb',
     label: 'Data FnB',
-    href: '/admin/fnb/data-fnb',
+    href: '/fnb/data-fnb',
     icon: Shop,
+  },
+  'fnb-dashboard': {
+    id: 'fnb-dashboard',
+    label: 'Dashboard',
+    href: '/fnb',
+    icon: Home2,
+    children: [
+      {
+        id: 'fnb-operational-overview',
+        label: 'Operational Overview',
+        href: '/fnb/operational-overview',
+        icon: Home2,
+      },
+      {
+        id: 'fnb-performance-trends',
+        label: 'Performance Trends',
+        href: '/fnb/performance-trends',
+        icon: Chart2,
+      },
+      {
+        id: 'fnb-quick-actions',
+        label: 'Quick Actions',
+        href: '/fnb/quick-actions',
+        icon: Flash,
+      },
+    ],
+  },
+  'fnb-master-product': {
+    id: 'fnb-master-product',
+    label: 'Master Product',
+    href: '/fnb/master-product',
+    icon: Box1,
+    children: [
+      {
+        id: 'fnb-menu-variations',
+        label: 'Menu & Variations',
+        href: '/fnb/master-product/menu-variations',
+        icon: MenuBoard,
+      },
+      {
+        id: 'fnb-add-ons',
+        label: 'Add-Ons & Toppings',
+        href: '/fnb/master-product/add-ons-toppings',
+        icon: BoxTick,
+      },
+      {
+        id: 'fnb-bahan-baku',
+        label: 'Bahan Baku & Resep',
+        href: '/fnb/master-product/bahan-baku-resep',
+        icon: ArchiveBook,
+      },
+    ],
+  },
+  'fnb-inventory': {
+    id: 'fnb-inventory',
+    label: 'Inventory',
+    href: '/fnb/inventory',
+    icon: ArchiveBook,
+    children: [
+      {
+        id: 'fnb-stock-barang',
+        label: 'Stock Barang',
+        href: '/fnb/inventory/stock-barang',
+        icon: BoxTick,
+      },
+      {
+        id: 'fnb-log-aktivitas',
+        label: 'Log Aktivitas',
+        href: '/fnb/inventory/log-aktivitas',
+        icon: Note,
+      },
+      {
+        id: 'fnb-expired-tracking',
+        label: 'Expired Tracking',
+        href: '/fnb/inventory/expired-tracking',
+        icon: Warning2,
+      },
+    ],
+  },
+  'fnb-distribution': {
+    id: 'fnb-distribution',
+    label: 'Distribution',
+    href: '/fnb/distribution',
+    icon: TruckFast,
+    children: [
+      {
+        id: 'fnb-permintaan-distribusi',
+        label: 'Permintaan & Distribusi',
+        href: '/fnb/distribution/permintaan-distribusi',
+        icon: TruckFast,
+      },
+      {
+        id: 'fnb-gudang-outlet',
+        label: 'Gudang Outlet',
+        href: '/fnb/distribution/gudang-outlet',
+        icon: Building4,
+      },
+    ],
+  },
+  'fnb-stock-opname': {
+    id: 'fnb-stock-opname',
+    label: 'Stock Opname',
+    href: '/fnb/stock-opname',
+    icon: ClipboardText,
+    children: [
+      {
+        id: 'fnb-laporan-baru',
+        label: 'Laporan Baru',
+        href: '/fnb/stock-opname/laporan-baru',
+        icon: ClipboardText,
+      },
+      {
+        id: 'fnb-riwayat-opname',
+        label: 'Riwayat Opname',
+        href: '/fnb/stock-opname/riwayat-opname',
+        icon: ReceiptSearch,
+      },
+    ],
+  },
+  'fnb-support': {
+    id: 'fnb-support',
+    label: 'Support',
+    href: '/fnb/support',
+    icon: MessageQuestion,
   },
   'data-perangkat': {
     id: 'data-perangkat',
@@ -604,13 +898,8 @@ export const ADMIN_MENU_CONFIG = {
       getMenuItem('konfigurasi-saldo'),
       getMenuItem('data-log-va'),
       // Menu dari Invoice
-      getMenuItem('tagihan-master'),
-      getMenuItem('tagihan-tunggal'),
-      getMenuItem('data-tagihan'),
+      getMenuItem('tagihan'),
       // Menu dari Retribusi
-      getMenuItem('atur-petugas-retribusi'),
-      getMenuItem('kode-qr-merchant'),
-      getMenuItem('konfigurasi-template-retribusi'),
       getMenuItem('data-tagihan-retribusi'),
       // Menu dari Merchant KSO
       getMenuItem('merchant-bagi-hasil'),
@@ -682,24 +971,19 @@ export const ADMIN_MENU_CONFIG = {
   },
   invoice: {
     id: 'invoice',
-    label: 'Manajemen Tagihan',
+    label: 'Tagihan',
     icon: DocumentText,
-    description: 'Tagihan Master, Tagihan Tunggal, Data Tagihan',
+    description: 'Tagihan Master, Tagihan Tunggal, Data Tagihan, Data Transaksi Tagihan, Retribusi Merchant',
     subMenus: [
-      getMenuItem('tagihan-master'),
-      getMenuItem('tagihan-tunggal'),
-      getMenuItem('data-tagihan'),
+      getMenuItem('tagihan'),
     ],
   },
   retribusi: {
     id: 'retribusi',
     label: 'Retribusi',
     icon: Receipt21,
-    description: 'Atur Petugas Retribusi, Kode QR Merchant, Konfigurasi Template Retribusi, Data Tagihan Retribusi',
+    description: 'Data Tagihan Retribusi',
     subMenus: [
-      getMenuItem('atur-petugas-retribusi'),
-      getMenuItem('kode-qr-merchant'),
-      getMenuItem('konfigurasi-template-retribusi'),
       getMenuItem('data-tagihan-retribusi'),
     ],
   },
@@ -781,9 +1065,14 @@ export const ADMIN_MENU_CONFIG = {
     id: 'fnb',
     label: 'Manajemen FnB',
     icon: Shop,
-    description: 'Data FnB',
+    description: 'Dashboard operasional FnB, master product, inventory, distribution, stock opname, support',
     subMenus: [
-      getMenuItem('data-fnb'),
+      getMenuItem('fnb-dashboard'),
+      getMenuItem('fnb-master-product'),
+      getMenuItem('fnb-inventory'),
+      getMenuItem('fnb-distribution'),
+      getMenuItem('fnb-stock-opname'),
+      getMenuItem('fnb-support'),
     ],
   },
   aksesibilitas: {

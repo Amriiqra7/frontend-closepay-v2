@@ -58,8 +58,8 @@ const adminMenuItems = [
   },
   { 
     id: 'invoice', 
-    label: 'Manajemen Tagihan', 
-    description: 'Tagihan Master, Tagihan Tunggal, Data Tagihan',
+    label: 'Tagihan', 
+    description: 'Tagihan Master, Tagihan Tunggal, Data Invoice, Data Transaksi Tagihan, Retribusi Merchant',
     icon: DocumentText, 
     route: '/admin/invoice' 
   },
@@ -122,9 +122,9 @@ const adminMenuItems = [
   { 
     id: 'fnb', 
     label: 'Manajemen FnB', 
-    description: 'Data FnB',
+    description: 'Dashboard operasional FnB, inventory, distribusi, stock opname, support',
     icon: Shop, 
-    route: '/admin/fnb' 
+    route: '/fnb' 
   },
   { 
     id: 'aksesibilitas', 

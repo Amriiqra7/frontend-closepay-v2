@@ -44,7 +44,7 @@ export default function MonitorAdminDashboard() {
     // Set admin menu context and redirect to dashboard
     // Sidebar will automatically change based on the selected menu
     setAdminMenu(menuId, selectedCompany);
-    router.push('/dashboard');
+    router.push(menuId === 'fnb' ? '/fnb' : '/dashboard');
   };
 
   return (

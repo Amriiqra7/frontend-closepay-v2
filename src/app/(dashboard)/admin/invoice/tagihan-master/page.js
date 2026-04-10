@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import TagihanMasterList from "@/features/invoice/components/TagihanMasterList";
 
 export default function TagihanMasterPage() {
-  return <AdminDashboard title="Tagihan Master" />;
+  return <TagihanMasterList />;
 }

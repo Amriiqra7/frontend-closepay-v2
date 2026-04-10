@@ -18,6 +18,11 @@ export default function DashboardPage() {
     // Jika ada selectedMenu (admin), tampilkan dashboard biasa
     if (!selectedMenu) {
       router.replace('/monitor-admin-dashboard');
+      return;
+    }
+
+    if (selectedMenu === 'fnb') {
+      router.replace('/fnb');
     }
   }, [selectedMenu, isHydrated, router]);
 
@@ -83,6 +88,9 @@ export default function DashboardPage() {
 
   // Jika admin, tampilkan dashboard
   if (selectedMenu) {
+    if (selectedMenu === 'fnb') {
+      return <PageLoading />;
+    }
     return <Dashboard />;
   }
 

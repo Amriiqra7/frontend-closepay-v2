@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Avatar, IconButton, Menu, MenuItem, Box, Divider, useTheme, Button, TextField, InputAdornment, Paper } from '@mui/material';
-import { ArrowDown2, HambergerMenu, Profile, Setting2, LogoutCurve, ArrowLeft2, SearchNormal1, Menu as MenuIcon } from 'iconsax-react';
+import { ArrowDown2, HambergerMenu, Profile, Setting2, LogoutCurve, ArrowLeft2, SearchNormal1, Menu as MenuIcon, Notification, Setting } from 'iconsax-react';
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import SearchDialog from '@/shared/ui/SearchDialog';
 import AdminMenuDialog from '@/features/admin-monitor/components/AdminMenuDialog';
 
@@ -16,10 +16,12 @@ export default function Header({
 }) {
   const theme = useTheme();
   const router = useRouter();
+  const pathname = usePathname();
   const { selectedMenu, selectedCompany, clearAdminMenu, setAdminMenu } = useAdminMenu();
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [menuDialogOpen, setMenuDialogOpen] = useState(false);
+  const isFnbDashboard = selectedMenu === 'fnb' && pathname === '/fnb';
 
   // Handle Ctrl+K shortcut
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function Header({
     if (selectedCompany) {
       setAdminMenu(menuId, selectedCompany);
       // Redirect ke dashboard jika belum di dashboard
-      router.push('/dashboard');
+      router.push(menuId === 'fnb' ? '/fnb' : '/dashboard');
     }
   };
 
@@ -88,11 +90,11 @@ export default function Header({
             onClick={onDrawerToggle}
             sx={{ 
               color: 'text.primary',
-              bgcolor: 'grey.100',
+              bgcolor: isFnbDashboard ? '#f3f6fa' : 'grey.100',
               ml: { xs: 0, sm: 0 },
               mr: { xs: 1, sm: 2 },
               '&:hover': {
-                bgcolor: 'grey.200',
+                bgcolor: isFnbDashboard ? '#e8edf4' : 'grey.200',
               },
             }}
           >
@@ -109,7 +111,7 @@ export default function Header({
           >
             <TextField
               fullWidth
-              placeholder="Search menu..."
+              placeholder={isFnbDashboard ? 'Global system search...' : 'Search menu...'}
               size="medium"
               value=""
               readOnly
@@ -163,17 +165,18 @@ export default function Header({
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  border: "1px solid #d9d9d9",
+                  border: isFnbDashboard ? '1px solid #eef2f6' : "1px solid #d9d9d9",
                   cursor: 'pointer',
                   height: '48px', // Increased height
+                  bgcolor: isFnbDashboard ? '#f7f9fc' : '#fff',
                   '& fieldset': {
                     borderColor: 'transparent',
                   },
                   '&:hover fieldset': {
-                    borderColor: '#d9d9d9',
+                    borderColor: isFnbDashboard ? '#eef2f6' : '#d9d9d9',
                   },
                   '&.Mui-focused fieldset': {
-                    borderColor: '#d9d9d9',
+                    borderColor: isFnbDashboard ? '#eef2f6' : '#d9d9d9',
                   },
                 },
                 '& .MuiInputBase-input': {
@@ -185,9 +188,20 @@ export default function Header({
           </Box>
 
           <Box sx={{ flexGrow: 1 }} />
+
+          {isFnbDashboard ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
+              <IconButton sx={{ color: '#5f6b7a' }}>
+                <Notification size={20} variant="Bold" color="#5f6b7a" />
+              </IconButton>
+              <IconButton sx={{ color: '#5f6b7a' }}>
+                <Setting size={20} variant="Bold" color="#5f6b7a" />
+              </IconButton>
+            </Box>
+          ) : null}
           
           {/* Button Menu dan Kembali ke Superadmin - hanya muncul jika ada selectedMenu */}
-          {selectedMenu && (
+          {selectedMenu && !isFnbDashboard && (
             <>
               <Button
                 variant="contained"
@@ -260,13 +274,14 @@ export default function Header({
               sx={{ 
                 width: 42, 
                 height: 42, 
-                bgcolor: '#155DFC',
+                bgcolor: isFnbDashboard ? '#e8f1fb' : '#155DFC',
                 fontWeight: 400,
                 fontSize: '0.95rem',
                 boxShadow: 'none',
+                color: isFnbDashboard ? '#1d6d8d' : '#fff',
               }}
             >
-              PC
+              EA
             </Avatar>
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
               <Typography 
@@ -278,7 +293,7 @@ export default function Header({
                   mb: 0.25
                 }}
               >
-                Petr Cech UPN
+                {isFnbDashboard ? 'Executive Admin' : 'Petr Cech UPN'}
               </Typography>
               <Typography 
                 variant="caption" 
@@ -289,7 +304,7 @@ export default function Header({
                   lineHeight: 1.2
                 }}
               >
-                Admin
+                {isFnbDashboard ? 'Super User' : 'Admin'}
               </Typography>
             </Box>
             <ArrowDown2 

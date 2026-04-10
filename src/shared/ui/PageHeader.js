@@ -87,6 +87,24 @@ const segmentLabelMap = {
   'bank-sampah': 'Bank Sampah',
   'payroll': 'Payroll',
   'fnb': 'Manajemen FnB',
+  'operational-overview': 'Operational Overview',
+  'performance-trends': 'Performance Trends',
+  'quick-actions': 'Quick Actions',
+  'master-product': 'Master Product',
+  'menu-variations': 'Menu & Variations',
+  'add-ons-toppings': 'Add-Ons & Toppings',
+  'bahan-baku-resep': 'Bahan Baku & Resep',
+  'inventory': 'Inventory',
+  'stock-barang': 'Stock Barang',
+  'log-aktivitas': 'Log Aktivitas',
+  'expired-tracking': 'Expired Tracking',
+  'distribution': 'Distribution',
+  'permintaan-distribusi': 'Permintaan & Distribusi',
+  'gudang-outlet': 'Gudang Outlet',
+  'stock-opname': 'Stock Opname',
+  'laporan-baru': 'Laporan Baru',
+  'riwayat-opname': 'Riwayat Opname',
+  'support': 'Support',
   'lms': 'Manajemen Pembelajaran / LMS',
   'integrasi': 'Manajemen Integrasi',
   'sub-company': 'Manajemen Sub-Company',
@@ -126,7 +144,15 @@ const customTitleMap = {
   '/admin/aksesibilitas': 'Aksesibilitas',
   '/admin/bank-sampah': 'Manajemen Bank Sampah',
   '/admin/payroll': 'Manajemen Payroll',
-  '/admin/fnb': 'Manajemen FnB',
+  '/fnb': 'Dashboard FnB',
+  '/fnb/operational-overview': 'Operational Overview',
+  '/fnb/performance-trends': 'Performance Trends',
+  '/fnb/quick-actions': 'Quick Actions',
+  '/fnb/master-product': 'Master Product',
+  '/fnb/inventory': 'Inventory',
+  '/fnb/distribution': 'Distribution',
+  '/fnb/stock-opname': 'Stock Opname',
+  '/fnb/support': 'Support',
   '/admin/lms': 'Manajemen Pembelajaran / LMS',
   '/admin/integrasi': 'Manajemen Integrasi',
   '/admin/sub-company': 'Manajemen Sub-Company',
@@ -187,7 +213,7 @@ const formatSegmentLabel = (segment) => {
 // Fungsi untuk mengecek apakah route valid (ada di menu config sebagai href)
 const isValidRoute = (path) => {
   // Beranda selalu valid
-  if (path === '/dashboard') return true;
+  if (path === '/dashboard' || path === '/fnb') return true;
   
   // Route khusus yang valid (untuk superadmin routes yang tidak ada di ADMIN_MENU_CONFIG)
   const validSuperadminRoutes = [
@@ -459,8 +485,9 @@ export default function PageHeader() {
   };
 
   // Jangan tampilkan breadcrumb dan title jika di /dashboard
-  const showBreadcrumb = pathname !== '/dashboard';
-  const showTitle = pathname !== '/dashboard';
+  const isFnbRoute = pathname.startsWith('/fnb');
+  const showBreadcrumb = pathname !== '/dashboard' && !isFnbRoute;
+  const showTitle = pathname !== '/dashboard' && !isFnbRoute;
 
   return (
     <Box>

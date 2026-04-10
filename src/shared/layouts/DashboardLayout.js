@@ -5,6 +5,7 @@ import { Box, Toolbar } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from '@/features/dashboard/components/Sidebar';
 import AdminSidebar from '@/features/dashboard/components/sidebar/AdminSidebar';
+import FnbSidebar from '@/features/dashboard/components/sidebar/FnbSidebar';
 import Header from './Header';
 import PageHeader from '@/shared/ui/PageHeader';
 import PageLoading from '@/shared/ui/PageLoading';
@@ -65,6 +66,7 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const { selectedMenu, selectedCompany, isHydrated } = useAdminMenu();
+  const isFnbRoute = pathname.startsWith('/fnb');
 
   const handleDrawerToggle = () => {
     if (typeof window !== 'undefined') {
@@ -88,7 +90,7 @@ export default function DashboardLayout({ children }) {
     if (!isRouteValidForMenu(pathname, selectedMenu, selectedCompany)) {
       // Set validating state and redirect to dashboard if trying to access invalid route
       setIsValidatingRoute(true);
-      router.replace('/dashboard');
+      router.replace(selectedMenu === 'fnb' ? '/fnb' : '/dashboard');
       // Reset validating state after a short delay
       setTimeout(() => setIsValidatingRoute(false), 100);
     } else {
@@ -102,8 +104,13 @@ export default function DashboardLayout({ children }) {
     return <GlobalLoading message={!isHydrated ? "Memvalidasi akses..." : "Mengarahkan..."} />;
   }
 
-  // Use AdminSidebar if admin menu is selected, otherwise use regular Sidebar
-  const SidebarComponent = selectedMenu ? AdminSidebar : Sidebar;
+  // Use dedicated FnB sidebar on /fnb routes, otherwise fallback to existing sidebars.
+  let SidebarComponent = Sidebar;
+  if (isFnbRoute) {
+    SidebarComponent = FnbSidebar;
+  } else if (selectedMenu) {
+    SidebarComponent = AdminSidebar;
+  }
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#f8f9fa', overflow: 'hidden' }}>

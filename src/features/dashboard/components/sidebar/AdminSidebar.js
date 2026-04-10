@@ -33,6 +33,7 @@ import {
   TransactionMinus,
   Flash,
   Setting2,
+  SearchNormal1,
 } from 'iconsax-react';
 
 const brandColor = '#155DFC';
@@ -68,7 +69,7 @@ export default function AdminSidebar({
     } else if (href.startsWith('/admin/balance/')) {
       return { label: 'Manajemen Saldo', icon: Wallet3 };
     } else if (href.startsWith('/admin/invoice/')) {
-      return { label: 'Manajemen Tagihan', icon: DocumentText };
+      return { label: 'Tagihan', icon: DocumentText };
     } else if (href.startsWith('/admin/retribusi/')) {
       return { label: 'Retribusi', icon: Receipt21 };
     } else if (href.startsWith('/admin/merchant-kso/')) {
@@ -85,7 +86,7 @@ export default function AdminSidebar({
       return { label: 'Manajemen Info dan Berita', icon: InfoCircle };
     } else if (href.startsWith('/admin/sport-center/')) {
       return { label: 'Manajemen Sport Center', icon: Game };
-    } else if (href.startsWith('/admin/fnb/')) {
+    } else if (href.startsWith('/fnb')) {
       return { label: 'Manajemen FnB', icon: Shop };
     } else if (href.startsWith('/admin/aksesibilitas/')) {
       return { label: 'Manajemen Aksesibilitas', icon: Eye };
@@ -114,9 +115,29 @@ export default function AdminSidebar({
       items: [
         {
           id: 'dashboard',
-          label: 'Dashboard',
-          href: '/dashboard',
+          label: selectedMenu === 'fnb' ? 'Dashboard' : 'Dashboard',
+          href: selectedMenu === 'fnb' ? '/fnb' : '/dashboard',
           icon: Home2,
+          children: selectedMenu === 'fnb' ? [
+            {
+              id: 'fnb-operational-overview',
+              label: 'Operational Overview',
+              href: '/fnb/operational-overview',
+              icon: SearchNormal1,
+            },
+            {
+              id: 'fnb-performance-trends',
+              label: 'Performance Trends',
+              href: '/fnb/performance-trends',
+              icon: SearchNormal1,
+            },
+            {
+              id: 'fnb-quick-actions',
+              label: 'Quick Actions',
+              href: '/fnb/quick-actions',
+              icon: SearchNormal1,
+            },
+          ] : undefined,
         },
       ],
     },
@@ -140,35 +161,26 @@ export default function AdminSidebar({
         };
       }
       
+      // Helper function to recursively map children
+      const mapChildren = (children) => {
+        if (!children || !Array.isArray(children)) return undefined;
+        return children.map((child) => ({
+          id: child.id,
+          label: child.label,
+          href: child.href,
+          icon: child.icon || subMenu.icon,
+          children: mapChildren(child.children),
+        }));
+      };
+      
       // Include children if they exist
       const menuItem = {
         id: subMenu.id,
         label: subMenu.label,
         href: subMenu.href,
         icon: subMenu.icon || groupInfo.icon, // Use icon from sub-menu, fallback to parent menu icon
+        children: mapChildren(subMenu.children),
       };
-      
-      if (subMenu.children) {
-        menuItem.children = subMenu.children.map((child) => {
-          const childItem = {
-            id: child.id,
-            label: child.label,
-            href: child.href,
-            icon: child.icon || subMenu.icon,
-          };
-          
-          if (child.children) {
-            childItem.children = child.children.map((grandChild) => ({
-              id: grandChild.id,
-              label: grandChild.label,
-              href: grandChild.href,
-              icon: grandChild.icon || child.icon,
-            }));
-          }
-          
-          return childItem;
-        });
-      }
       
       groupedMenus[groupKey].items.push(menuItem);
     });
@@ -183,27 +195,34 @@ export default function AdminSidebar({
       });
     } else {
       // For non-advance menus, display normally
+      // For invoice menu, don't show label header since "Tagihan" is already a menu item
+      const showLabel = selectedMenu !== 'invoice' && selectedMenu !== 'fnb';
       sidebarSections.push({
         id: 'admin-menu',
-        label: menuConfig.label.toUpperCase(),
-        items: menuConfig.subMenus.map((subMenu) => ({
-          id: subMenu.id,
-          label: subMenu.label,
-          href: subMenu.href,
-          icon: subMenu.icon || menuConfig.icon, // Use icon from sub-menu, fallback to parent menu icon
-          children: subMenu.children ? subMenu.children.map((child) => ({
-            id: child.id,
-            label: child.label,
-            href: child.href,
-            icon: child.icon || subMenu.icon,
-            children: child.children ? child.children.map((grandChild) => ({
-              id: grandChild.id,
-              label: grandChild.label,
-              href: grandChild.href,
-              icon: grandChild.icon || child.icon,
-            })) : undefined,
-          })) : undefined,
-        })),
+        label: showLabel ? menuConfig.label.toUpperCase() : undefined,
+        items: menuConfig.subMenus
+          .filter((subMenu) => !(selectedMenu === 'fnb' && subMenu.id === 'fnb-dashboard'))
+          .map((subMenu) => {
+          // Helper function to recursively map children
+          const mapChildren = (children) => {
+            if (!children || !Array.isArray(children)) return undefined;
+            return children.map((child) => ({
+              id: child.id,
+              label: child.label,
+              href: child.href,
+              icon: child.icon || subMenu.icon,
+              children: mapChildren(child.children),
+            }));
+          };
+          
+          return {
+            id: subMenu.id,
+            label: subMenu.label,
+            href: subMenu.href,
+            icon: subMenu.icon || menuConfig.icon, // Use icon from sub-menu, fallback to parent menu icon
+            children: mapChildren(subMenu.children),
+          };
+        }),
       });
     }
   }
@@ -223,10 +242,10 @@ export default function AdminSidebar({
           borderColor: desktopExpanded ? 'transparent' : 'divider',
         }}
       >
-        <Box
-          sx={{
-            width: desktopExpanded ? 150 : 40,
-            height: 40,
+          <Box
+            sx={{
+            width: desktopExpanded ? (selectedMenu === 'fnb' ? 178 : 150) : 40,
+            height: selectedMenu === 'fnb' && desktopExpanded ? 62 : 40,
             borderRadius: 2,
             flexShrink: 0,
             bgcolor: 'transparent',
@@ -234,18 +253,32 @@ export default function AdminSidebar({
             position: 'relative',
           }}
         >
-          <Image
-            src="/assets/images/logo2.png"
-            alt="Logo"
-            fill
-            sizes={desktopExpanded ? '150px' : '40px'}
-            style={{
-              objectFit: desktopExpanded ? 'contain' : 'cover',
-              objectPosition: desktopExpanded ? 'left center' : 'left center',
-            }}
-            priority
-            draggable={false}
-          />
+          {selectedMenu === 'fnb' && desktopExpanded ? (
+            <Box sx={{ py: 0.4 }}>
+              <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.12em', color: '#1f3d4d', lineHeight: 1.15 }}>
+                EXECUTIVE
+              </Typography>
+              <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.12em', color: '#1f3d4d', lineHeight: 1.15 }}>
+                CULINARY
+              </Typography>
+              <Typography sx={{ mt: 0.5, fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.12em', color: '#8c99a5' }}>
+                FNB OPERATIONS
+              </Typography>
+            </Box>
+          ) : (
+            <Image
+              src="/assets/images/logo2.png"
+              alt="Logo"
+              fill
+              sizes={desktopExpanded ? '150px' : '40px'}
+              style={{
+                objectFit: desktopExpanded ? 'contain' : 'cover',
+                objectPosition: desktopExpanded ? 'left center' : 'left center',
+              }}
+              priority
+              draggable={false}
+            />
+          )}
         </Box>
       </Box>
 
@@ -269,23 +302,6 @@ export default function AdminSidebar({
       <Box sx={{ px: desktopExpanded ? 2 : 1, py: 2 }}>
         {sidebarSections.map((section) => (
           <Box key={section.id} sx={{ mb: 1.5 }}>
-            {desktopExpanded && section.label && (
-              <Typography
-                variant="caption"
-              sx={{
-                color: 'rgba(8,8,8,0.45)',
-                fontWeight: 400,
-                letterSpacing: '0.08em',
-                fontSize: '0.7rem',
-                px: 1,
-                mb: 1,
-                display: 'block',
-              }}
-              >
-                {section.label}
-              </Typography>
-            )}
-
             <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
               {section.items.map((item) => (
                 <SidebarNavItem
