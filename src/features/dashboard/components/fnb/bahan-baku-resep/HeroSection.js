@@ -8,7 +8,6 @@ export default function HeroSection() {
     <PageIntro
       title="Resep & Dokumentasi"
       description="Standard Operating Procedure (SOP) management for kitchen staff. Define precise measurements and cooking sequences for consistent output."
-      chipLabel="Master Version 2.4"
     />
   );
 }
