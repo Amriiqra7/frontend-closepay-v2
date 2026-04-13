@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import FnbStockOpnameScreen from "@/features/dashboard/components/FnbStockOpnamePage";
 
-export default function FnbStockOpnamePage() {
-  return <AdminDashboard title="Stock Opname" />;
+export default function FnbStockOpnameRoute() {
+  return <FnbStockOpnameScreen />;
 }

@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import FnbStockBarangPage from "@/features/dashboard/components/FnbStockBarangPage";
 
-export default function FnbStockBarangPage() {
-  return <AdminDashboard title="Stock Barang" />;
+export default function FnbStockBarangRoute() {
+  return <FnbStockBarangPage />;
 }

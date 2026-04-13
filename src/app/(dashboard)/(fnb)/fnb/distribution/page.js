@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import FnbPermintaanDistribusiPage from "@/features/dashboard/components/FnbPermintaanDistribusiPage";
 
 export default function FnbDistributionPage() {
-  return <AdminDashboard title="Distribution" />;
+  return <FnbPermintaanDistribusiPage />;
 }

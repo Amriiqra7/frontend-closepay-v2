@@ -4,22 +4,54 @@ import React from 'react';
 import {
   Box,
   Button,
+  IconButton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { Box1, Edit2, Trash } from 'iconsax-react';
 import { riceOptions } from './data';
+import FnbDataTable from '../common/FnbDataTable';
 import SurfaceCard from '../common/SurfaceCard';
 import { fnbTypography } from '../common/styles';
 import StatusChip from './StatusChip';
 
 export default function RiceOptionsCard() {
+  const columns = [
+    {
+      accessorKey: 'name',
+      header: 'Isi (Options)',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#111827', fontSize: '0.96rem', fontWeight: 600 }}>
+          {row.original.name}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'sku',
+      header: 'SKU Code',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#6b7280', fontSize: '0.92rem' }}>
+          {row.original.sku}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'price',
+      header: 'Price Offset',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#111827', fontSize: '0.96rem', fontWeight: 700 }}>
+          {row.original.price}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'status',
+      header: 'Availability',
+      Cell: ({ row }) => <StatusChip label={row.original.status} tone={row.original.tone} />,
+    },
+  ];
+
   return (
     <SurfaceCard
       sx={{
@@ -66,44 +98,33 @@ export default function RiceOptionsCard() {
         </Stack>
       </Box>
 
-      <TableContainer sx={{ borderRadius: 2.5, overflow: 'hidden', bgcolor: '#f2f4f7', p: 1.25 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ borderBottom: 'none', color: '#6b7280', fontWeight: 800, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-                Isi (Options)
-              </TableCell>
-              <TableCell sx={{ borderBottom: 'none', color: '#6b7280', fontWeight: 800, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-                SKU Code
-              </TableCell>
-              <TableCell sx={{ borderBottom: 'none', color: '#6b7280', fontWeight: 800, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-                Price Offset
-              </TableCell>
-              <TableCell sx={{ borderBottom: 'none', color: '#6b7280', fontWeight: 800, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-                Availability
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {riceOptions.map((option) => (
-              <TableRow key={option.sku}>
-                <TableCell sx={{ borderBottom: '8px solid #f2f4f7', bgcolor: '#fff', fontSize: '0.98rem', fontWeight: 500 }}>
-                  {option.name}
-                </TableCell>
-                <TableCell sx={{ borderBottom: '8px solid #f2f4f7', bgcolor: '#fff', color: '#6b7280', fontSize: '0.95rem' }}>
-                  {option.sku}
-                </TableCell>
-                <TableCell sx={{ borderBottom: '8px solid #f2f4f7', bgcolor: '#fff', color: '#111827', fontSize: '0.98rem', fontWeight: 700 }}>
-                  {option.price}
-                </TableCell>
-                <TableCell sx={{ borderBottom: '8px solid #f2f4f7', bgcolor: '#fff' }}>
-                  <StatusChip label={option.status} tone={option.tone} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <FnbDataTable
+        columns={columns}
+        data={riceOptions}
+        getRowId={(row) => row.sku}
+        initialPageSize={5}
+        pageSizeOptions={[5, 10, 25]}
+        containerSx={{
+          borderRadius: 2.5,
+          overflow: 'hidden',
+          border: '1px solid #edf1f5',
+          bgcolor: '#fff',
+        }}
+        renderRowActions={() => (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Tooltip title="Edit" arrow>
+              <IconButton size="small" sx={{ color: '#ed6c02', '&:hover': { bgcolor: 'rgba(237, 108, 2, 0.08)' } }}>
+                <Edit2 size={18} color="#ed6c02" variant="Linear" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Hapus" arrow>
+              <IconButton size="small" sx={{ color: '#d32f2f', '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.08)' } }}>
+                <Trash size={18} color="#d32f2f" variant="Linear" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )}
+      />
     </SurfaceCard>
   );
 }

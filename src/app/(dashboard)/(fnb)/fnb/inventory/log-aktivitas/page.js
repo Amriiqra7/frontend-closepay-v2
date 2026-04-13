@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import FnbLogAktivitasPage from "@/features/dashboard/components/FnbLogAktivitasPage";
 
-export default function FnbLogAktivitasPage() {
-  return <AdminDashboard title="Log Aktivitas" />;
+export default function FnbLogAktivitasRoute() {
+  return <FnbLogAktivitasPage />;
 }

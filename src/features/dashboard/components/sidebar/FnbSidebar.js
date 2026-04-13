@@ -13,7 +13,6 @@ import Image from 'next/image';
 import {
   Box1,
   ClipboardText,
-  Danger,
   Home2,
   MessageQuestion,
   ReceiptSearch,
@@ -77,12 +76,6 @@ const mainItems = [
         href: '/fnb/inventory/log-aktivitas',
         icon: ReceiptSearch,
       },
-      {
-        id: 'fnb-expired-tracking',
-        label: 'Expired Tracking',
-        href: '/fnb/inventory/expired-tracking',
-        icon: Danger,
-      },
     ],
   },
   {
@@ -90,40 +83,12 @@ const mainItems = [
     label: 'Distribution',
     href: '/fnb/distribution',
     icon: TruckFast,
-    children: [
-      {
-        id: 'fnb-permintaan-distribusi',
-        label: 'Permintaan & Distribusi',
-        href: '/fnb/distribution/permintaan-distribusi',
-        icon: TruckFast,
-      },
-      {
-        id: 'fnb-gudang-outlet',
-        label: 'Gudang Outlet',
-        href: '/fnb/distribution/gudang-outlet',
-        icon: Shop,
-      },
-    ],
   },
   {
     id: 'fnb-stock-opname',
     label: 'Stock Opname',
     href: '/fnb/stock-opname',
     icon: ClipboardText,
-    children: [
-      {
-        id: 'fnb-laporan-baru',
-        label: 'Laporan Baru',
-        href: '/fnb/stock-opname/laporan-baru',
-        icon: ClipboardText,
-      },
-      {
-        id: 'fnb-riwayat-opname',
-        label: 'Riwayat Opname',
-        href: '/fnb/stock-opname/riwayat-opname',
-        icon: ReceiptSearch,
-      },
-    ],
   },
 ];
 

@@ -59,7 +59,9 @@ const CaptchaDialog = memo(function CaptchaDialog({
   open,
   challenge,
   captchaValue,
+  emailValue,
   onCaptchaChange,
+  onEmailChange,
   onVerify,
 }) {
   const captchaImage = challenge?.captcha?.data?.captchaImage;
@@ -174,6 +176,17 @@ const CaptchaDialog = memo(function CaptchaDialog({
 
           {!challenge?.captchaLoading && captchaImage ? (
             <TextField
+              label="Email"
+              fullWidth
+              type="email"
+              value={emailValue}
+              onChange={(event) => onEmailChange(event.target.value)}
+              InputProps={{ sx: { borderRadius: 3 } }}
+            />
+          ) : null}
+
+          {!challenge?.captchaLoading && captchaImage ? (
+            <TextField
               label="Masukkan captcha"
               fullWidth
               value={captchaValue}
@@ -191,7 +204,7 @@ const CaptchaDialog = memo(function CaptchaDialog({
               variant="contained"
               fullWidth
               onClick={onVerify}
-              disabled={!captchaValue.trim() || challenge?.verifyLoading}
+              disabled={!captchaValue.trim() || !emailValue.trim() || challenge?.verifyLoading}
               sx={{ py: 1.4, borderRadius: 3, fontWeight: 700 }}
             >
               {challenge?.verifyLoading ? "Memverifikasi captcha..." : "Kirim Captcha"}
@@ -244,6 +257,7 @@ function LoginForm({ prefix }) {
   const [captchaOpen, setCaptchaOpen] = useState(false);
   const [captchaChallenge, setCaptchaChallenge] = useState(null);
   const [captchaValue, setCaptchaValue] = useState("");
+  const [captchaEmail, setCaptchaEmail] = useState("");
   const [otpOpen, setOtpOpen] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
   const [formValues, setFormValues] = useState({
@@ -361,6 +375,7 @@ function LoginForm({ prefix }) {
       setCaptchaOpen(false);
       setCaptchaChallenge(null);
       setCaptchaValue("");
+      setCaptchaEmail("");
       requestedCaptchaKeyRef.current = "";
       showSuccessToast(response?.message || "Login berhasil");
       router.push("/dashboard");
@@ -382,6 +397,7 @@ function LoginForm({ prefix }) {
         saveDeviceChallenge(challengePayload);
         setCaptchaChallenge(challengePayload);
         setCaptchaValue("");
+        setCaptchaEmail(formValues.username);
         setCaptchaOpen(true);
         return;
       }
@@ -394,7 +410,7 @@ function LoginForm({ prefix }) {
 
   const handleVerifyCaptcha = async () => {
     const accessToken = captchaChallenge?.additionalData?.access_token;
-    if (!accessToken || !captchaValue.trim()) {
+    if (!accessToken || !captchaValue.trim() || !captchaEmail.trim()) {
       return;
     }
 
@@ -418,13 +434,13 @@ function LoginForm({ prefix }) {
         accessToken,
         captchaHashedValue,
         codeVerifier: verifyPkceBundle.codeVerifier,
-        email: formValues.username,
+        email: captchaEmail.trim(),
         codeChallenge: verifyPkceBundle.codeChallenge,
         timestamp: verifyPkceBundle.timestamp,
       });
 
       setCaptchaOpen(false);
-      setOtpEmail(formValues.username);
+      setOtpEmail(captchaEmail.trim());
       setOtpOpen(true);
       setCaptchaValue("");
     } catch (error) {
@@ -528,7 +544,9 @@ function LoginForm({ prefix }) {
         open={captchaOpen}
         challenge={captchaChallenge}
         captchaValue={captchaValue}
+        emailValue={captchaEmail}
         onCaptchaChange={setCaptchaValue}
+        onEmailChange={setCaptchaEmail}
         onVerify={handleVerifyCaptcha}
       />
       <OtpDialog open={otpOpen} email={otpEmail} />

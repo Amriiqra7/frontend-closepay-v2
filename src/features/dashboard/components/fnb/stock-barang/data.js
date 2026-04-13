@@ -1,0 +1,87 @@
+export const stockStats = [
+  {
+    label: 'Total SKUs',
+    value: '1,284',
+    hint: '+12%',
+    tone: '#0d4f63',
+    accent: '#b9e5fb',
+  },
+  {
+    label: 'Low Stock Alerts',
+    value: '28',
+    hint: 'Urgent',
+    tone: '#d92d20',
+    accent: '#fee4e2',
+  },
+  {
+    label: 'Expiring Soon (30D)',
+    value: '142',
+    hint: 'Monitor',
+    tone: '#8a4b08',
+    accent: '#ffe7c2',
+  },
+  {
+    label: 'Inventory Value',
+    value: 'Rp 2.4B',
+    hint: 'Updated 2m ago',
+    tone: '#5b6472',
+    accent: '#eef2f6',
+  },
+];
+
+export const stockRows = [
+  {
+    warehouse: 'Gudang Pusat A1',
+    itemId: 'SKU-CF-B821',
+    itemName: 'Coffee Arabica Blend',
+    meta: 'House Signature Roast',
+    qty: '450',
+    unit: 'Kilogram',
+    status: 'Available',
+    statusTone: 'info',
+    price: 'Rp 125.000',
+    expiry: '12 Oct 2025',
+  },
+  {
+    warehouse: 'Cold Storage 1',
+    itemId: 'SKU-MT-B912',
+    itemName: 'Wagyu Beef Striploin',
+    meta: 'Marble 5 Amazing',
+    qty: '12',
+    unit: 'Kilogram',
+    status: 'Out of Stock',
+    statusTone: 'danger',
+    price: 'Rp 2.150.000',
+    expiry: '04 Apr 2024',
+  },
+  {
+    warehouse: 'Gudang Pusat B2',
+    itemId: 'SKU-SP-4421',
+    itemName: 'Organic Quinoa',
+    meta: 'Bulk Pack 25kg',
+    qty: '85',
+    unit: 'Pack',
+    status: 'Low Stock',
+    statusTone: 'warning',
+    price: 'Rp 450.000',
+    expiry: '28 Dec 2026',
+  },
+  {
+    warehouse: 'Gudang Pusat A1',
+    itemId: 'SKU-OIL-118',
+    itemName: 'Extra Virgin Olive Oil',
+    meta: 'Italian Cold Pressed',
+    qty: '2,400',
+    unit: 'Litre',
+    status: 'Available',
+    statusTone: 'info',
+    price: 'Rp 85.000',
+    expiry: '15 Jan 2027',
+  },
+];
+
+export const inventoryAlerts = [
+  'Stock arrival: SKU-OIL-110 (2000L) verified by Warehouse Admin',
+  'Warning: SKU-MT-0912 reached critical re-order point',
+  'System: Database backup completed successfully',
+];

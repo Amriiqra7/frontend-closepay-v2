@@ -7,21 +7,18 @@ import {
   Button,
   Chip,
   Divider,
+  IconButton,
   MenuItem,
   Paper,
   Stack,
   Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
-import { Add, DocumentUpload, Gallery, Trash } from 'iconsax-react';
+import { Add, DocumentUpload, Edit2, Gallery, Trash } from 'iconsax-react';
 import { PiForkKnifeFill } from 'react-icons/pi';
+import FnbDataTable from '../common/FnbDataTable';
 import ProductList from './ProductList';
 import { addOnGroups, ingredients, statCards } from './data';
 import { SectionTitle, StatCard, SummaryMetric } from './parts';
@@ -46,6 +43,53 @@ const adminLabelSx = {
 
 export default function FnbMenuVariationsPage() {
   const [selectedProduct, setSelectedProduct] = React.useState(1);
+  const ingredientColumns = [
+    {
+      accessorKey: 'name',
+      header: 'Ingredient',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#111827', fontWeight: 600, fontSize: '0.92rem' }}>
+          {row.original.name}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'id',
+      header: 'Ingredient ID',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#6b7280', fontSize: '0.9rem' }}>
+          {row.original.id}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'qty',
+      header: 'Quantity',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#111827', fontWeight: 600, fontSize: '0.92rem' }}>
+          {row.original.qty}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'unit',
+      header: 'Unit',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#4b5563', fontSize: '0.9rem' }}>
+          {row.original.unit}
+        </Typography>
+      ),
+    },
+    {
+      accessorKey: 'price',
+      header: 'Line Item',
+      Cell: ({ row }) => (
+        <Typography sx={{ color: '#111827', fontWeight: 700, fontSize: '0.92rem' }}>
+          {row.original.price}
+        </Typography>
+      ),
+    },
+  ];
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -272,30 +316,33 @@ export default function FnbMenuVariationsPage() {
               }
             />
 
-            <TableContainer sx={{ border: '1px solid #edf1f5', borderRadius: 2.5, overflow: 'hidden' }}>
-              <Table>
-                <TableHead sx={{ bgcolor: '#fafbfd' }}>
-                  <TableRow>
-                    {['Ingredient', 'Ingredient ID', 'Quantity', 'Unit', 'Line Item'].map((head) => (
-                      <TableCell key={head} sx={{ fontSize: '0.7rem', fontWeight: 800, color: '#7b8794', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>
-                        {head}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {ingredients.map((ingredient) => (
-                    <TableRow key={ingredient.id}>
-                      <TableCell sx={{ fontWeight: 600, minWidth: 170 }}>{ingredient.name}</TableCell>
-                      <TableCell sx={{ color: '#6b7280' }}>{ingredient.id}</TableCell>
-                      <TableCell>{ingredient.qty}</TableCell>
-                      <TableCell>{ingredient.unit}</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>{ingredient.price}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <FnbDataTable
+              columns={ingredientColumns}
+              data={ingredients}
+              getRowId={(row) => row.id}
+              initialPageSize={5}
+              pageSizeOptions={[5, 10, 25]}
+              containerSx={{
+                borderRadius: 2.5,
+                overflow: 'hidden',
+                border: '1px solid #edf1f5',
+                bgcolor: '#fff',
+              }}
+              renderRowActions={() => (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Tooltip title="Edit" arrow>
+                    <IconButton size="small" sx={{ color: '#ed6c02', '&:hover': { bgcolor: 'rgba(237, 108, 2, 0.08)' } }}>
+                      <Edit2 size={18} color="#ed6c02" variant="Linear" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Hapus" arrow>
+                    <IconButton size="small" sx={{ color: '#d32f2f', '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.08)' } }}>
+                      <Trash size={18} color="#d32f2f" variant="Linear" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+            />
 
             <Box sx={{ mt: 2.5, display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 2 }}>
               <SummaryMetric label="Total Recipe HPP" value="$ 3.15" />
