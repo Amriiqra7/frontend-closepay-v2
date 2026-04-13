@@ -37,6 +37,21 @@ export const authentication = {
             ),
         { operationId: "request_captcha" }
     ),
+    refreshCaptcha: addProps(
+        ({ accessToken, ...body }) =>
+            handleRequest(
+                axiosInstance.put(
+                    "/authentication/admin/new-device/refresh_captcha",
+                    removeEmptyParams(body),
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+            ),
+        { operationId: "refresh_captcha" }
+    ),
     verifyCaptcha: addProps(
         ({ accessToken, ...body }) =>
             handleRequest(
@@ -51,5 +66,20 @@ export const authentication = {
                 )
             ),
         { operationId: "verify_captcha" }
+    ),
+    verifyOtp: addProps(
+        ({ accessToken, ...body }) =>
+            handleRequest(
+                axiosInstance.post(
+                    "/authentication/admin/new-device/verify_otp",
+                    removeEmptyParams(body),
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+            ),
+        { operationId: "verify_otp" }
     ),
 };
