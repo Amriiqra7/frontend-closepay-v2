@@ -887,6 +887,7 @@ function LoginForm({ prefix }) {
               variant="outlined"
               fullWidth
               margin="normal"
+              autoComplete="username"
               value={formValues.username}
               onChange={(event) =>
                 setFormValues((prev) => ({
@@ -894,6 +895,11 @@ function LoginForm({ prefix }) {
                   username: event.target.value,
                 }))
               }
+              slotProps={{
+                htmlInput: {
+                  suppressHydrationWarning: true,
+                },
+              }}
               InputProps={{ sx: { borderRadius: 4 } }}
             />
             <TextField
@@ -902,6 +908,7 @@ function LoginForm({ prefix }) {
               variant="outlined"
               fullWidth
               margin="normal"
+              autoComplete="current-password"
               value={formValues.password}
               onChange={(event) =>
                 setFormValues((prev) => ({
@@ -909,6 +916,11 @@ function LoginForm({ prefix }) {
                   password: event.target.value,
                 }))
               }
+              slotProps={{
+                htmlInput: {
+                  suppressHydrationWarning: true,
+                },
+              }}
               InputProps={{ sx: { borderRadius: 4 } }}
             />
             <Button
