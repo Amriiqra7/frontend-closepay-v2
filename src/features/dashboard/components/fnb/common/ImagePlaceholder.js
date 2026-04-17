@@ -30,13 +30,13 @@ export default function ImagePlaceholder({
           width: 64,
           height: 64,
           borderRadius: '50%',
-          bgcolor: '#e8f1f5',
+          bgcolor: '#f0f4ff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Gallery size={30} color="#0d4f63" variant="Bold" />
+        <Gallery size={30} color="#155DFC" variant="Bold" />
       </Box>
       <Typography sx={{ color: '#4b5563', fontSize: '0.9rem', fontWeight: 600 }}>
         {title}

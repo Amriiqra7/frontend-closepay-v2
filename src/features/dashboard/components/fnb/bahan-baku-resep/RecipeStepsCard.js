@@ -37,7 +37,7 @@ function StepItem({ step, last }) {
           width: 42,
           height: 42,
           borderRadius: 1.5,
-          bgcolor: '#0d4f63',
+          bgcolor: '#155DFC',
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -55,7 +55,7 @@ function StepItem({ step, last }) {
           <Typography sx={{ color: '#111827', fontSize: '1.05rem', fontWeight: 800 }}>
             {step.title}
           </Typography>
-          <Box sx={{ px: 1.6, py: 0.45, borderRadius: 999, bgcolor: '#b9e5fb', color: '#0d4f63', fontWeight: 800, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <Box sx={{ px: 1.6, py: 0.45, borderRadius: 999, bgcolor: '#b9e5fb', color: '#155DFC', fontWeight: 800, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             {step.duration}
           </Box>
         </Box>
@@ -94,7 +94,7 @@ export default function RecipeStepsCard() {
           <Button
             variant="contained"
             startIcon={<Add size={16} color="#fff" variant="Bold" />}
-            sx={{ height: 38, borderRadius: 1.5, bgcolor: '#0d4f63', boxShadow: 'none', '&:hover': { bgcolor: '#0a4354', boxShadow: 'none' } }}
+            sx={{ height: 38, borderRadius: 1.5, bgcolor: '#155DFC', boxShadow: 'none', '&:hover': { bgcolor: '#0d4fc7', boxShadow: 'none' } }}
           >
             New Step
           </Button>

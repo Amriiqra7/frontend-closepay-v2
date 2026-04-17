@@ -77,7 +77,7 @@ export const stockChartOptions = {
   },
   yaxis: { show: false },
   fill: { opacity: 1 },
-  colors: ['#c4d0da', '#0d4f63'],
+  colors: ['#c4d0da', '#155DFC'],
   tooltip: { theme: 'light' },
 };
 

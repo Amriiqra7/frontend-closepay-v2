@@ -3,7 +3,6 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import { Add, Shop } from 'iconsax-react';
-import PageIntro from '../common/PageIntro';
 import ActionButton from '../add-ons-toppings/ActionButton';
 import FilterBar from './FilterBar';
 import InventoryTable from './InventoryTable';
@@ -13,13 +12,11 @@ export default function FnbStockBarangPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-        <PageIntro
-          title="Central Inventory"
-          description="Live status of stock distribution and procurement at Central Warehouse."
-          maxWidth={680}
-        />
+        <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 480px' }, minWidth: 0 }}>
+          <FilterBar />
+        </Box>
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ ml: { md: 'auto' } }}>
           <ActionButton icon={<Shop size={18} color="#111827" variant="Linear" />}>
             New Warehouse
           </ActionButton>
@@ -29,7 +26,6 @@ export default function FnbStockBarangPage() {
         </Stack>
       </Box>
 
-      <FilterBar />
       <StatsRow />
       <InventoryTable />
     </Box>

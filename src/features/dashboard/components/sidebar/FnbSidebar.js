@@ -22,7 +22,7 @@ import {
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
 import SidebarNavItem from './SidebarNavItem';
 
-const brandColor = '#1d6d8d';
+const brandColor = '#155DFC';
 
 const mainItems = [
   {

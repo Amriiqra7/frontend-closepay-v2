@@ -278,7 +278,7 @@ export default function Header({
                 fontWeight: 400,
                 fontSize: '0.95rem',
                 boxShadow: 'none',
-                color: isFnbDashboard ? '#1d6d8d' : '#fff',
+                color: isFnbDashboard ? '#155DFC' : '#fff',
               }}
             >
               EA

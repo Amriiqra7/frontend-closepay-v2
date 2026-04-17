@@ -29,7 +29,7 @@ export default function SelectedMenuCard() {
             width: 42,
             height: 42,
             borderRadius: 1.5,
-            bgcolor: '#0d4f63',
+            bgcolor: '#155DFC',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

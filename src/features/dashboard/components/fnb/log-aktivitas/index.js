@@ -3,7 +3,6 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import { Add, DocumentUpload } from 'iconsax-react';
-import PageIntro from '../common/PageIntro';
 import ActionButton from '../add-ons-toppings/ActionButton';
 import ActivityLogTable from './ActivityLogTable';
 import ExpiredTrackingPanel from './ExpiredTrackingPanel';
@@ -12,13 +11,7 @@ import ProximityAlerts from './ProximityAlerts';
 export default function FnbLogAktivitasPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-        <PageIntro
-          title="Inventory Activity & Tracking"
-          description="Monitoring stock movement and shelf-life compliance across central warehouses."
-          maxWidth={720}
-        />
-
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
           <ActionButton icon={<DocumentUpload size={18} color="#111827" variant="Linear" />}>
             Export Report

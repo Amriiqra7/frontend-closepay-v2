@@ -485,9 +485,8 @@ export default function PageHeader() {
   };
 
   // Jangan tampilkan breadcrumb dan title jika di /dashboard
-  const isFnbRoute = pathname.startsWith('/fnb');
-  const showBreadcrumb = pathname !== '/dashboard' && !isFnbRoute;
-  const showTitle = pathname !== '/dashboard' && !isFnbRoute;
+  const showBreadcrumb = pathname !== '/dashboard';
+  const showTitle = pathname !== '/dashboard';
 
   return (
     <Box>

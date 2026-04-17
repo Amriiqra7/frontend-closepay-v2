@@ -7,7 +7,7 @@ export default function StatusChip({ label, tone }) {
   const palette =
     tone === 'warning'
       ? { bg: '#ffd8bf', color: '#7c3f12' }
-      : { bg: '#b9e5fb', color: '#0d4f63' };
+      : { bg: '#b9e5fb', color: '#155DFC' };
 
   return (
     <Chip

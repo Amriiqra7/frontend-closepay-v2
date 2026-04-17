@@ -67,6 +67,31 @@ export default function DashboardLayout({ children }) {
   const router = useRouter();
   const { selectedMenu, selectedCompany, isHydrated } = useAdminMenu();
   const isFnbRoute = pathname.startsWith('/fnb');
+  const fnbTextScaleSx = isFnbRoute
+    ? {
+        '& .MuiButton-root': {
+          fontSize: '0.82rem',
+          lineHeight: 1.35,
+        },
+        '& .MuiInputBase-input': {
+          fontSize: '0.82rem',
+          lineHeight: 1.35,
+        },
+        '& .MuiFormLabel-root': {
+          fontSize: '0.78rem',
+        },
+        '& .MuiChip-label': {
+          fontSize: '0.7rem',
+        },
+        '& .MuiTableCell-root': {
+          fontSize: '0.8rem',
+          lineHeight: 1.4,
+        },
+        '& .MuiMenuItem-root': {
+          fontSize: '0.82rem',
+        },
+      }
+    : {};
 
   const handleDrawerToggle = () => {
     if (typeof window !== 'undefined') {
@@ -164,7 +189,10 @@ export default function DashboardLayout({ children }) {
           <PageHeader />
           
           {/* Page Content - No overflow here, let parent handle scrolling */}
-          <Box sx={{ mt: 2, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <Box
+            data-fnb-ui={isFnbRoute ? 'true' : 'false'}
+            sx={{ mt: 2, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, ...fnbTextScaleSx }}
+          >
             <Suspense fallback={<PageLoading />}>
               {children}
             </Suspense>

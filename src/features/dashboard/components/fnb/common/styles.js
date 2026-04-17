@@ -1,6 +1,6 @@
 export const fnbPalette = {
-  primary: '#0d4f63',
-  primaryDark: '#0a4354',
+  primary: '#155DFC',
+  primaryDark: '#0d4fc7',
   textPrimary: '#111827',
   textSecondary: '#4b5563',
   textMuted: '#6b7280',
@@ -11,40 +11,49 @@ export const fnbPalette = {
   placeholderBorder: '#cfd8e3',
 };
 
+export const fnbTypeScale = {
+  display: { xs: '1.7rem', md: '2rem' },
+  sectionTitle: '1.05rem',
+  body: '0.9rem',
+  caption: '0.76rem',
+  control: '0.82rem',
+  table: '0.8rem',
+};
+
 export const fnbTypography = {
   pageTitle: {
     color: fnbPalette.textPrimary,
-    fontSize: { xs: '2.05rem', md: '2.45rem' },
+    fontSize: fnbTypeScale.display,
     fontWeight: 800,
-    lineHeight: 1.08,
+    lineHeight: 1.12,
   },
   pageDescription: {
     mt: 1.2,
     color: fnbPalette.textSecondary,
-    fontSize: '1rem',
-    lineHeight: 1.5,
+    fontSize: fnbTypeScale.body,
+    lineHeight: 1.6,
   },
   sectionLabel: {
     color: fnbPalette.textMuted,
-    fontSize: '0.72rem',
+    fontSize: fnbTypeScale.caption,
     fontWeight: 800,
     letterSpacing: '0.12em',
     textTransform: 'uppercase',
   },
   sectionTitle: {
     color: fnbPalette.textPrimary,
-    fontSize: '1.15rem',
+    fontSize: fnbTypeScale.sectionTitle,
     fontWeight: 800,
   },
   bodySm: {
     color: fnbPalette.textMuted,
-    fontSize: '0.875rem',
+    fontSize: fnbTypeScale.control,
     fontWeight: 500,
   },
   bodyMd: {
     color: fnbPalette.textSecondary,
-    fontSize: '0.98rem',
-    lineHeight: 1.6,
+    fontSize: fnbTypeScale.body,
+    lineHeight: 1.65,
   },
 };
 

@@ -34,7 +34,7 @@ const fieldSx = {
       borderColor: '#d8dde6',
     },
     '&.Mui-focused fieldset': {
-      borderColor: '#0d4f63',
+      borderColor: '#155DFC',
     },
   },
   '& .MuiInputBase-input': {
@@ -61,14 +61,14 @@ export default function StockOpnameForm() {
             width: 58,
             height: 58,
             borderRadius: 2.5,
-            bgcolor: '#e8f1f5',
+            bgcolor: '#f0f4ff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
           }}
         >
-          <Edit2 size={24} color="#0d4f63" variant="Bold" />
+          <Edit2 size={24} color="#155DFC" variant="Bold" />
         </Box>
       </Box>
 
@@ -160,12 +160,12 @@ export default function StockOpnameForm() {
             minWidth: 188,
             height: 50,
             borderRadius: 2,
-            bgcolor: '#0d4f63',
+            bgcolor: '#155DFC',
             boxShadow: '0 14px 28px rgba(13, 79, 99, 0.22)',
             fontSize: '0.95rem',
             fontWeight: 800,
             '&:hover': {
-              bgcolor: '#0a4354',
+              bgcolor: '#0d4fc7',
             },
           }}
         >

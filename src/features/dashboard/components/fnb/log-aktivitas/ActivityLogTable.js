@@ -12,7 +12,7 @@ function TypeChip({ label, tone }) {
       ? { bg: '#ffe0dc', color: '#d92d20' }
       : tone === 'neutral'
         ? { bg: '#eef2f6', color: '#6b7280' }
-        : { bg: '#b9e5fb', color: '#0d4f63' };
+        : { bg: '#b9e5fb', color: '#155DFC' };
 
   return (
     <Chip

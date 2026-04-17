@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { Box, Stack } from '@mui/material';
-import { AddCircle, Filter } from 'iconsax-react';
+import { AddCircle } from 'iconsax-react';
 import ActionButton from './ActionButton';
-import PageIntro from '../common/PageIntro';
+import FnbFilterCollapse from '../common/FnbFilterCollapse';
 import GroupOptionCard from './GroupOptionCard';
 import RiceOptionsCard from './RiceOptionsCard';
 import StatsSidebar from './StatsSidebar';
@@ -13,16 +13,9 @@ import { addOnGroups } from './data';
 export default function FnbAddOnsToppingsPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-        <PageIntro
-          title="Add-Ons & Toppings"
-          description="Manage secondary ingredients, customizable toppings, and optional add-ons. Changes here sync globally across all menus."
-        />
-
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <ActionButton icon={<Filter size={18} color="#111827" variant="Linear" />}>
-            Filter
-          </ActionButton>
+          <FnbFilterCollapse buttonText="Filter" searchPlaceholder="Group or topping..." />
           <ActionButton icon={<AddCircle size={18} color="#fff" variant="Bold" />} dark>
             Create New Group
           </ActionButton>

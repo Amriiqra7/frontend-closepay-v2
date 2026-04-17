@@ -7,7 +7,7 @@ import { optimizationStats } from './data';
 
 export default function OptimizationPanel() {
   return (
-    <SurfaceCard sx={{ p: 3.25, bgcolor: '#0d4f63', color: '#fff' }}>
+    <SurfaceCard sx={{ p: 3.25, bgcolor: '#155DFC', color: '#fff' }}>
       <Typography sx={{ color: '#ffffff', fontSize: '1.15rem', fontWeight: 800 }}>
         Warehouse Optimization
       </Typography>

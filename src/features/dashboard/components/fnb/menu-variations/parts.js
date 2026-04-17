@@ -8,7 +8,7 @@ export function SectionTitle({ title, action }) {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1.5, mb: 2.25, flexWrap: 'wrap' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Box sx={{ width: 3, height: 18, borderRadius: 999, bgcolor: '#0d4f63' }} />
+        <Box sx={{ width: 3, height: 18, borderRadius: 999, bgcolor: '#155DFC' }} />
         <Typography sx={{ ...fnbTypography.sectionLabel, color: '#0f172a' }}>
           {title}
         </Typography>
@@ -28,7 +28,7 @@ export function StatCard({ card }) {
         p: 2.5,
         borderRadius: 3,
         border: '1px solid #edf1f5',
-        bgcolor: card.dark ? '#0d4f63' : '#fff',
+        bgcolor: card.dark ? '#155DFC' : '#fff',
         color: card.dark ? '#fff' : '#111827',
         boxShadow: card.dark ? '0 12px 24px rgba(13, 79, 99, 0.24)' : '0 10px 30px rgba(15, 23, 42, 0.04)',
         minHeight: 132,
@@ -52,7 +52,7 @@ export function StatCard({ card }) {
 
       {card.dark ? (
         <Box sx={{ mt: 2.5, height: 6, borderRadius: 999, bgcolor: 'rgba(255,255,255,0.18)' }}>
-          <Box sx={{ width: '78%', height: '100%', borderRadius: 999, bgcolor: '#d8edf4' }} />
+          <Box sx={{ width: '78%', height: '100%', borderRadius: 999, bgcolor: '#d6e4ff' }} />
         </Box>
       ) : null}
     </Paper>
@@ -67,12 +67,12 @@ export function SummaryMetric({ label, value, subtle, dark = false, accent = fal
         p: 1.5,
         borderRadius: 2,
         minHeight: 92,
-        border: dark ? 'none' : accent ? '1px solid #7aa5b4' : '1px solid #e5edf4',
-        bgcolor: dark ? '#0d4f63' : accent ? '#cfe1e8' : '#f7fafc',
+        border: dark ? 'none' : accent ? '1px solid #82b1ff' : '1px solid #e5edf4',
+        bgcolor: dark ? '#155DFC' : accent ? '#d6e4ff' : '#f7fafc',
         color: dark ? '#fff' : '#0f172a',
       }}
     >
-      <Typography sx={{ color: dark ? '#ffffff' : accent ? '#496876' : '#7b8794', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase' }}>
+      <Typography sx={{ color: dark ? '#ffffff' : accent ? '#1c448e' : '#7b8794', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase' }}>
         {label}
       </Typography>
       <Typography sx={{ mt: 1, color: dark ? '#ffffff' : '#0f172a', fontSize: '1.65rem', fontWeight: 800 }}>

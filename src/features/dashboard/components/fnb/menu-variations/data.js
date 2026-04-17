@@ -1,10 +1,10 @@
 import { AddCircle, Edit2, Eye } from 'iconsax-react';
 
 export const statCards = [
-  { title: 'Total Items', value: '128', hint: '+4', tone: '#0d4f63', soft: '#eaf4f8', icon: Edit2 },
-  { title: 'Avg. Margin', value: '64.2%', hint: 'On Track', tone: '#55a7d7', soft: '#eaf5fd', icon: Eye },
+  { title: 'Total Items', value: '128', hint: '+4', tone: '#155DFC', soft: '#f0f4ff', icon: Edit2 },
+  { title: 'Avg. Margin', value: '64.2%', hint: 'On Track', tone: '#155DFC', soft: '#f0f4ff', icon: Eye },
   { title: 'Critical Stock', value: '12', hint: '12 items', tone: '#d92d20', soft: '#fdecec', icon: AddCircle },
-  { title: 'Public View', value: '114', hint: 'Public View', tone: '#0d4f63', soft: '#0d4f63', icon: Eye, dark: true },
+  { title: 'Public View', value: '114', hint: 'Public View', tone: '#155DFC', soft: '#155DFC', icon: Eye, dark: true },
 ];
 
 export const products = [

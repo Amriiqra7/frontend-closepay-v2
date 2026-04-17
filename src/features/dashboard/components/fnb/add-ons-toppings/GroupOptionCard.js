@@ -81,7 +81,7 @@ export default function GroupOptionCard({ group }) {
                   />
                 ) : null}
               </Box>
-              <Typography sx={{ color: '#0d4f63', fontWeight: 800, fontSize: '0.95rem', flexShrink: 0 }}>
+              <Typography sx={{ color: '#155DFC', fontWeight: 800, fontSize: '0.95rem', flexShrink: 0 }}>
                 {option.price}
               </Typography>
             </Box>

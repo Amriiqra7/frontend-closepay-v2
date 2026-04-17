@@ -11,20 +11,6 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 export default function FnbDashboard() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'space-between', gap: 2 }}>
-        <Box>
-          <Typography sx={{ fontSize: { xs: '1.9rem', md: '2.3rem' }, fontWeight: 800, color: '#17212b', lineHeight: 1.1 }}>
-            Dashboard
-          </Typography>
-          <Typography sx={{ mt: 0.5, color: '#708090', fontSize: '0.98rem', fontWeight: 500 }}>
-            Operational overview for{' '}
-            <Box component="span" sx={{ color: '#1e6d8d', fontWeight: 800 }}>
-              May 24, 2024
-            </Box>
-          </Typography>
-        </Box>
-      </Box>
-
       <Box
         sx={{
           display: 'grid',
@@ -57,7 +43,7 @@ export default function FnbDashboard() {
               </Typography>
             </Box>
             <Stack direction="row" spacing={1}>
-              <Chip label="Inbound" size="small" sx={{ bgcolor: '#eef3f7', color: '#0d4f63', fontWeight: 700 }} />
+              <Chip label="Inbound" size="small" sx={{ bgcolor: '#eef3f7', color: '#155DFC', fontWeight: 700 }} />
               <Chip label="Outbound" size="small" sx={{ bgcolor: '#f6f8fa', color: '#7c8793', fontWeight: 700 }} />
             </Stack>
           </Box>
@@ -72,7 +58,7 @@ export default function FnbDashboard() {
               <Typography sx={{ color: '#17212b', fontSize: '1.12rem', fontWeight: 800 }}>
                 Recently Expired
               </Typography>
-              <Typography sx={{ color: '#1d6d8d', fontWeight: 700, fontSize: '0.82rem' }}>
+              <Typography sx={{ color: '#155DFC', fontWeight: 700, fontSize: '0.82rem' }}>
                 View All
               </Typography>
             </Box>

@@ -39,7 +39,7 @@ export default function ProductList({ selectedProduct, onSelect }) {
               sx={{
                 p: 1.4,
                 borderRadius: 2.5,
-                border: isSelected ? '2px solid #0d4f63' : '1px solid #eef2f6',
+                border: isSelected ? '2px solid #155DFC' : '1px solid #eef2f6',
                 bgcolor: '#fff',
                 boxShadow: isSelected ? '0 8px 24px rgba(13, 79, 99, 0.12)' : 'none',
                 alignItems: 'center',
@@ -51,15 +51,15 @@ export default function ProductList({ selectedProduct, onSelect }) {
                   width: 48,
                   height: 48,
                   borderRadius: 2,
-                  bgcolor: '#eef4f7',
-                  color: '#0d4f63',
+                  bgcolor: '#f4f7ff',
+                  color: '#155DFC',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}
               >
-                <Box1 size={22} color="#0d4f63" variant="Bold" />
+                <Box1 size={22} color="#155DFC" variant="Bold" />
               </Box>
 
               <ListItemText
@@ -104,7 +104,7 @@ export default function ProductList({ selectedProduct, onSelect }) {
           borderRadius: 2,
           borderStyle: 'dashed',
           borderColor: '#bfd5e1',
-          color: '#0d4f63',
+          color: '#155DFC',
         }}
       >
         Load 24 More Products

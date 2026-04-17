@@ -1,5 +1,5 @@
 export const distributionStats = [
-  { label: 'Pending Requests', value: '12', tone: '#0d4f63', accent: '#b9e5fb' },
+  { label: 'Pending Requests', value: '12', tone: '#155DFC', accent: '#b9e5fb' },
   { label: 'In Transit', value: '08', tone: '#8a4b08', accent: '#ffe7c2' },
   { label: 'Total Fulfilled', value: '1,429', tone: '#64748b', accent: '#e2e8f0' },
   { label: 'Canceled Items', value: '03', tone: '#d92d20', accent: '#ffe0dc' },

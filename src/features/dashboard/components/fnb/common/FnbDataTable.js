@@ -161,7 +161,7 @@ export default function FnbDataTable({
   });
 
   return (
-    <Box sx={containerSx}>
+    <Box sx={{ minWidth: 0, width: '100%', ...containerSx }}>
       <MaterialReactTable table={table} />
     </Box>
   );

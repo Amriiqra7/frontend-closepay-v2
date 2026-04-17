@@ -3,7 +3,7 @@ export const stockStats = [
     label: 'Total SKUs',
     value: '1,284',
     hint: '+12%',
-    tone: '#0d4f63',
+    tone: '#155DFC',
     accent: '#b9e5fb',
   },
   {

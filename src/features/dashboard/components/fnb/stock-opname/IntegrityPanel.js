@@ -32,7 +32,7 @@ function StatMiniCard({ item }) {
           flexShrink: 0,
         }}
       >
-        <Icon size={20} color="#0d4f63" variant="Bold" />
+        <Icon size={20} color="#155DFC" variant="Bold" />
       </Box>
       <Box>
         <Typography sx={{ color: 'rgba(230, 241, 246, 0.82)', fontSize: '0.84rem' }}>

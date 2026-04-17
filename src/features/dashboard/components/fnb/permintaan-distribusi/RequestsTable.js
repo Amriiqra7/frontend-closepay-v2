@@ -17,7 +17,7 @@ function StatusChip({ label, tone }) {
           ? { bg: '#dbeafe', color: '#64748b' }
           : tone === 'neutral'
             ? { bg: '#eef2f6', color: '#6b7280' }
-            : { bg: '#b9e5fb', color: '#0d4f63' };
+            : { bg: '#b9e5fb', color: '#155DFC' };
 
   return (
     <Chip
@@ -109,7 +109,7 @@ export default function RequestsTable() {
       Cell: ({ row }) => (
         <Box>
           {row.original.requestList.map((item) => (
-            <Typography key={item} sx={{ color: item.startsWith('+') ? '#0d4f63' : '#111827', fontSize: '0.9rem', fontWeight: item.startsWith('+') ? 700 : 500, lineHeight: 1.6 }}>
+            <Typography key={item} sx={{ color: item.startsWith('+') ? '#155DFC' : '#111827', fontSize: '0.9rem', fontWeight: item.startsWith('+') ? 700 : 500, lineHeight: 1.6 }}>
               {item}
             </Typography>
           ))}

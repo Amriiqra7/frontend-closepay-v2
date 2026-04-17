@@ -2,17 +2,18 @@
 
 import React from 'react';
 import { Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
-import { DocumentDownload, Edit2, Eye, FilterSearch } from 'iconsax-react';
+import { DocumentDownload, Edit2, Eye } from 'iconsax-react';
 import FnbDataTable from '../common/FnbDataTable';
 import SurfaceCard from '../common/SurfaceCard';
 import ActionButton from '../add-ons-toppings/ActionButton';
+import FnbFilterCollapse from '../common/FnbFilterCollapse';
 import { stockOpnameHistory } from './data';
 
 function StatusChip({ label, tone }) {
   const palette =
     tone === 'warning'
       ? { bg: '#fde4d7', color: '#b54708' }
-      : { bg: '#d7eefb', color: '#0d4f63' };
+      : { bg: '#d7eefb', color: '#155DFC' };
 
   return (
     <Chip
@@ -67,7 +68,7 @@ export default function HistoryTable() {
                 flexShrink: 0,
               }}
             >
-              <Icon size={18} color="#0d4f63" variant="Bold" />
+              <Icon size={18} color="#155DFC" variant="Bold" />
             </Box>
             <Box>
               <Typography sx={{ color: '#111827', fontSize: '0.98rem', fontWeight: 700 }}>
@@ -164,9 +165,7 @@ export default function HistoryTable() {
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1.25, flexWrap: 'wrap' }}>
-          <ActionButton icon={<FilterSearch size={18} color="#111827" variant="Linear" />}>
-            Filter
-          </ActionButton>
+          <FnbFilterCollapse buttonText="Filter" searchPlaceholder="Item or SKU..." />
           <ActionButton icon={<DocumentDownload size={18} color="#111827" variant="Linear" />}>
             Export
           </ActionButton>
@@ -183,8 +182,8 @@ export default function HistoryTable() {
         renderRowActions={() => (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <Tooltip title="Detail" arrow>
-              <IconButton size="small" sx={{ color: '#0d4f63', '&:hover': { bgcolor: 'rgba(13,79,99,0.08)' } }}>
-                <Eye size={18} color="#0d4f63" variant="Linear" />
+              <IconButton size="small" sx={{ color: '#155DFC', '&:hover': { bgcolor: 'rgba(13,79,99,0.08)' } }}>
+                <Eye size={18} color="#155DFC" variant="Linear" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit" arrow>

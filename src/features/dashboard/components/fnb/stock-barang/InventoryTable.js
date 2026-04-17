@@ -13,7 +13,7 @@ function StatusPill({ label, tone }) {
       ? { bg: '#ffe0dc', color: '#d92d20' }
       : tone === 'warning'
         ? { bg: '#ffe7c2', color: '#8a4b08' }
-        : { bg: '#b9e5fb', color: '#0d4f63' };
+        : { bg: '#b9e5fb', color: '#155DFC' };
 
   return (
     <Chip
@@ -122,8 +122,8 @@ export default function InventoryTable() {
         renderRowActions={({ row }) => (
           <Box display="flex" gap={0.5} sx={{ justifyContent: 'flex-start', alignItems: 'center' }}>
             <Tooltip title="Dokumen" arrow>
-              <IconButton size="small" sx={{ color: '#0d4f63', '&:hover': { bgcolor: 'rgba(13, 79, 99, 0.08)' } }}>
-                <DocumentText1 size={18} variant="Linear" color="#0d4f63" />
+              <IconButton size="small" sx={{ color: '#155DFC', '&:hover': { bgcolor: 'rgba(13, 79, 99, 0.08)' } }}>
+                <DocumentText1 size={18} variant="Linear" color="#155DFC" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit" arrow>

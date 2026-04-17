@@ -55,15 +55,15 @@ export default function IngredientsTableCard() {
   ];
 
   return (
-    <SurfaceCard sx={{ p: 3 }}>
+    <SurfaceCard sx={{ p: 3, minWidth: 0 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center', mb: 2.5, flexWrap: 'wrap' }}>
         <Typography sx={fnbTypography.sectionTitle}>
           Daftar Bahan Baku
         </Typography>
         <Button
           variant="text"
-          startIcon={<Add size={18} color="#0d4f63" variant="Bold" />}
-          sx={{ color: '#0d4f63', fontWeight: 700 }}
+          startIcon={<Add size={18} color="#155DFC" variant="Bold" />}
+          sx={{ color: '#155DFC', fontWeight: 700 }}
         >
           Add Ingredient
         </Button>
@@ -77,9 +77,11 @@ export default function IngredientsTableCard() {
         pageSizeOptions={[5, 10, 25]}
         containerSx={{
           borderRadius: 2.5,
-          overflow: 'hidden',
+          overflowX: 'auto',
+          overflowY: 'hidden',
           border: '1px solid #edf1f5',
           bgcolor: '#fff',
+          maxWidth: '100%',
         }}
         renderRowActions={() => (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

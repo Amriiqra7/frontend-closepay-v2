@@ -194,6 +194,7 @@ export const theme = createTheme({
         root: {
           borderRadius: 8,
           color: colors.black,
+          fontSize: '0.875rem',
           '&:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: '#155DFC',
           },
@@ -204,25 +205,50 @@ export const theme = createTheme({
         },
         input: {
           color: colors.black,
+          paddingTop: '14px',
+          paddingBottom: '14px',
+          paddingLeft: '16px',
+          paddingRight: '16px',
           '&::placeholder': {
             color: colors.gray,
             opacity: 1,
           },
         },
+
+        inputSizeSmall: {
+          paddingTop: '10px',
+          paddingBottom: '10px',
+          paddingLeft: '14px',
+          paddingRight: '14px',
+        },
+
       },
     },
     MuiInputBase: {
       styleOverrides: {
         root: {
           color: colors.black,
+          fontSize: '0.875rem',
         },
         input: {
           color: colors.black,
+          paddingTop: '14px',
+          paddingBottom: '14px',
+          paddingLeft: '16px',
+          paddingRight: '16px',
           '&::placeholder': {
             color: colors.gray,
             opacity: 1,
           },
         },
+
+        inputSizeSmall: {
+          paddingTop: '10px',
+          paddingBottom: '10px',
+          paddingLeft: '14px',
+          paddingRight: '14px',
+        },
+
       },
     },
     MuiFilledInput: {
