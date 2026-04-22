@@ -25,7 +25,7 @@ function isPathActive(pathname, href, matchMode = 'prefix') {
 function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChildrenActive }) {
   const ChildIcon = child.icon;
   const childHasChildren = Array.isArray(child.children) && child.children.length > 0;
-  const childActive = isPathActive(pathname, child.href, child.matchMode) || 
+  const childActive = isPathActive(pathname, child.href, child.matchMode) ||
     (childHasChildren && checkChildrenActive(child.children));
   const [childOpen, setChildOpen] = React.useState(childActive);
 
@@ -49,7 +49,7 @@ function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChi
           mb: 0.25,
           py: 1,
           bgcolor: 'transparent',
-          color: childActive ? brandColor : '#262626',
+          color: childActive ? brandColor : '#818181',
           '&:hover': {
             bgcolor: '#f5f5f5',
           },
@@ -58,8 +58,8 @@ function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChi
         <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
           <ChildIcon
             size={22}
-            color={childActive ? brandColor : '#262626'}
-            variant={childActive ? 'Bold' : 'Linear'}
+            color={childActive ? brandColor : '#818181'}
+            variant="Bulk"
           />
         </ListItemIcon>
         <ListItemText
@@ -74,7 +74,7 @@ function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChi
           <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
             <ArrowDown2
               size={16}
-              color={childActive ? brandColor : '#262626'}
+              color={childActive ? brandColor : '#818181'}
               style={{
                 transform: childOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 transition: 'transform 150ms ease',
@@ -100,7 +100,7 @@ function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChi
                     mb: 0.25,
                     py: 0.75,
                     bgcolor: 'transparent',
-                    color: grandChildActive ? brandColor : '#262626',
+                    color: grandChildActive ? brandColor : '#818181',
                     '&:hover': {
                       bgcolor: '#f5f5f5',
                     },
@@ -109,8 +109,8 @@ function SidebarNavChildItem({ child, pathname, onNavigate, brandColor, checkChi
                   <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                     <GrandChildIcon
                       size={22}
-                      color={grandChildActive ? brandColor : '#262626'}
-                      variant={grandChildActive ? 'Bold' : 'Linear'}
+                      color={grandChildActive ? brandColor : '#818181'}
+                      variant="Bulk"
                     />
                   </ListItemIcon>
                   <ListItemText
@@ -143,8 +143,8 @@ export default function SidebarNavItem({
 
   // Recursively check if any child or grandchild is active
   const checkChildrenActive = (children) => {
-      if (!children) return false;
-      return children.some((child) => {
+    if (!children) return false;
+    return children.some((child) => {
       if (isPathActive(pathname, child.href, child.matchMode)) return true;
       if (child.children) return checkChildrenActive(child.children);
       return false;
@@ -157,7 +157,7 @@ export default function SidebarNavItem({
 
   const [open, setOpen] = React.useState(active);
   const [hoverOpen, setHoverOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const hoverTimeoutRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -220,14 +220,14 @@ export default function SidebarNavItem({
 
   const buttonContent = (
     <ListItemButton
-      ref={anchorRef}
+      ref={setAnchorEl}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
         borderRadius: 2,
         bgcolor: active ? 'rgba(21, 93, 252, 0.1)' : 'transparent',
-        color: active ? brandColor : '#262626',
+        color: active ? brandColor : '#818181',
         '&:hover': {
           bgcolor: active ? 'rgba(21, 93, 252, 0.15)' : '#f5f5f5',
         },
@@ -245,8 +245,8 @@ export default function SidebarNavItem({
       >
         <Icon
           size={22}
-          color={active ? brandColor : '#262626'}
-          variant={active ? 'Bold' : 'Linear'}
+          color={active ? brandColor : '#818181'}
+          variant="Bulk"
         />
       </ListItemIcon>
 
@@ -265,7 +265,7 @@ export default function SidebarNavItem({
         <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
           <ArrowDown2
             size={18}
-            color={active ? brandColor : '#262626'}
+            color={active ? brandColor : '#818181'}
             style={{
               transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 150ms ease',
@@ -307,7 +307,7 @@ export default function SidebarNavItem({
       {!desktopExpanded && hasChildren && (
         <Popper
           open={hoverOpen}
-          anchorEl={anchorRef.current}
+          anchorEl={anchorEl}
           placement="right-start"
           disablePortal={false}
           modifiers={[
@@ -350,47 +350,47 @@ export default function SidebarNavItem({
               {item.children.map((child) => {
                 const ChildIcon = child.icon;
                 const childHasChildren = Array.isArray(child.children) && child.children.length > 0;
-                const childActive = isPathActive(pathname, child.href, child.matchMode) || 
+                const childActive = isPathActive(pathname, child.href, child.matchMode) ||
                   (childHasChildren && checkChildrenActive(child.children));
 
                 return (
                   <Box key={child.id}>
-                  <ListItemButton
+                    <ListItemButton
                       onClick={() => {
                         if (!childHasChildren) {
                           onNavigate(child.href);
                         }
                       }}
-                    sx={{
-                      borderRadius: 2,
-                      mb: 0.25,
-                      py: 1,
-                      bgcolor: 'transparent',
-                      color: childActive ? brandColor : '#262626',
-                      '&:hover': {
-                        bgcolor: '#f5f5f5',
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
-                      <ChildIcon
-                        size={22}
-                        color={childActive ? brandColor : '#262626'}
-                        variant={childActive ? 'Bold' : 'Linear'}
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={child.label}
-                      primaryTypographyProps={{
-                        fontSize: '0.9rem',
-                        fontWeight: childActive ? 400 : 400,
-                        color: childActive ? brandColor : 'inherit',
+                      sx={{
+                        borderRadius: 2,
+                        mb: 0.25,
+                        py: 1,
+                        bgcolor: 'transparent',
+                        color: childActive ? brandColor : '#818181',
+                        '&:hover': {
+                          bgcolor: '#f5f5f5',
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
+                        <ChildIcon
+                          size={22}
+                          color={childActive ? brandColor : '#818181'}
+                          variant="Bulk"
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={child.label}
+                        primaryTypographyProps={{
+                          fontSize: '0.9rem',
+                          fontWeight: childActive ? 400 : 400,
+                          color: childActive ? brandColor : 'inherit',
                         }}
                       />
                       {childHasChildren && (
                         <ArrowDown2
                           size={14}
-                          color={childActive ? brandColor : '#262626'}
+                          color={childActive ? brandColor : '#818181'}
                         />
                       )}
                     </ListItemButton>
@@ -409,7 +409,7 @@ export default function SidebarNavItem({
                                 mb: 0.25,
                                 py: 0.75,
                                 bgcolor: 'transparent',
-                                color: grandChildActive ? brandColor : '#262626',
+                                color: grandChildActive ? brandColor : '#818181',
                                 '&:hover': {
                                   bgcolor: '#f5f5f5',
                                 },
@@ -418,8 +418,8 @@ export default function SidebarNavItem({
                               <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>
                                 <GrandChildIcon
                                   size={22}
-                                  color={grandChildActive ? brandColor : '#262626'}
-                                  variant={grandChildActive ? 'Bold' : 'Linear'}
+                                  color={grandChildActive ? brandColor : '#818181'}
+                                  variant="Bulk"
                                 />
                               </ListItemIcon>
                               <ListItemText
@@ -428,9 +428,9 @@ export default function SidebarNavItem({
                                   fontSize: '0.9rem',
                                   fontWeight: grandChildActive ? 400 : 400,
                                   color: grandChildActive ? brandColor : 'inherit',
-                      }}
-                    />
-                  </ListItemButton>
+                                }}
+                              />
+                            </ListItemButton>
                           );
                         })}
                       </List>

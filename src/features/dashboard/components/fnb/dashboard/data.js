@@ -1,4 +1,4 @@
-import { Box1, Danger, Flash, TruckFast } from 'iconsax-react';
+import { Box1, Danger, Flash, Money4, MoneyRecive, Receipt21, TruckFast } from 'iconsax-react';
 
 export const overviewCards = [
   {
@@ -41,6 +41,36 @@ export const overviewCards = [
     accent: '#0d7ea1',
     iconBg: '#dff5fb',
     iconColor: '#0e7490',
+    borderLeft: 'transparent',
+  },
+  {
+    title: 'Total Transaksi',
+    value: '3,492',
+    note: '+8.6% vs last month',
+    icon: Receipt21,
+    accent: '#2b6c88',
+    iconBg: '#e8f1fb',
+    iconColor: '#56728b',
+    borderLeft: 'transparent',
+  },
+  {
+    title: 'Total Pendapatan',
+    value: 'Rp 1.248 M',
+    note: '+11.2% monthly growth',
+    icon: MoneyRecive,
+    accent: '#0f766e',
+    iconBg: '#e8f8f2',
+    iconColor: '#0f766e',
+    borderLeft: '#0f766e',
+  },
+  {
+    title: 'Total Keuntungan',
+    value: 'Rp 382 Jt',
+    note: '+6.3% net margin',
+    icon: Money4,
+    accent: '#7c4a0e',
+    iconBg: '#fff1df',
+    iconColor: '#a16207',
     borderLeft: 'transparent',
   },
 ];

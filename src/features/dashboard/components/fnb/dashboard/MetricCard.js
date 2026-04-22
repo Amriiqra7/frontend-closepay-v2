@@ -4,7 +4,7 @@ import React from 'react';
 import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
 import { ArrowUp2 } from 'iconsax-react';
 
-export default function MetricCard({ card }) {
+export default function MetricCard({ card, sx }) {
   const Icon = card.icon;
 
   return (
@@ -29,6 +29,7 @@ export default function MetricCard({ card }) {
           backgroundColor: card.borderLeft,
           opacity: card.borderLeft === 'transparent' ? 0 : 1,
         },
+        ...sx,
       }}
     >
       <Stack spacing={2.25} sx={{ height: '100%' }}>
