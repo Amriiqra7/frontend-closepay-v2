@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { fnbPalette, fnbTypeScale } from '../common/styles';
 
-export default function ActionButton({ icon, children, dark = false }) {
+export default function ActionButton({ icon, children, dark = false, ...buttonProps }) {
   return (
     <Button
       variant={dark ? 'contained' : 'outlined'}
@@ -26,6 +26,7 @@ export default function ActionButton({ icon, children, dark = false }) {
           bgcolor: dark ? fnbPalette.primaryDark : '#f3f4f6',
         },
       }}
+      {...buttonProps}
     >
       {children}
     </Button>

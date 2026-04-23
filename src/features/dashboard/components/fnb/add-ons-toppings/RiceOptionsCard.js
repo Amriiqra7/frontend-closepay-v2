@@ -15,6 +15,7 @@ import FnbDataTable from '../common/FnbDataTable';
 import SurfaceCard from '../common/SurfaceCard';
 import { fnbTypography } from '../common/styles';
 import StatusChip from './StatusChip';
+import FnbFilterCollapse from '../common/FnbFilterCollapse';
 
 export default function RiceOptionsCard() {
   const columns = [
@@ -96,6 +97,41 @@ export default function RiceOptionsCard() {
             <Trash size={18} color="#6b7280" variant="Linear" />
           </Button>
         </Stack>
+      </Box>
+
+      <Box sx={{ mb: 1.5 }}>
+        <FnbFilterCollapse
+          buttonText="Filter"
+          searchPlaceholder="Search by option name or SKU..."
+          statusOptions={[
+            { value: 'all', label: 'All Status' },
+            { value: 'active', label: 'Active' },
+            { value: 'low-stock', label: 'Low Stock' },
+            { value: 'inactive', label: 'Inactive' },
+          ]}
+          containerSx={{
+            mt: 0,
+            border: '1px solid #edf1f5',
+            bgcolor: '#f9fafb',
+            borderRadius: 2,
+          }}
+          buttonSx={{
+            bgcolor: '#fff',
+            color: '#111827',
+            border: '1px solid #dbe3ec',
+            borderRadius: 1.5,
+            px: 1.5,
+            '&:hover': { bgcolor: '#fff' },
+            '&.MuiButton-contained': {
+              bgcolor: '#fff',
+              color: '#111827',
+              boxShadow: 'none',
+            },
+            '&.MuiButton-contained:hover': {
+              bgcolor: '#f8fafc',
+            },
+          }}
+        />
       </Box>
 
       <FnbDataTable

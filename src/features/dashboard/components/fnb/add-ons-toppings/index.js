@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Box, Stack } from '@mui/material';
 import { AddCircle } from 'iconsax-react';
 import ActionButton from './ActionButton';
-import FnbFilterCollapse from '../common/FnbFilterCollapse';
 import GroupOptionCard from './GroupOptionCard';
 import RiceOptionsCard from './RiceOptionsCard';
 import StatsSidebar from './StatsSidebar';
@@ -15,8 +15,12 @@ export default function FnbAddOnsToppingsPage() {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <FnbFilterCollapse buttonText="Filter" searchPlaceholder="Group or topping..." />
-          <ActionButton icon={<AddCircle size={18} color="#fff" variant="Bold" />} dark>
+          <ActionButton
+            icon={<AddCircle size={18} color="#fff" variant="Bold" />}
+            dark
+            component={Link}
+            href="/fnb/master-product/add-ons-toppings/new"
+          >
             Create New Group
           </ActionButton>
         </Stack>

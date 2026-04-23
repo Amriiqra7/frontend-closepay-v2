@@ -73,9 +73,9 @@ function FilterCollapse({
             onClick={handleToggle}
             startIcon={
               open ? (
-                <FilterSearch size={18} color="white" />
+                <FilterSearch size={18} color="currentColor" />
               ) : (
-                <Filter size={18} color="#080808" />
+                <Filter size={18} color="currentColor" />
               )
             }
             sx={{
@@ -247,9 +247,9 @@ export const FilterButton = memo(function FilterButton({
         onClick={handleToggle}
         startIcon={
           open ? (
-            <FilterSearch size={18} color="white" />
+            <FilterSearch size={18} color="currentColor" />
           ) : (
-            <Filter size={18} color="#080808" />
+            <Filter size={18} color="currentColor" />
           )
         }
         sx={{

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box, Divider, Paper } from "@mui/material";
+import { Box, Divider, Paper, Switch, Typography } from "@mui/material";
 import ProductList from "./ProductList";
 import PageHeader from "./PageHeader";
 import ProductDetailHeader from "./ProductDetailHeader";
@@ -15,6 +15,7 @@ import { contentGridSx, pageContainerSx, statGridSx } from "./styles";
 
 export default function FnbMenuVariationsPage() {
   const [selectedProduct, setSelectedProduct] = React.useState(1);
+  const [showRecipeBom, setShowRecipeBom] = React.useState(true);
   const ingredientColumns = React.useMemo(() => createIngredientColumns(), []);
 
   return (
@@ -50,17 +51,44 @@ export default function FnbMenuVariationsPage() {
 
           <Divider />
 
-          <Box sx={{ p: { xs: 2.25, md: 2.5 } }}>
-            <RecipeIngredientsTable
-              columns={ingredientColumns}
-              data={ingredients}
-              getRowId={(row) => row.id}
-              initialPageSize={5}
-              pageSizeOptions={[5, 10, 25]}
+          <Box
+            sx={{
+              px: { xs: 2.25, md: 2.5 },
+              py: 1.5,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 2,
+              flexWrap: "wrap",
+              bgcolor: "#f8fafc",
+            }}
+          >
+            <Typography sx={{ color: "#111827", fontSize: "0.9rem", fontWeight: 700 }}>
+              Show Recipe & Bill Of Materials (BOM)
+            </Typography>
+            <Switch
+              checked={showRecipeBom}
+              onChange={(event) => setShowRecipeBom(event.target.checked)}
+              size="small"
             />
           </Box>
 
-          <Divider />
+          {showRecipeBom ? (
+            <>
+              <Box sx={{ p: { xs: 2.25, md: 2.5 } }}>
+                <RecipeIngredientsTable
+                  columns={ingredientColumns}
+                  data={ingredients}
+                  getRowId={(row) => row.id}
+                  initialPageSize={5}
+                  pageSizeOptions={[5, 10, 25]}
+                />
+              </Box>
+              <Divider />
+            </>
+          ) : (
+            <Divider />
+          )}
 
           <AddOnsManagementSection groups={addOnGroups} />
         </Paper>
