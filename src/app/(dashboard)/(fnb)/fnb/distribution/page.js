@@ -1,5 +1,5 @@
-import FnbPermintaanDistribusiPage from "@/features/dashboard/components/FnbPermintaanDistribusiPage";
+import DistributionView from "@/views/fnb/distribution/DistributionView";
 
 export default function FnbDistributionPage() {
-  return <FnbPermintaanDistribusiPage />;
+  return <DistributionView />;
 }

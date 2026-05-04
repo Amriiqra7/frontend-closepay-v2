@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import MasterProductView from "@/views/fnb/master-product/MasterProductView";
 
 export default function FnbMasterProductPage() {
-  return <AdminDashboard title="Master Product" />;
+  return <MasterProductView />;
 }

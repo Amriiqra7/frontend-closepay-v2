@@ -1,5 +1,5 @@
-import FnbAddOnsToppingsPage from "@/features/dashboard/components/FnbAddOnsToppingsPage";
+import AddOnsToppingsView from "@/views/fnb/master-product/AddOnsToppingsView";
 
 export default function FnbAddOnsToppingsRoute() {
-  return <FnbAddOnsToppingsPage />;
+  return <AddOnsToppingsView />;
 }

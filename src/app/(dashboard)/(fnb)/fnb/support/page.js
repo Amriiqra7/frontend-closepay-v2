@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import SupportView from "@/views/fnb/support/SupportView";
 
 export default function FnbSupportPage() {
-  return <AdminDashboard title="Support" />;
+  return <SupportView />;
 }

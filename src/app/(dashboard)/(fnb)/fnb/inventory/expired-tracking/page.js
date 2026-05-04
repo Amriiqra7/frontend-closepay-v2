@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import ExpiredTrackingView from "@/views/fnb/inventory/ExpiredTrackingView";
 
 export default function FnbExpiredTrackingPage() {
-  return <AdminDashboard title="Expired Tracking" />;
+  return <ExpiredTrackingView />;
 }

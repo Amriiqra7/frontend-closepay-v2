@@ -1,7 +1,7 @@
-import Login from "@/features/authentication/components/Login";
+import LoginView from "@/views/auth/LoginView";
 
 export default async function LoginPrefixPage({ params }) {
   const resolvedParams = await params;
 
-  return <Login initialPrefix={resolvedParams?.prefix || ""} />;
+  return <LoginView initialPrefix={resolvedParams?.prefix || ""} />;
 }

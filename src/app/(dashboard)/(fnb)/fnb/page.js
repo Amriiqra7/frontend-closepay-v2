@@ -1,5 +1,5 @@
-import FnbDashboard from "@/features/dashboard/components/FnbDashboard";
+import FnbHomeView from "@/views/fnb/index/FnbHomeView";
 
 export default function FnbPage() {
-  return <FnbDashboard />;
+  return <FnbHomeView />;
 }

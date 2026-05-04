@@ -5,7 +5,10 @@ import DashboardLayout from "@/shared/layouts/DashboardLayout";
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
-  const isAuthRoute = pathname?.startsWith('/login') || pathname === '/';
+  const isAuthRoute =
+    pathname?.startsWith('/login') ||
+    pathname?.startsWith('/fnb/login') ||
+    pathname === '/';
 
   if (isAuthRoute) {
     return <>{children}</>;

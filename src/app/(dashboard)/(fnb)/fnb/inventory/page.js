@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import InventoryView from "@/views/fnb/inventory/InventoryView";
 
 export default function FnbInventoryPage() {
-  return <AdminDashboard title="Inventory" />;
+  return <InventoryView />;
 }

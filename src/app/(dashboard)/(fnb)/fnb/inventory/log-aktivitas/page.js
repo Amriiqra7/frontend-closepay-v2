@@ -1,5 +1,5 @@
-import FnbLogAktivitasPage from "@/features/dashboard/components/FnbLogAktivitasPage";
+import LogAktivitasView from "@/views/fnb/inventory/LogAktivitasView";
 
 export default function FnbLogAktivitasRoute() {
-  return <FnbLogAktivitasPage />;
+  return <LogAktivitasView />;
 }

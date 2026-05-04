@@ -1,5 +1,5 @@
-import FnbMenuVariationsPage from "@/features/dashboard/components/FnbMenuVariationsPage";
+import MenuVariationsView from "@/views/fnb/master-product/MenuVariationsView";
 
 export default function FnbMenuVariationsRoute() {
-  return <FnbMenuVariationsPage />;
+  return <MenuVariationsView />;
 }

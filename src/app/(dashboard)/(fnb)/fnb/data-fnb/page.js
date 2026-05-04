@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import DataFnbView from "@/views/fnb/data-fnb/DataFnbView";
 
 export default function DataFnBPage() {
-  return <AdminDashboard title="Data FnB" />;
+  return <DataFnbView />;
 }

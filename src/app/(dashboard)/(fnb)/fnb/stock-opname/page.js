@@ -1,5 +1,5 @@
-import FnbStockOpnameScreen from "@/features/dashboard/components/FnbStockOpnamePage";
+import StockOpnameView from "@/views/fnb/stock-opname/StockOpnameView";
 
 export default function FnbStockOpnameRoute() {
-  return <FnbStockOpnameScreen />;
+  return <StockOpnameView />;
 }

@@ -1,11 +1,40 @@
 'use client';
 
 import React from 'react';
-import { Box, Button, Chip, List, ListItemButton, ListItemText, Paper, Stack, Typography } from '@mui/material';
+import { Box, Chip, CircularProgress, List, ListItemButton, ListItemText, Paper, Stack, Typography } from '@mui/material';
 import { ArrowRight2, Box1, Filter, More } from 'iconsax-react';
-import { products } from './data';
 
-export default function ProductList({ selectedProduct, onSelect }) {
+export default function ProductList({
+  selectedProduct,
+  onSelect,
+  products = [],
+  loading = false,
+  loadingMore = false,
+  hasMore = false,
+  pageSize = 4,
+  onReachEnd,
+}) {
+  const listScrollRef = React.useRef(null);
+
+  const tryLoadNext = React.useCallback(() => {
+    if (!hasMore || loadingMore || typeof onReachEnd !== 'function') return;
+    const target = listScrollRef.current;
+    if (!target) return;
+    const distanceToBottom = target.scrollHeight - target.scrollTop - target.clientHeight;
+    if (distanceToBottom <= 72) {
+      onReachEnd();
+    }
+  }, [hasMore, loadingMore, onReachEnd]);
+
+  const handleListScroll = React.useCallback(() => {
+    tryLoadNext();
+  }, [tryLoadNext]);
+
+  React.useEffect(() => {
+    // Re-check after new items rendered; important when scroll stays near bottom.
+    tryLoadNext();
+  }, [products.length, hasMore, loadingMore, tryLoadNext]);
+
   return (
     <Paper
       elevation={0}
@@ -16,6 +45,8 @@ export default function ProductList({ selectedProduct, onSelect }) {
         boxShadow: '0 18px 40px rgba(15, 23, 42, 0.04)',
         position: { xl: 'sticky' },
         top: { xl: 24 },
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.25 }}>
@@ -28,7 +59,21 @@ export default function ProductList({ selectedProduct, onSelect }) {
         </Stack>
       </Box>
 
-      <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+      <Box
+        ref={listScrollRef}
+        onScroll={handleListScroll}
+        sx={{
+          height: { xs: 'calc(100vh - 320px)', xl: 'calc(100vh - 240px)' },
+          overflowY: 'auto',
+          pr: 0.5,
+          mr: -0.5,
+          scrollBehavior: 'smooth',
+          '&::-webkit-scrollbar': { width: 8 },
+          '&::-webkit-scrollbar-thumb': { backgroundColor: '#cbd5e1', borderRadius: 999 },
+          '&::-webkit-scrollbar-track': { backgroundColor: 'transparent' },
+        }}
+      >
+        <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
         {products.map((product) => {
           const isSelected = selectedProduct === product.id;
 
@@ -93,22 +138,25 @@ export default function ProductList({ selectedProduct, onSelect }) {
             </ListItemButton>
           );
         })}
-      </List>
+        </List>
 
-      <Button
-        variant="outlined"
-        fullWidth
-        sx={{
-          mt: 2,
-          height: 42,
-          borderRadius: 2,
-          borderStyle: 'dashed',
-          borderColor: '#bfd5e1',
-          color: '#155DFC',
-        }}
-      >
-        Load 24 More Products
-      </Button>
+        {!loading && products.length === 0 ? (
+          <Typography sx={{ mt: 2, color: '#6b7280', fontSize: '0.86rem' }}>Belum ada product.</Typography>
+        ) : null}
+
+        <Box sx={{ pt: 2 }}>
+          {loadingMore ? (
+            <Stack direction="row" spacing={1} alignItems="center" justifyContent="center" sx={{ py: 1 }}>
+              <CircularProgress size={18} />
+              <Typography sx={{ color: '#6b7280', fontSize: '0.82rem' }}>Memuat product lain...</Typography>
+            </Stack>
+          ) : hasMore ? (
+            <Typography sx={{ textAlign: 'center', color: '#9aa5b1', fontSize: '0.78rem' }}>
+              Scroll untuk memuat data berikutnya
+            </Typography>
+          ) : null}
+        </Box>
+      </Box>
     </Paper>
   );
 }

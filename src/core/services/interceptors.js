@@ -1,6 +1,9 @@
 /**
  * Interceptor configuration shared by axios instances.
  */
+import { getAuthAccessToken } from "./authSession";
+import { clearAuthSession } from "./authSession";
+
 export const INTERCEPTOR_CONFIG = {
     TOAST_COOLDOWN: 2000,
     MAX_RETRY_ATTEMPTS: 0,
@@ -11,13 +14,52 @@ export const INTERCEPTOR_CONFIG = {
     ENABLE_RETRY: false,
 };
 
-const onRequest = (config) => config;
+const createRequestHandler = (options = {}) => (config) => {
+    if (options?.disableAuth) {
+        return config;
+    }
+
+    const hasExplicitAuthorization =
+        Boolean(config?.headers?.Authorization) ||
+        Boolean(config?.headers?.authorization);
+    if (hasExplicitAuthorization) {
+        return config;
+    }
+
+    const authToken = getAuthAccessToken();
+    if (authToken?.authorization) {
+        config.headers = {
+            ...(config.headers || {}),
+            Authorization: authToken.authorization,
+        };
+    }
+
+    return config;
+};
 
 const onRequestError = (error) => Promise.reject(error);
 
 const onResponse = (response) => response;
 
-const createResponseErrorHandler = () => (error) => Promise.reject(error);
+const createResponseErrorHandler = () => (error) => {
+    const statusCode = error?.response?.status;
+    const errorType = error?.response?.data?.detail?.type || error?.response?.data?.type;
+    const isAuthError = statusCode === 401 || errorType === "AUTHENTICATION_FAILED";
+
+    if (isAuthError && typeof window !== "undefined") {
+        clearAuthSession();
+
+        const pathname = window.location?.pathname || "";
+        const isFnbRoute = pathname.startsWith("/fnb");
+        const redirectTo = isFnbRoute ? "/fnb/login" : "/login";
+
+        if (pathname !== redirectTo) {
+            window.location.replace(redirectTo);
+        }
+    }
+
+    return Promise.reject(error);
+};
 
 /**
  * Create request handler that resolves with response.data.
@@ -40,7 +82,7 @@ export function setupInterceptorsTo(axiosInstance, options = {}) {
         ...options,
     };
 
-    axiosInstance.interceptors.request.use(onRequest, onRequestError);
+    axiosInstance.interceptors.request.use(createRequestHandler(config), onRequestError);
     axiosInstance.interceptors.response.use(
         onResponse,
         createResponseErrorHandler(config)

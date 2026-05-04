@@ -8,6 +8,10 @@ export const adminFieldSx = {
   '& .MuiFormHelperText-root': {
     fontSize: '0.75rem',
   },
+  '& .MuiInputBase-inputMultiline': {
+    padding: '12px 14px',
+    lineHeight: 1.55,
+  },
 };
 
 export const adminLabelSx = {

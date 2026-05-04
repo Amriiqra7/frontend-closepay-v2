@@ -1,5 +1,5 @@
-import FnbBahanBakuResepNewPage from "@/features/dashboard/components/FnbBahanBakuResepNewPage";
+import BahanBakuResepNewView from "@/views/fnb/master-product/BahanBakuResepNewView";
 
 export default function FnbBahanBakuResepNewRoute() {
-  return <FnbBahanBakuResepNewPage />;
+  return <BahanBakuResepNewView />;
 }

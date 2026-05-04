@@ -1,5 +1,5 @@
-import Login from "@/features/authentication/components/Login";
+import LoginView from "@/views/auth/LoginView";
 
 export default function LoginPage() {
-  return <Login initialPrefix="" />;
+  return <LoginView initialPrefix="" />;
 }

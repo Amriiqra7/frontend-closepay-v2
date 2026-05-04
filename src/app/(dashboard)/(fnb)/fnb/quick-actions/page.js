@@ -1,5 +1,5 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import QuickActionsView from "@/views/fnb/quick-actions/QuickActionsView";
 
 export default function FnbQuickActionsPage() {
-  return <AdminDashboard title="Quick Actions" />;
+  return <QuickActionsView />;
 }

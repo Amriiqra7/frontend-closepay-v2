@@ -264,7 +264,13 @@ export const saveAuthSession = (response) => {
     if (!isBrowser() || !response) return;
 
     const savedAt = new Date().toISOString();
-    const authData = response?.data || {};
+    const responseData = response?.data || {};
+    const authData =
+        responseData?.access_token
+            ? responseData
+            : responseData?.data?.access_token
+                ? responseData.data
+                : responseData;
     const expiresIn = Number(authData?.expires_in) || 0;
     const expiresAt = expiresIn
         ? new Date(Date.now() + expiresIn * 1000).toISOString()
@@ -276,6 +282,11 @@ export const saveAuthSession = (response) => {
             ...response,
             data: {
                 ...authData,
+            },
+            meta: {
+                status_code: response?.status_code ?? responseData?.status_code ?? null,
+                type: response?.type ?? responseData?.type ?? null,
+                message: response?.message ?? responseData?.message ?? null,
             },
             savedAt,
             expiresAt,
@@ -294,6 +305,22 @@ export const getAuthSession = () => {
     } catch {
         return null;
     }
+};
+
+export const getAuthAccessToken = () => {
+    const session = getAuthSession();
+    const tokenType = session?.data?.token_type || "Bearer";
+    const accessToken = session?.data?.access_token || "";
+
+    if (!accessToken) {
+        return null;
+    }
+
+    return {
+        tokenType,
+        accessToken,
+        authorization: `${tokenType} ${accessToken}`,
+    };
 };
 
 export const saveDeviceChallenge = (payload) => {
@@ -438,5 +465,16 @@ export const getCaptchaTimer = () => {
 export const clearCaptchaTimer = () => {
     if (!isBrowser()) return;
 
+    window.localStorage.removeItem(CAPTCHA_TIMER_STORAGE_KEY);
+};
+
+export const clearAuthSession = () => {
+    if (!isBrowser()) return;
+
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    window.localStorage.removeItem(DEVICE_CHALLENGE_STORAGE_KEY);
+    window.localStorage.removeItem(PKCE_STORAGE_KEY);
+    window.localStorage.removeItem(DEVICE_AUTH_STORAGE_KEY);
+    window.localStorage.removeItem(OTP_CONTEXT_STORAGE_KEY);
     window.localStorage.removeItem(CAPTCHA_TIMER_STORAGE_KEY);
 };

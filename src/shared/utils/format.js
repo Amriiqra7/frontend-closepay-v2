@@ -25,3 +25,18 @@ export const parseRupiah = (formattedValue) => {
   // Remove all non-digit characters
   return formattedValue.toString().replace(/[^\d]/g, '');
 };
+
+/**
+ * Format value to full IDR label (e.g., "Rp 1.000")
+ * @param {string|number} value
+ * @param {Object} options
+ * @param {string} options.prefix
+ * @param {string} options.fallback
+ * @returns {string}
+ */
+export const formatCurrencyIDR = (value, options = {}) => {
+  const { prefix = "Rp", fallback = "Rp 0" } = options;
+  const formatted = formatRupiah(value);
+  if (!formatted) return fallback;
+  return `${prefix} ${formatted}`;
+};
