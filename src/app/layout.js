@@ -1,10 +1,11 @@
-import { Archivo } from "next/font/google";
+import { Arimo } from "next/font/google";
 import "./globals.css";
 import ProviderWrapper from "./ProviderWrapper";
 
-const archivo = Archivo({
+const arimo = Arimo({
   subsets: ["latin"],
-  variable: "--font-archivo",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-arimo",
   display: "swap",
 });
 
@@ -16,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${archivo.variable} antialiased`} style={{ fontFamily: 'var(--font-archivo), sans-serif' }}>
+      <body className={`${arimo.variable} antialiased`} style={{ fontFamily: 'var(--font-arimo), sans-serif' }}>
         <ProviderWrapper>{children}</ProviderWrapper>
       </body>
     </html>

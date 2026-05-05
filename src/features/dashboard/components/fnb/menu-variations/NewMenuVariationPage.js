@@ -10,36 +10,21 @@ import {
   Divider,
   Paper,
   Stack,
-  Switch,
-  TextField,
   Typography,
 } from "@mui/material";
-import { fnbMenu, fnbMenuCategory, fnbMenuVariant } from "@/core/services/api_fnb";
+import { AddCircle } from "iconsax-react";
+import { useAutosearch } from "@/shared/ui/Autosearch";
+import {
+  fnbMenu,
+  fnbMenuAddonGroup,
+  fnbMenuAddonGroupMap,
+  fnbMenuAddonItem,
+  fnbMenuCategory,
+  fnbMenuVariant,
+} from "@/core/services/api_fnb";
 import { showErrorToast, toastPromise } from "@/shared/utils/toast";
 import GeneralInformationSection from "./GeneralInformationSection";
-import { formatRupiah, parseRupiah } from "@/shared/utils/format";
-
-const requiredMarkSx = { color: "#dc2626" };
-const variantToggleSx = (checked) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  px: 1.25,
-  py: 0.85,
-  borderRadius: 1.8,
-  bgcolor: checked ? "rgba(21, 93, 252, 0.07)" : "#f8fafc",
-  border: "1px solid",
-  borderColor: checked ? "rgba(21, 93, 252, 0.2)" : "#e5e7eb",
-  minHeight: 40,
-  transition: "all .18s ease",
-});
-
-const variantToggleTextSx = (checked) => ({
-  color: checked ? "#155DFC" : "#6b7280",
-  fontSize: "0.78rem",
-  fontWeight: 700,
-  letterSpacing: "0.01em",
-});
+import VariantRowCard from "./VariantRowCard";
 
 const createVariantRow = (overrides = {}) => ({
   key: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -56,36 +41,43 @@ const normalizeNumber = (value) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
-const apiFetcher = (request) => request;
 const extractMenuId = (response) =>
   typeof response?.data === "string"
     ? response.data
     : response?.data?.data && typeof response.data.data === "string"
       ? response.data.data
       : response?.data?._id ||
-        response?.data?.menuId ||
-        response?.data?.data?._id ||
+      response?.data?.menuId ||
+      response?.data?.data?._id ||
       response?.data?.data?.menuId ||
       response?._id ||
       response?.menuId ||
       "";
 
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
 export default function NewMenuVariationPage() {
   const router = useRouter();
-  const [imagePreview, setImagePreview] = React.useState("");
+  const [selectedAddonGroup, setSelectedAddonGroup] = React.useState(null);
+  const selectedAddonGroupId = selectedAddonGroup?._id || "";
   const { data: categoryResponse, error: categoryError } = useSWR(
     "fnb-menu-categories-new-page",
-    () => apiFetcher(fnbMenuCategory.combo({ size: 10 }))
+    () => fnbMenuCategory.combo({ size: 10 })
   );
+  const addonGroupSearch = useAutosearch(
+    (params) => fnbMenuAddonGroup.combo({ ...params }),
+    "fnb-menu-addon-group-new"
+  );
+  const { data: addonItemsResponse, isLoading: addonItemsLoading } = useSWR(
+    selectedAddonGroupId ? ["fnb-menu-addon-items-new", selectedAddonGroupId] : null,
+    () =>
+      fnbMenuAddonItem.find({
+        groupId: selectedAddonGroupId,
+        size: 100,
+        page: 1,
+        order: "desc",
+      }),
+    { revalidateOnFocus: false, shouldRetryOnError: false }
+  );
+  const addonGroupItems = React.useMemo(() => addonItemsResponse?.data?.items || [], [addonItemsResponse]);
 
   const categoryOptions = React.useMemo(
     () =>
@@ -133,21 +125,31 @@ export default function NewMenuVariationPage() {
         }
 
         if (values.useVariant && menuId) {
-          const variant = values.variants?.[0];
-          if (!variant || !String(variant.name || "").trim()) {
+          const validVariants = (values.variants || []).filter(
+            (variant) => String(variant?.name || "").trim() && String(variant?.price ?? "").trim()
+          );
+
+          if (validVariants.length === 0) {
             throw new Error("Variant aktif, tapi data variant belum diisi.");
           }
-          if (!String(variant.price ?? "").trim()) {
-            throw new Error("Variant aktif, tapi harga variant belum diisi.");
-          }
 
-          await fnbMenuVariant.create({
+          await fnbMenuVariant.create(
+            validVariants.map((variant) => ({
+              menuId,
+              name: variant.name,
+              price: normalizeNumber(variant.price),
+              sku: variant.sku || "",
+              isDefault: Boolean(variant.isDefault),
+              isAvailable: Boolean(variant.isAvailable),
+            }))
+          );
+        }
+
+        const addonGroupId = selectedAddonGroup?._id || "";
+        if (menuId && addonGroupId) {
+          await fnbMenuAddonGroupMap.create({
             menuId,
-            name: variant.name,
-            price: normalizeNumber(variant.price),
-            sku: variant.sku || "",
-            isDefault: Boolean(variant.isDefault),
-            isAvailable: Boolean(variant.isAvailable),
+            addonGroupId,
           });
         }
       })();
@@ -169,21 +171,16 @@ export default function NewMenuVariationPage() {
   }, [categoryError]);
 
   React.useEffect(() => {
+    if (addonGroupSearch.error) {
+      showErrorToast(addonGroupSearch.error?.response?.data?.message || "Gagal memuat add on group.");
+    }
+  }, [addonGroupSearch.error]);
+
+  React.useEffect(() => {
     if (!formik.values.categoryId && categoryOptions.length > 0) {
       formik.setFieldValue("categoryId", categoryOptions[0].value);
     }
   }, [categoryOptions, formik]);
-
-  React.useEffect(() => {
-    setImagePreview(formik.values.imageUrl || "");
-  }, [formik.values.imageUrl]);
-
-  const handlePickImage = async (file) => {
-    if (!file) return;
-    const dataUrl = await fileToDataUrl(file);
-    setImagePreview(dataUrl);
-    formik.setFieldValue("imageUrl", dataUrl);
-  };
 
   return (
     <FormikProvider value={formik}>
@@ -191,10 +188,10 @@ export default function NewMenuVariationPage() {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Paper
             sx={{
-              borderRadius: 3,
               border: "1px solid #e8edf3",
               overflow: "hidden",
               boxShadow: "0 20px 45px rgba(15, 23, 42, 0.05)",
+              p: 2,
             }}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2.25 }}>
@@ -207,12 +204,13 @@ export default function NewMenuVariationPage() {
                 useVariant={formik.values.useVariant}
                 description={formik.values.description}
                 categoryOptions={categoryOptions}
-                imagePreview={imagePreview}
-                onPickImage={handlePickImage}
+                imagePreview={formik.values.imageUrl || ""}
+                imageUrl={formik.values.imageUrl}
                 onMenuNameChange={(event) => formik.setFieldValue("name", event.target.value)}
                 onCategoryChange={(event) => formik.setFieldValue("categoryId", event.target.value)}
                 onBasePriceChange={(value) => formik.setFieldValue("basePrice", value)}
                 onMinVariantPriceChange={(value) => formik.setFieldValue("minVariantPrice", value)}
+                onImageUrlChange={(event) => formik.setFieldValue("imageUrl", event.target.value)}
                 onStatusChange={(event) => formik.setFieldValue("isAvailable", event.target.checked)}
                 onUseVariantChange={(event) => {
                   const checked = event.target.checked;
@@ -222,6 +220,16 @@ export default function NewMenuVariationPage() {
                   }
                 }}
                 onDescriptionChange={(event) => formik.setFieldValue("description", event.target.value)}
+                addonGroup={selectedAddonGroup}
+                addonGroupOptions={addonGroupSearch.options}
+                addonGroupLoading={addonGroupSearch.loading}
+                addonGroupOpen={addonGroupSearch.open}
+                onAddonGroupOpen={addonGroupSearch.onOpen}
+                onAddonGroupClose={addonGroupSearch.onClose}
+                onAddonGroupInputChange={addonGroupSearch.onInputChange}
+                onAddonGroupChange={(_, value) => setSelectedAddonGroup(value || null)}
+                addonGroupItems={addonGroupItems}
+                addonGroupItemsLoading={addonItemsLoading}
               />
             </Box>
 
@@ -229,112 +237,42 @@ export default function NewMenuVariationPage() {
               <>
                 <Divider />
                 <Box sx={{ p: { xs: 2.25, md: 2.5 } }}>
-                  <Typography sx={{ color: "#0f172a", fontWeight: 800, mb: 2 }}>Variant</Typography>
-                  {(() => {
-                    const variant = formik.values.variants[0] || createVariantRow({ isDefault: true });
-                    return (
-                      <Paper elevation={0} sx={{ p: 1.5, borderRadius: 2, border: "1px solid #e8edf3" }}>
-                        <Stack spacing={1.5}>
-                          <Box
-                            sx={{
-                              display: "grid",
-                              gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-                              gap: 2,
-                            }}
-                          >
-                            <Box>
-                              <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                                Name <Box component="span" sx={requiredMarkSx}>*</Box>
-                              </Typography>
-                              <TextField
-                                size="small"
-                                fullWidth
-                                required
-                                placeholder="Variant name"
-                                value={variant.name}
-                                onChange={(event) => formik.setFieldValue("variants", [{ ...variant, name: event.target.value }])}
-                              />
-                            </Box>
-                            <Box>
-                              <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                                SKU
-                              </Typography>
-                              <TextField
-                                size="small"
-                                fullWidth
-                                placeholder="Variant SKU"
-                                value={variant.sku}
-                                onChange={(event) => formik.setFieldValue("variants", [{ ...variant, sku: event.target.value }])}
-                              />
-                            </Box>
-                            <Box>
-                              <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                                Price <Box component="span" sx={requiredMarkSx}>*</Box>
-                              </Typography>
-                              <TextField
-                                type="text"
-                                inputMode="numeric"
-                                size="small"
-                                fullWidth
-                                required
-                                placeholder="0"
-                                value={formatRupiah(variant.price)}
-                                onChange={(event) => formik.setFieldValue("variants", [{ ...variant, price: parseRupiah(event.target.value) }])}
-                              />
-                            </Box>
-                            <Box sx={{ pt: 0.25 }}>
-                              <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                                Default
-                              </Typography>
-                              <Box sx={variantToggleSx(variant.isDefault)}>
-                                <Typography sx={variantToggleTextSx(variant.isDefault)}>
-                                  {variant.isDefault ? "Aktif" : "Nonaktif"}
-                                </Typography>
-                                <Switch
-                                  checked={variant.isDefault}
-                                  onChange={(event) =>
-                                    formik.setFieldValue("variants", [{ ...variant, isDefault: event.target.checked }])
-                                  }
-                                  size="small"
-                                  sx={{
-                                    "& .MuiSwitch-switchBase.Mui-checked": { color: "#155DFC" },
-                                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                      bgcolor: "#155DFC",
-                                      opacity: 1,
-                                    },
-                                  }}
-                                />
-                              </Box>
-                            </Box>
-                            <Box sx={{ pt: 0.25 }}>
-                              <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                                Available
-                              </Typography>
-                              <Box sx={variantToggleSx(variant.isAvailable)}>
-                                <Typography sx={variantToggleTextSx(variant.isAvailable)}>
-                                  {variant.isAvailable ? "Aktif" : "Nonaktif"}
-                                </Typography>
-                                <Switch
-                                  checked={variant.isAvailable}
-                                  onChange={(event) =>
-                                    formik.setFieldValue("variants", [{ ...variant, isAvailable: event.target.checked }])
-                                  }
-                                  size="small"
-                                  sx={{
-                                    "& .MuiSwitch-switchBase.Mui-checked": { color: "#155DFC" },
-                                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                      bgcolor: "#155DFC",
-                                      opacity: 1,
-                                    },
-                                  }}
-                                />
-                              </Box>
-                            </Box>
-                          </Box>
-                        </Stack>
-                      </Paper>
-                    );
-                  })()}
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                    <Typography sx={{ color: "#0f172a", fontWeight: 800 }}>Variant</Typography>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
+                      onClick={() =>
+                        formik.setFieldValue("variants", [...formik.values.variants, createVariantRow({ isDefault: false })])
+                      }
+                      sx={{ textTransform: "none" }}
+                    >
+                      Add Variant
+                    </Button>
+                  </Box>
+
+                  <Stack spacing={1.5}>
+                    {formik.values.variants.map((variant, index) => (
+                      <VariantRowCard
+                        key={variant.key}
+                        row={variant}
+                        index={index}
+                        canRemove={formik.values.variants.length > 1}
+                        onRemove={(key) =>
+                          formik.setFieldValue(
+                            "variants",
+                            formik.values.variants.filter((row) => row.key !== key)
+                          )
+                        }
+                        onChange={(key, field, value) =>
+                          formik.setFieldValue(
+                            "variants",
+                            formik.values.variants.map((row) => (row.key === key ? { ...row, [field]: value } : row))
+                          )
+                        }
+                      />
+                    ))}
+                  </Stack>
                 </Box>
               </>
             ) : null}
@@ -348,12 +286,7 @@ export default function NewMenuVariationPage() {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={
-                  formik.isSubmitting ||
-                  !formik.values.name ||
-                  !formik.values.categoryId ||
-                  !formik.values.description
-                }
+                disabled={formik.isSubmitting || !formik.values.name || !formik.values.categoryId || !formik.values.description}
               >
                 {formik.isSubmitting ? "Saving..." : "Save Menu"}
               </Button>

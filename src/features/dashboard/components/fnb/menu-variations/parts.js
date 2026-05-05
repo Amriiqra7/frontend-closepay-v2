@@ -8,7 +8,6 @@ export function SectionTitle({ title, action }) {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1.5, mb: 2.25, flexWrap: 'wrap' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Box sx={{ width: 3, height: 18, borderRadius: 999, bgcolor: '#155DFC' }} />
         <Typography sx={{ ...fnbTypography.sectionLabel, color: '#0f172a' }}>
           {title}
         </Typography>

@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Box, MenuItem, Switch, TextField, Typography } from "@mui/material";
+import { Box, MenuItem, Stack, Switch, TextField, Typography } from "@mui/material";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { Gallery as GalleryIcon } from "iconsax-react";
 import { SectionTitle } from "./parts";
 import { adminFieldSx, adminLabelSx } from "./styles";
-import { formatRupiah, parseRupiah } from "@/shared/utils/format";
+import { formatCurrencyIDR, formatRupiah, parseRupiah } from "@/shared/utils/format";
+import { Autosearch } from "@/shared/ui/Autosearch";
 
 function RequiredMark() {
   return <Box component="span" sx={{ color: "#dc2626" }}> *</Box>;
@@ -90,18 +91,24 @@ function ToggleRow({ label, checked, onChange, disabled = false }) {
 }
 
 export default function GeneralInformationSection({
+  sectionTitle = "Information",
   menuName = "",
   category = "",
   basePrice = "",
   minVariantPrice = "",
   statusLabel = "Active",
   description = "",
+  addonGroupLabel = "",
+  addonGroupItems = [],
+  addonGroupItemsLoading = false,
+  showAddonDetails = true,
   categories = ["Starters", "Main Course"],
   categoryOptions,
   imageHint = "",
   imagePlaceholderText = "No preview image",
   imagePreview = "",
-  onPickImage,
+  imageUrl = "",
+  onImageUrlChange,
   onMenuNameChange,
   onCategoryChange,
   onBasePriceChange,
@@ -111,9 +118,16 @@ export default function GeneralInformationSection({
   useVariant = false,
   onUseVariantChange,
   statusChecked = true,
+  addonGroup = null,
+  addonGroupOptions = [],
+  addonGroupLoading = false,
+  addonGroupOpen = false,
+  onAddonGroupOpen,
+  onAddonGroupClose,
+  onAddonGroupInputChange,
+  onAddonGroupChange,
   readOnly = false,
 }) {
-  const fileInputRef = React.useRef(null);
   const resolvedCategoryOptions =
     categoryOptions?.length
       ? categoryOptions
@@ -124,21 +138,18 @@ export default function GeneralInformationSection({
     resolvedCategoryOptions.find((item) => item.value === category)?.label || category;
 
   return (
-    <Box sx={{ p: { xs: 2.25, md: 2.5 } }}>
-      <SectionTitle title="General Information" />
+    <Box sx={{ p: { xs: 2, md: 2 } }}>
+      <SectionTitle title={sectionTitle} />
 
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: { xs: "1fr", lg: "220px minmax(0, 1fr)" },
-          gap: 3,
+          gap: 2,
         }}
       >
         <Box>
           <Box
-            onClick={() => {
-              if (!readOnly) fileInputRef.current?.click();
-            }}
             sx={{
               height: 210,
               borderRadius: 2.5,
@@ -150,7 +161,6 @@ export default function GeneralInformationSection({
               justifyContent: "center",
               gap: 1.25,
               overflow: "hidden",
-              cursor: readOnly ? "default" : "pointer",
             }}
           >
             {imagePreview ? (
@@ -177,16 +187,6 @@ export default function GeneralInformationSection({
             )}
           </Box>
 
-          {!readOnly ? (
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={(event) => onPickImage?.(event.target.files?.[0] || null)}
-            />
-          ) : null}
-
           {imageHint ? (
             <Typography
               sx={{
@@ -200,9 +200,25 @@ export default function GeneralInformationSection({
               {imageHint}
             </Typography>
           ) : null}
+
+          {!readOnly ? (
+            <Box sx={{ mt: 1.25 }}>
+              <Typography variant="body2" sx={adminLabelSx}>
+                Image URL
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="https://example.com/image.jpg"
+                value={imageUrl}
+                onChange={onImageUrlChange}
+                sx={adminFieldSx}
+              />
+            </Box>
+          ) : null}
         </Box>
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2.25 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           {readOnly ? (
             <>
               <StaticField label="Menu Name" value={menuName} />
@@ -211,10 +227,49 @@ export default function GeneralInformationSection({
                 <ToggleRow label="Status" checked={statusChecked} disabled />
               </Box>
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-                <StaticField label="Base Price" value={basePrice} />
-                <StaticField label="Min Variant Price" value={minVariantPrice} />
+              <StaticField label="Base Price" value={basePrice} />
+              <StaticField label="Min Variant Price" value={minVariantPrice} />
               </Box>
               <StaticField label="Description" value={description} />
+              {showAddonDetails ? (
+                <>
+                  <StaticField label="Add On Group" value={addonGroupLabel} />
+                  {addonGroupItemsLoading ? (
+                    <Typography sx={{ color: "#6b7280", fontSize: "0.86rem" }}>Memuat item add-on...</Typography>
+                  ) : addonGroupItems.length ? (
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                      <Typography variant="body2" sx={adminLabelSx}>
+                        Add On Items
+                      </Typography>
+                      <Box sx={{ border: "1px solid #dbe3ef", borderRadius: 2, p: 1.25, bgcolor: "#f8fafc" }}>
+                        <Stack spacing={1}>
+                          {addonGroupItems.map((item) => (
+                            <Box
+                              key={item?._id || item?.name}
+                              sx={{
+                                p: 1.25,
+                                borderRadius: 2,
+                                border: "1px solid #e5e7eb",
+                                bgcolor: "#fff",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: 2,
+                              }}
+                            >
+                              <Typography sx={{ color: "#111827", fontSize: "0.86rem", fontWeight: 500 }}>
+                                {item?.name || "-"}
+                              </Typography>
+                              <Typography sx={{ color: "#155DFC", fontSize: "0.86rem", fontWeight: 700 }}>
+                                {formatCurrencyIDR(item?.price)}
+                              </Typography>
+                            </Box>
+                          ))}
+                        </Stack>
+                      </Box>
+                    </Box>
+                  ) : null}
+                </>
+              ) : null}
               <ToggleRow label="Variant" checked={useVariant} disabled />
             </>
           ) : (
@@ -253,9 +308,19 @@ export default function GeneralInformationSection({
                     size="small"
                     type="text"
                     inputMode="numeric"
+                    disabled={useVariant}
                     value={formatRupiah(basePrice)}
                     onChange={(event) => onBasePriceChange?.(parseRupiah(event.target.value))}
-                    sx={adminFieldSx}
+                    sx={{
+                      ...adminFieldSx,
+                      "& .MuiInputBase-root.Mui-disabled": {
+                        bgcolor: "#f3f4f6",
+                        color: "#9ca3af",
+                      },
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "#9ca3af",
+                      },
+                    }}
                   />
                 </Box>
                 <Box>
@@ -267,9 +332,19 @@ export default function GeneralInformationSection({
                     size="small"
                     type="text"
                     inputMode="numeric"
+                    disabled={!useVariant}
                     value={formatRupiah(minVariantPrice)}
                     onChange={(event) => onMinVariantPriceChange?.(parseRupiah(event.target.value))}
-                    sx={adminFieldSx}
+                    sx={{
+                      ...adminFieldSx,
+                      "& .MuiInputBase-root.Mui-disabled": {
+                        bgcolor: "#f3f4f6",
+                        color: "#9ca3af",
+                      },
+                      "& .MuiInputBase-input.Mui-disabled": {
+                        WebkitTextFillColor: "#9ca3af",
+                      },
+                    }}
                   />
                 </Box>
               </Box>
@@ -286,6 +361,57 @@ export default function GeneralInformationSection({
                   style={descriptionTextareaSx}
                 />
               </Box>
+
+              <Box>
+                <Typography variant="body2" sx={adminLabelSx}>
+                  Add On Group
+                </Typography>
+                <Autosearch
+                  value={addonGroup}
+                  options={addonGroupOptions}
+                  loading={addonGroupLoading}
+                  open={addonGroupOpen}
+                  onOpen={onAddonGroupOpen}
+                  onClose={onAddonGroupClose}
+                  onInputChange={onAddonGroupInputChange}
+                  onChange={onAddonGroupChange}
+                  placeholder="Pilih add on group..."
+                />
+              </Box>
+              {addonGroupItemsLoading ? (
+                <Typography sx={{ color: "#6b7280", fontSize: "0.86rem" }}>Memuat item add-on...</Typography>
+              ) : addonGroupItems.length ? (
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Typography variant="body2" sx={adminLabelSx}>
+                    Add On Items
+                  </Typography>
+                  <Box sx={{ border: "1px solid #dbe3ef", borderRadius: 2, p: 1.25, bgcolor: "#f8fafc" }}>
+                    <Stack spacing={1}>
+                      {addonGroupItems.map((item) => (
+                        <Box
+                          key={item?._id || item?.name}
+                          sx={{
+                            p: 1.25,
+                            borderRadius: 2,
+                            border: "1px solid #e5e7eb",
+                            bgcolor: "#fff",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            gap: 2,
+                          }}
+                        >
+                          <Typography sx={{ color: "#111827", fontSize: "0.86rem", fontWeight: 500 }}>
+                            {item?.name || "-"}
+                          </Typography>
+                          <Typography sx={{ color: "#155DFC", fontSize: "0.86rem", fontWeight: 700 }}>
+                            {formatCurrencyIDR(item?.price)}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                </Box>
+              ) : null}
 
               <ToggleRow label="Variant" checked={useVariant} onChange={onUseVariantChange} />
             </>

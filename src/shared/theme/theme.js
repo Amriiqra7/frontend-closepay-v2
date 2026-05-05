@@ -59,7 +59,7 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      'var(--font-archivo)',
+      'var(--font-arimo)',
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',

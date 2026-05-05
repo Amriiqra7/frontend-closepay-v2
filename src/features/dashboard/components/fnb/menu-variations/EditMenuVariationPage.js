@@ -4,48 +4,146 @@ import React from "react";
 import useSWR from "swr";
 import { useFormik, FormikProvider, Form } from "formik";
 import { useRouter } from "next/navigation";
-import { Box, Button, Divider, Paper, Typography } from "@mui/material";
-import ProductDetailHeader from "./ProductDetailHeader";
+import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import { AddCircle } from "iconsax-react";
 import GeneralInformationSection from "./GeneralInformationSection";
-import { fnbMenu, fnbMenuCategory, fnbMenuVariant } from "@/core/services/api_fnb";
+import VariantRowCard from "./VariantRowCard";
+import { useAutosearch } from "@/shared/ui/Autosearch";
+import {
+  fnbMenu,
+  fnbMenuAddonGroup,
+  fnbMenuAddonGroupMap,
+  fnbMenuAddonItem,
+  fnbMenuCategory,
+  fnbMenuVariant,
+} from "@/core/services/api_fnb";
 import { showErrorToast, toastPromise } from "@/shared/utils/toast";
-import { formatRupiah, parseRupiah } from "@/shared/utils/format";
 
-const apiFetcher = (request) => request;
+const createVariantRow = (overrides = {}) => ({
+  key: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  _id: "",
+  name: "",
+  price: "",
+  sku: "",
+  isDefault: false,
+  isAvailable: true,
+  ...overrides,
+});
 
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+const normalizeNumber = (value) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
 
 export default function EditMenuVariationPage({ menuId }) {
   const router = useRouter();
-  const [imagePreview, setImagePreview] = React.useState("");
+  const [variantRows, setVariantRows] = React.useState([createVariantRow()]);
+  const [variantSavingMap, setVariantSavingMap] = React.useState({});
+  const [selectedAddonGroup, setSelectedAddonGroup] = React.useState(null);
+  const selectedAddonGroupId = selectedAddonGroup?._id || "";
+  const hasInitializedAddonGroupRef = React.useRef(false);
 
-  const { data: categoryResponse } = useSWR("fnb-menu-categories-edit", () =>
-    apiFetcher(fnbMenuCategory.combo({ size: 10 }))
+  const { data: categoryResponse } = useSWR("fnb-menu-categories-edit", () => fnbMenuCategory.combo({ size: 10 }));
+  const addonGroupSearch = useAutosearch(
+    (params) => fnbMenuAddonGroup.combo({ ...params }),
+    "fnb-menu-addon-group-edit"
+  );
+  const { data: addonItemsResponse, isLoading: addonItemsLoading } = useSWR(
+    selectedAddonGroupId ? ["fnb-menu-addon-items-edit", selectedAddonGroupId] : null,
+    () =>
+      fnbMenuAddonItem.find({
+        groupId: selectedAddonGroupId,
+        size: 100,
+        page: 1,
+        order: "desc",
+      }),
+    { revalidateOnFocus: false, shouldRetryOnError: false }
   );
   const categoryOptions = React.useMemo(
     () => (categoryResponse?.data || []).map((item) => ({ value: item._id, label: item.name })),
     [categoryResponse]
   );
+  const addonGroupItems = React.useMemo(() => addonItemsResponse?.data?.items || [], [addonItemsResponse]);
 
   const { data: detailResponse, error: detailError, mutate: mutateDetail } = useSWR(
     menuId ? ["fnb-menu-detail-edit", menuId] : null,
-    () => apiFetcher(fnbMenu.getById(menuId))
+    () => fnbMenu.getById(menuId)
   );
   const menuDetail = detailResponse?.data || {};
 
-  const { data: variantResponse } = useSWR(
+  const { data: variantResponse, mutate: mutateVariants } = useSWR(
     menuId && menuDetail?.useVariant ? ["fnb-menu-variants-edit", menuId] : null,
-    () => apiFetcher(fnbMenuVariant.find({ menuId, size: 10, page: 1, order: "asc" }))
+    () => fnbMenuVariant.find({ menuId, size: 100, page: 1, order: "desc" })
   );
-  const variants = variantResponse?.data?.items || [];
-  const firstVariant = variants[0] || null;
+
+  const { data: addonGroupMapResponse } = useSWR(
+    menuId ? ["fnb-menu-addon-group-map-edit", menuId] : null,
+    () => fnbMenuAddonGroupMap.findByMenu({ menuId })
+  );
+
+  const currentAddonGroupMapId = React.useMemo(() => {
+    const mapItems =
+      addonGroupMapResponse?.data?.items ||
+      addonGroupMapResponse?.data ||
+      addonGroupMapResponse?.items ||
+      [];
+    const firstMap = Array.isArray(mapItems) ? mapItems[0] : mapItems;
+    return firstMap?._id || firstMap?.mapId || "";
+  }, [addonGroupMapResponse]);
+
+  React.useEffect(() => {
+    if (hasInitializedAddonGroupRef.current) return;
+    const mapItems =
+      addonGroupMapResponse?.data?.items ||
+      addonGroupMapResponse?.data ||
+      addonGroupMapResponse?.items ||
+      [];
+    const firstMap = Array.isArray(mapItems) ? mapItems[0] : mapItems;
+    const firstDetailGroup = Array.isArray(firstMap?.detailAddonGroup) ? firstMap.detailAddonGroup[0] : null;
+    const rawGroup =
+      firstDetailGroup?.addonGroup ||
+      firstMap?.addonGroup ||
+      firstMap?.group ||
+      firstMap ||
+      null;
+    const addonGroupId =
+      firstMap?.addonGroupId ||
+      rawGroup?._id ||
+      (typeof rawGroup === "string" ? rawGroup : "");
+    if (!addonGroupId) return;
+    const fromOptions = (addonGroupSearch.options || []).find((opt) => opt?._id === addonGroupId);
+    if (fromOptions) {
+      setSelectedAddonGroup(fromOptions);
+      hasInitializedAddonGroupRef.current = true;
+      return;
+    }
+    setSelectedAddonGroup({
+      _id: addonGroupId,
+      name: rawGroup?.name || firstMap?.addonGroupName || "",
+    });
+    hasInitializedAddonGroupRef.current = true;
+  }, [addonGroupMapResponse, addonGroupSearch.options]);
+
+  React.useEffect(() => {
+    const rawRows = variantResponse?.data?.items || [];
+    if (!Array.isArray(rawRows) || rawRows.length === 0) {
+      setVariantRows([createVariantRow({ isDefault: true })]);
+      return;
+    }
+    setVariantRows(
+      rawRows.map((variant, index) =>
+        createVariantRow({
+          key: variant?._id || `variant-${index}`,
+          _id: variant?._id || "",
+          name: variant?.name || "",
+          price: variant?.price ?? "",
+          sku: variant?.sku || "",
+          isDefault: Boolean(variant?.isDefault),
+          isAvailable: Boolean(variant?.isAvailable),
+        })
+      )
+    );
+  }, [variantResponse]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -60,12 +158,6 @@ export default function EditMenuVariationPage({ menuId }) {
       imageUrl: menuDetail?.imageUrl || "",
       isAvailable: menuDetail?.isAvailable ?? true,
       isActive: menuDetail?.isActive ?? true,
-      variantId: "",
-      variantName: "",
-      variantPrice: "",
-      variantSku: "",
-      variantIsDefault: true,
-      variantIsAvailable: true,
     },
     onSubmit: async (values) => {
       const payload = {
@@ -74,32 +166,40 @@ export default function EditMenuVariationPage({ menuId }) {
         categoryId: values.categoryId,
         useVariant: values.useVariant,
         basePrice: values.useVariant ? null : Number(values.basePrice || 0),
-        minVariantPrice: values.useVariant
-          ? Number(values.minVariantPrice || 0)
-          : Number(values.basePrice || 0),
+        minVariantPrice: values.useVariant ? Number(values.minVariantPrice || 0) : Number(values.basePrice || 0),
         imageUrl: values.imageUrl || "",
         isAvailable: values.isAvailable,
         isActive: values.isActive,
       };
 
+      const pendingNewVariants = variantRows.filter(
+        (row) => !row._id && String(row.name || "").trim() && String(row.price ?? "").trim()
+      );
+
       const submitPromise = (async () => {
         await fnbMenu.update(values._id, payload);
+        if (values.useVariant && pendingNewVariants.length > 0) {
+          await fnbMenuVariant.create(
+            pendingNewVariants.map((row) => ({
+              menuId,
+              name: row.name.trim(),
+              price: normalizeNumber(row.price),
+              sku: row.sku || "",
+              isDefault: Boolean(row.isDefault),
+              isAvailable: Boolean(row.isAvailable),
+            }))
+          );
+        }
 
-        if (values.useVariant) {
-          const variantPayload = {
-            menuId: values._id,
-            name: values.variantName,
-            price: Number(values.variantPrice || 0),
-            sku: values.variantSku || "",
-            isDefault: Boolean(values.variantIsDefault),
-            isAvailable: Boolean(values.variantIsAvailable),
-          };
-
-          if (values.variantId) {
-            await fnbMenuVariant.update(values.variantId, variantPayload);
-          } else {
-            await fnbMenuVariant.create(variantPayload);
+        const addonGroupId = selectedAddonGroup?._id || "";
+        if (addonGroupId) {
+          if (currentAddonGroupMapId) {
+            await fnbMenuAddonGroupMap.delete(currentAddonGroupMapId);
           }
+          await fnbMenuAddonGroupMap.create({
+            menuId,
+            addonGroupId,
+          });
         }
       })();
 
@@ -109,6 +209,7 @@ export default function EditMenuVariationPage({ menuId }) {
         error: (error) => error?.response?.data?.message || "Gagal menyimpan menu.",
       });
       await mutateDetail();
+      await mutateVariants();
       router.push("/fnb/master-product/menu-variations");
     },
   });
@@ -120,39 +221,80 @@ export default function EditMenuVariationPage({ menuId }) {
   }, [detailError]);
 
   React.useEffect(() => {
-    setImagePreview(formik.values.imageUrl || "");
-  }, [formik.values.imageUrl]);
+    if (addonGroupSearch.error) {
+      showErrorToast(addonGroupSearch.error?.response?.data?.message || "Gagal memuat add on group.");
+    }
+  }, [addonGroupSearch.error]);
 
-  React.useEffect(() => {
-    if (!firstVariant) return;
-    formik.setFieldValue("variantId", firstVariant._id || "");
-    formik.setFieldValue("variantName", firstVariant.name || "");
-    formik.setFieldValue("variantPrice", firstVariant.price ?? "");
-    formik.setFieldValue("variantSku", firstVariant.sku || "");
-    formik.setFieldValue("variantIsDefault", Boolean(firstVariant.isDefault));
-    formik.setFieldValue("variantIsAvailable", Boolean(firstVariant.isAvailable));
-  }, [firstVariant]);
+  const handleChangeVariant = React.useCallback((key, field, value) => {
+    setVariantRows((prev) => prev.map((row) => (row.key === key ? { ...row, [field]: value } : row)));
+  }, []);
 
-  const handlePickImage = async (file) => {
-    if (!file) return;
-    const dataUrl = await fileToDataUrl(file);
-    setImagePreview(dataUrl);
-    formik.setFieldValue("imageUrl", dataUrl);
-  };
+  const handleRemoveVariant = React.useCallback(
+    async (key) => {
+      const target = variantRows.find((row) => row.key === key);
+      if (!target) return;
+
+      const execute = async () => {
+        if (target._id) {
+          await fnbMenuVariant.delete(target._id);
+          await mutateVariants();
+        } else {
+          setVariantRows((prev) => prev.filter((row) => row.key !== key));
+        }
+      };
+
+      await toastPromise(execute(), {
+        loading: `Menghapus variant "${target.name || "Variant"}"...`,
+        success: `Variant "${target.name || "Variant"}" berhasil dihapus.`,
+        error: (error) => error?.response?.data?.message || "Gagal menghapus variant.",
+      });
+    },
+    [variantRows, mutateVariants]
+  );
+
+  const handleSaveVariant = React.useCallback(
+    async (key) => {
+      const target = variantRows.find((row) => row.key === key);
+      if (!target || !target.name?.trim()) return;
+
+      const payload = {
+        menuId,
+        name: target.name.trim(),
+        price: normalizeNumber(target.price),
+        sku: target.sku || "",
+        isDefault: Boolean(target.isDefault),
+        isAvailable: Boolean(target.isAvailable),
+      };
+
+      setVariantSavingMap((prev) => ({ ...prev, [key]: true }));
+      try {
+        if (target._id) {
+          await toastPromise(fnbMenuVariant.update(target._id, payload), {
+            loading: `Menyimpan variant "${target.name}"...`,
+            success: `Variant "${target.name}" berhasil diperbarui.`,
+            error: (error) => error?.response?.data?.message || "Gagal menyimpan variant.",
+          });
+        } else {
+          await toastPromise(fnbMenuVariant.create([payload]), {
+            loading: `Membuat variant "${target.name}"...`,
+            success: `Variant "${target.name}" berhasil dibuat.`,
+            error: (error) => error?.response?.data?.message || "Gagal membuat variant.",
+          });
+        }
+        await mutateVariants();
+      } finally {
+        setVariantSavingMap((prev) => ({ ...prev, [key]: false }));
+      }
+    },
+    [variantRows, menuId, mutateVariants]
+  );
 
   return (
     <FormikProvider value={formik}>
       <Form>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <Paper elevation={0} sx={{ borderRadius: 3, border: "1px solid #e8edf3", overflow: "hidden" }}>
-            <ProductDetailHeader
-              title={formik.values.name || "Edit Menu"}
-              productId={formik.values._id || "-"}
-              onPrimaryAction={formik.submitForm}
-              primaryLabel={formik.isSubmitting ? "Saving..." : "Save"}
-            />
-            <Divider />
-
             <GeneralInformationSection
               menuName={formik.values.name}
               category={formik.values.categoryId}
@@ -162,60 +304,62 @@ export default function EditMenuVariationPage({ menuId }) {
               useVariant={formik.values.useVariant}
               description={formik.values.description}
               categoryOptions={categoryOptions}
-              imagePreview={imagePreview}
-              onPickImage={handlePickImage}
+              imagePreview={formik.values.imageUrl || ""}
+              imageUrl={formik.values.imageUrl}
               onMenuNameChange={(event) => formik.setFieldValue("name", event.target.value)}
               onCategoryChange={(event) => formik.setFieldValue("categoryId", event.target.value)}
               onBasePriceChange={(value) => formik.setFieldValue("basePrice", value)}
               onMinVariantPriceChange={(value) => formik.setFieldValue("minVariantPrice", value)}
+              onImageUrlChange={(event) => formik.setFieldValue("imageUrl", event.target.value)}
               onStatusChange={(event) => formik.setFieldValue("isAvailable", event.target.checked)}
-              onUseVariantChange={(event) => formik.setFieldValue("useVariant", event.target.checked)}
+              onUseVariantChange={(event) => {
+                const checked = event.target.checked;
+                formik.setFieldValue("useVariant", checked);
+                if (checked && variantRows.length === 0) {
+                  setVariantRows([createVariantRow({ isDefault: true })]);
+                }
+              }}
               onDescriptionChange={(event) => formik.setFieldValue("description", event.target.value)}
+              addonGroup={selectedAddonGroup}
+              addonGroupOptions={addonGroupSearch.options}
+              addonGroupLoading={addonGroupSearch.loading}
+              addonGroupOpen={addonGroupSearch.open}
+              onAddonGroupOpen={addonGroupSearch.onOpen}
+              onAddonGroupClose={addonGroupSearch.onClose}
+              onAddonGroupInputChange={addonGroupSearch.onInputChange}
+              onAddonGroupChange={(_, value) => setSelectedAddonGroup(value || null)}
+              addonGroupItems={addonGroupItems}
+              addonGroupItemsLoading={addonItemsLoading}
             />
 
             {formik.values.useVariant ? (
               <Box sx={{ px: { xs: 2.25, md: 2.5 }, pb: 2.25 }}>
-                <Typography sx={{ color: "#0f172a", fontWeight: 800, mb: 1.25 }}>Variants</Typography>
-                <Paper elevation={0} sx={{ p: 1.5, borderRadius: 2, border: "1px solid #e8edf3" }}>
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-                      gap: 2,
-                    }}
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
+                  <Typography sx={{ color: "#0f172a", fontWeight: 800 }}>Variants</Typography>
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
+                    onClick={() => setVariantRows((prev) => [...prev, createVariantRow()])}
+                    sx={{ textTransform: "none" }}
                   >
-                    <Box>
-                      <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                        Name
-                      </Typography>
-                      <input
-                        value={formik.values.variantName}
-                        onChange={(event) => formik.setFieldValue("variantName", event.target.value)}
-                        style={{ width: "100%", height: 40, border: "1px solid #d1d5db", borderRadius: 8, padding: "0 12px" }}
-                      />
-                    </Box>
-                    <Box>
-                      <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                        SKU
-                      </Typography>
-                      <input
-                        value={formik.values.variantSku}
-                        onChange={(event) => formik.setFieldValue("variantSku", event.target.value)}
-                        style={{ width: "100%", height: 40, border: "1px solid #d1d5db", borderRadius: 8, padding: "0 12px" }}
-                      />
-                    </Box>
-                    <Box>
-                      <Typography sx={{ mb: 0.5, fontSize: "0.82rem", color: "#111827", fontWeight: 600 }}>
-                        Price
-                      </Typography>
-                      <input
-                        value={formatRupiah(formik.values.variantPrice)}
-                        onChange={(event) => formik.setFieldValue("variantPrice", parseRupiah(event.target.value))}
-                        style={{ width: "100%", height: 40, border: "1px solid #d1d5db", borderRadius: 8, padding: "0 12px" }}
-                      />
-                    </Box>
-                  </Box>
-                </Paper>
+                    Add Variant
+                  </Button>
+                </Box>
+                <Stack spacing={1.5}>
+                  {variantRows.map((row, index) => (
+                    <VariantRowCard
+                      key={row.key}
+                      row={row}
+                      index={index}
+                      canSave
+                      isSaving={Boolean(variantSavingMap[row.key])}
+                      canRemove={variantRows.length > 1}
+                      onChange={handleChangeVariant}
+                      onSave={handleSaveVariant}
+                      onRemove={handleRemoveVariant}
+                    />
+                  ))}
+                </Stack>
               </Box>
             ) : null}
 
