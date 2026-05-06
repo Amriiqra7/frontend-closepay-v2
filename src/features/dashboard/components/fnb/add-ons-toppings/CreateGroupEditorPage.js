@@ -244,12 +244,12 @@ export default function CreateGroupEditorPage() {
             }}
           >
             <Box>
-              <Typography sx={{ ...labelSx, mb: 1 }}>Group Name</Typography>
-              <TextField fullWidth size="small" value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Type group name..." />
+              <Typography sx={{ ...labelSx, mb: 1 }}>Group Name <Box component="span" sx={{ color: '#dc2626' }}>*</Box></Typography>
+              <TextField fullWidth required size="small" value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder="Type group name..." />
             </Box>
             <Box>
-              <Typography sx={{ ...labelSx, mb: 1 }}>Selection Type</Typography>
-              <TextField select fullWidth size="small" value={selectionType} onChange={(e) => setSelectionType(e.target.value)}>
+              <Typography sx={{ ...labelSx, mb: 1 }}>Selection Type <Box component="span" sx={{ color: '#dc2626' }}>*</Box></Typography>
+              <TextField select required fullWidth size="small" value={selectionType} onChange={(e) => setSelectionType(e.target.value)}>
                 <MenuItem value="SINGLE">SINGLE</MenuItem>
                 <MenuItem value="MULTIPLE">MULTIPLE</MenuItem>
               </TextField>
@@ -280,14 +280,6 @@ export default function CreateGroupEditorPage() {
               </Box>
             </Box>
             <Box>
-              <Typography sx={{ ...labelSx, mb: 0.75 }}>Min Selection</Typography>
-              <TextField fullWidth size="small" type="number" value={minSelection} onChange={(e) => setMinSelection(e.target.value)} disabled={!isMultiple} />
-            </Box>
-            <Box>
-              <Typography sx={{ ...labelSx, mb: 0.75 }}>Max Selection</Typography>
-              <TextField fullWidth size="small" type="number" value={maxSelection} onChange={(e) => setMaxSelection(e.target.value)} disabled={!isMultiple} />
-            </Box>
-            <Box>
               <Typography sx={{ ...labelSx, mb: 0.75 }}>Required</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e5e7eb', borderRadius: 2, px: 1.25, py: 0.5 }}>
                 <Typography sx={{ color: isRequired ? '#155DFC' : '#6b7280', fontWeight: 500, fontSize: '0.82rem' }}>
@@ -296,21 +288,19 @@ export default function CreateGroupEditorPage() {
                 <Switch checked={isRequired} onChange={(e) => setIsRequired(e.target.checked)} size="small" />
               </Box>
             </Box>
+            <Box>
+              <Typography sx={{ ...labelSx, mb: 0.75 }}>Min Selection</Typography>
+              <TextField fullWidth size="small" type="number" value={minSelection} onChange={(e) => setMinSelection(e.target.value)} disabled={!isMultiple} />
+            </Box>
+            <Box>
+              <Typography sx={{ ...labelSx, mb: 0.75 }}>Max Selection</Typography>
+              <TextField fullWidth size="small" type="number" value={maxSelection} onChange={(e) => setMaxSelection(e.target.value)} disabled={!isMultiple} />
+            </Box>
           </Box>
         </Box>
 
         <Box sx={{ mt: 2, border: '1px solid #e6ebf2', borderRadius: 2.2, p: { xs: 1.5, md: 2 }, bgcolor: '#fff' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography sx={{ ...labelSx }}>List add-ons & toppings</Typography>
-            <Button
-              variant="outlined"
-              startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
-              onClick={handleAddItem}
-              sx={{ textTransform: 'none' }}
-            >
-              Add Item
-            </Button>
-          </Box>
+          <Typography sx={{ ...labelSx, mb: 1 }}>List add-ons & toppings</Typography>
 
           <Stack spacing={1.5}>
             {items.map((item, index) => (
@@ -325,6 +315,16 @@ export default function CreateGroupEditorPage() {
               />
             ))}
           </Stack>
+          <Box sx={{ mt: 1.5 }}>
+            <Button
+              variant="outlined"
+              startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
+              onClick={handleAddItem}
+              sx={{ textTransform: 'none' }}
+            >
+              Add Item
+            </Button>
+          </Box>
         </Box>
 
         <Divider sx={{ my: 2.5 }} />

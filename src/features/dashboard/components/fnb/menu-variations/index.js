@@ -250,7 +250,7 @@ export default function FnbMenuVariationsPage() {
   );
 
   const queryParams = React.useMemo(() => {
-    const sortBy = sorting.length > 0 ? sorting[0].id : "name";
+    const sortBy = sorting.length > 0 ? sorting[0].id : "createdTime";
     const dir = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "desc";
     return {
       size: pagination.pageSize,
@@ -359,11 +359,12 @@ export default function FnbMenuVariationsPage() {
   }, [addonGroupMapResponse]);
 
   const detailAddonItems = React.useMemo(() => {
-    const raw = addonGroupMapResponse?.data || [];
+    const raw = addonGroupMapResponse?.data || addonGroupMapResponse?.items || [];
     const list = Array.isArray(raw) ? raw : [raw];
-    const firstMap = list[0];
-    const firstDetailGroup = Array.isArray(firstMap?.detailAddonGroup) ? firstMap.detailAddonGroup[0] : null;
-    return firstDetailGroup?.addonItems || [];
+    return list.flatMap((mapItem) => {
+      const detailGroups = Array.isArray(mapItem?.detailAddonGroup) ? mapItem.detailAddonGroup : [];
+      return detailGroups.flatMap((groupItem) => groupItem?.addonItems || []);
+    });
   }, [addonGroupMapResponse]);
 
   const detailVariants = React.useMemo(

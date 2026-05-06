@@ -56,8 +56,13 @@ const extractMenuId = (response) =>
 
 export default function NewMenuVariationPage() {
   const router = useRouter();
-  const [selectedAddonGroup, setSelectedAddonGroup] = React.useState(null);
-  const selectedAddonGroupId = selectedAddonGroup?._id || "";
+  const [selectedAddonGroups, setSelectedAddonGroups] = React.useState([]);
+  const [variantRows, setVariantRows] = React.useState([createVariantRow({ isDefault: true })]);
+  const hasInitializedCategoryRef = React.useRef(false);
+  const selectedAddonGroupIds = React.useMemo(
+    () => (selectedAddonGroups || []).map((item) => item?._id).filter(Boolean),
+    [selectedAddonGroups]
+  );
   const { data: categoryResponse, error: categoryError } = useSWR(
     "fnb-menu-categories-new-page",
     () => fnbMenuCategory.combo({ size: 10 })
@@ -67,14 +72,24 @@ export default function NewMenuVariationPage() {
     "fnb-menu-addon-group-new"
   );
   const { data: addonItemsResponse, isLoading: addonItemsLoading } = useSWR(
-    selectedAddonGroupId ? ["fnb-menu-addon-items-new", selectedAddonGroupId] : null,
-    () =>
-      fnbMenuAddonItem.find({
-        groupId: selectedAddonGroupId,
-        size: 100,
-        page: 1,
-        order: "desc",
-      }),
+    selectedAddonGroupIds.length ? ["fnb-menu-addon-items-new", selectedAddonGroupIds.join(",")] : null,
+    async () => {
+      const responses = await Promise.all(
+        selectedAddonGroupIds.map((groupId) =>
+          fnbMenuAddonItem.find({
+            groupId,
+            size: 100,
+            page: 1,
+            order: "desc",
+          })
+        )
+      );
+      return {
+        data: {
+          items: responses.flatMap((response) => response?.data?.items || []),
+        },
+      };
+    },
     { revalidateOnFocus: false, shouldRetryOnError: false }
   );
   const addonGroupItems = React.useMemo(() => addonItemsResponse?.data?.items || [], [addonItemsResponse]);
@@ -89,18 +104,17 @@ export default function NewMenuVariationPage() {
   );
 
   const formik = useFormik({
-    enableReinitialize: true,
+    enableReinitialize: false,
     initialValues: {
       name: "",
       description: "",
-      categoryId: categoryOptions[0]?.value || "",
+      categoryId: "",
       useVariant: false,
       basePrice: "",
       minVariantPrice: "",
       imageUrl: "",
       isAvailable: true,
       isActive: true,
-      variants: [createVariantRow({ isDefault: true })],
     },
     onSubmit: async (values) => {
       const submitPromise = (async () => {
@@ -125,8 +139,11 @@ export default function NewMenuVariationPage() {
         }
 
         if (values.useVariant && menuId) {
-          const validVariants = (values.variants || []).filter(
-            (variant) => String(variant?.name || "").trim() && String(variant?.price ?? "").trim()
+          const validVariants = (variantRows || []).filter(
+            (variant) =>
+              String(variant?.name || "").trim() &&
+              String(variant?.price ?? "").trim() &&
+              String(variant?.sku || "").trim()
           );
 
           if (validVariants.length === 0) {
@@ -145,11 +162,10 @@ export default function NewMenuVariationPage() {
           );
         }
 
-        const addonGroupId = selectedAddonGroup?._id || "";
-        if (menuId && addonGroupId) {
-          await fnbMenuAddonGroupMap.create({
+        if (menuId && selectedAddonGroupIds.length > 0) {
+          await fnbMenuAddonGroupMap.bulkCreate({
             menuId,
-            addonGroupId,
+            addonGroupIds: selectedAddonGroupIds,
           });
         }
       })();
@@ -176,11 +192,15 @@ export default function NewMenuVariationPage() {
     }
   }, [addonGroupSearch.error]);
 
+  const categoryId = formik.values.categoryId;
+  const setFieldValue = formik.setFieldValue;
   React.useEffect(() => {
-    if (!formik.values.categoryId && categoryOptions.length > 0) {
-      formik.setFieldValue("categoryId", categoryOptions[0].value);
+    if (hasInitializedCategoryRef.current) return;
+    if (!categoryId && categoryOptions.length > 0) {
+      setFieldValue("categoryId", categoryOptions[0].value, false);
+      hasInitializedCategoryRef.current = true;
     }
-  }, [categoryOptions, formik]);
+  }, [categoryId, categoryOptions, setFieldValue]);
 
   return (
     <FormikProvider value={formik}>
@@ -215,19 +235,19 @@ export default function NewMenuVariationPage() {
                 onUseVariantChange={(event) => {
                   const checked = event.target.checked;
                   formik.setFieldValue("useVariant", checked);
-                  if (checked && formik.values.variants.length === 0) {
-                    formik.setFieldValue("variants", [createVariantRow({ isDefault: true })]);
+                  if (checked && variantRows.length === 0) {
+                    setVariantRows([createVariantRow({ isDefault: true })]);
                   }
                 }}
                 onDescriptionChange={(event) => formik.setFieldValue("description", event.target.value)}
-                addonGroup={selectedAddonGroup}
+                addonGroups={selectedAddonGroups}
                 addonGroupOptions={addonGroupSearch.options}
                 addonGroupLoading={addonGroupSearch.loading}
                 addonGroupOpen={addonGroupSearch.open}
                 onAddonGroupOpen={addonGroupSearch.onOpen}
                 onAddonGroupClose={addonGroupSearch.onClose}
                 onAddonGroupInputChange={addonGroupSearch.onInputChange}
-                onAddonGroupChange={(_, value) => setSelectedAddonGroup(value || null)}
+                onAddonGroupChange={(_, value) => setSelectedAddonGroups(value || [])}
                 addonGroupItems={addonGroupItems}
                 addonGroupItemsLoading={addonItemsLoading}
               />
@@ -237,42 +257,34 @@ export default function NewMenuVariationPage() {
               <>
                 <Divider />
                 <Box sx={{ p: { xs: 2.25, md: 2.5 } }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                    <Typography sx={{ color: "#0f172a", fontWeight: 800 }}>Variant</Typography>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
-                      onClick={() =>
-                        formik.setFieldValue("variants", [...formik.values.variants, createVariantRow({ isDefault: false })])
-                      }
-                      sx={{ textTransform: "none" }}
-                    >
-                      Add Variant
-                    </Button>
-                  </Box>
+                  <Typography sx={{ color: "#0f172a", fontWeight: 800, mb: 2 }}>Variant</Typography>
 
                   <Stack spacing={1.5}>
-                    {formik.values.variants.map((variant, index) => (
+                    {variantRows.map((variant, index) => (
                       <VariantRowCard
                         key={variant.key}
                         row={variant}
                         index={index}
-                        canRemove={formik.values.variants.length > 1}
-                        onRemove={(key) =>
-                          formik.setFieldValue(
-                            "variants",
-                            formik.values.variants.filter((row) => row.key !== key)
-                          )
-                        }
+                        canRemove={variantRows.length > 1}
+                        onRemove={(key) => setVariantRows((prev) => prev.filter((row) => row.key !== key))}
                         onChange={(key, field, value) =>
-                          formik.setFieldValue(
-                            "variants",
-                            formik.values.variants.map((row) => (row.key === key ? { ...row, [field]: value } : row))
+                          setVariantRows((prev) =>
+                            prev.map((row) => (row.key === key ? { ...row, [field]: value } : row))
                           )
                         }
                       />
                     ))}
                   </Stack>
+                  <Box sx={{ mt: 1.5, display: "flex", justifyContent: "flex-start" }}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
+                      onClick={() => setVariantRows((prev) => [...prev, createVariantRow({ isDefault: false })])}
+                      sx={{ textTransform: "none" }}
+                    >
+                      Add Variant
+                    </Button>
+                  </Box>
                 </Box>
               </>
             ) : null}

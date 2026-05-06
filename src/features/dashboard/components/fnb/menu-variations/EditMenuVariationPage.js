@@ -39,8 +39,11 @@ export default function EditMenuVariationPage({ menuId }) {
   const router = useRouter();
   const [variantRows, setVariantRows] = React.useState([createVariantRow()]);
   const [variantSavingMap, setVariantSavingMap] = React.useState({});
-  const [selectedAddonGroup, setSelectedAddonGroup] = React.useState(null);
-  const selectedAddonGroupId = selectedAddonGroup?._id || "";
+  const [selectedAddonGroups, setSelectedAddonGroups] = React.useState([]);
+  const selectedAddonGroupIds = React.useMemo(
+    () => (selectedAddonGroups || []).map((item) => item?._id).filter(Boolean),
+    [selectedAddonGroups]
+  );
   const hasInitializedAddonGroupRef = React.useRef(false);
 
   const { data: categoryResponse } = useSWR("fnb-menu-categories-edit", () => fnbMenuCategory.combo({ size: 10 }));
@@ -49,14 +52,24 @@ export default function EditMenuVariationPage({ menuId }) {
     "fnb-menu-addon-group-edit"
   );
   const { data: addonItemsResponse, isLoading: addonItemsLoading } = useSWR(
-    selectedAddonGroupId ? ["fnb-menu-addon-items-edit", selectedAddonGroupId] : null,
-    () =>
-      fnbMenuAddonItem.find({
-        groupId: selectedAddonGroupId,
-        size: 100,
-        page: 1,
-        order: "desc",
-      }),
+    selectedAddonGroupIds.length ? ["fnb-menu-addon-items-edit", selectedAddonGroupIds.join(",")] : null,
+    async () => {
+      const responses = await Promise.all(
+        selectedAddonGroupIds.map((groupId) =>
+          fnbMenuAddonItem.find({
+            groupId,
+            size: 100,
+            page: 1,
+            order: "desc",
+          })
+        )
+      );
+      return {
+        data: {
+          items: responses.flatMap((response) => response?.data?.items || []),
+        },
+      };
+    },
     { revalidateOnFocus: false, shouldRetryOnError: false }
   );
   const categoryOptions = React.useMemo(
@@ -87,8 +100,8 @@ export default function EditMenuVariationPage({ menuId }) {
       addonGroupMapResponse?.data ||
       addonGroupMapResponse?.items ||
       [];
-    const firstMap = Array.isArray(mapItems) ? mapItems[0] : mapItems;
-    return firstMap?._id || firstMap?.mapId || "";
+    const list = Array.isArray(mapItems) ? mapItems : [mapItems];
+    return list.map((item) => item?._id || item?.mapId).filter(Boolean);
   }, [addonGroupMapResponse]);
 
   React.useEffect(() => {
@@ -98,29 +111,19 @@ export default function EditMenuVariationPage({ menuId }) {
       addonGroupMapResponse?.data ||
       addonGroupMapResponse?.items ||
       [];
-    const firstMap = Array.isArray(mapItems) ? mapItems[0] : mapItems;
-    const firstDetailGroup = Array.isArray(firstMap?.detailAddonGroup) ? firstMap.detailAddonGroup[0] : null;
-    const rawGroup =
-      firstDetailGroup?.addonGroup ||
-      firstMap?.addonGroup ||
-      firstMap?.group ||
-      firstMap ||
-      null;
-    const addonGroupId =
-      firstMap?.addonGroupId ||
-      rawGroup?._id ||
-      (typeof rawGroup === "string" ? rawGroup : "");
-    if (!addonGroupId) return;
-    const fromOptions = (addonGroupSearch.options || []).find((opt) => opt?._id === addonGroupId);
-    if (fromOptions) {
-      setSelectedAddonGroup(fromOptions);
-      hasInitializedAddonGroupRef.current = true;
-      return;
-    }
-    setSelectedAddonGroup({
-      _id: addonGroupId,
-      name: rawGroup?.name || firstMap?.addonGroupName || "",
-    });
+    const list = (Array.isArray(mapItems) ? mapItems : [mapItems]).filter(Boolean);
+    const nextSelected = list
+      .map((item) => {
+        const firstDetailGroup = Array.isArray(item?.detailAddonGroup) ? item.detailAddonGroup[0] : null;
+        const rawGroup = firstDetailGroup?.addonGroup || item?.addonGroup || item?.group || null;
+        const addonGroupId = item?.addonGroupId || rawGroup?._id || (typeof rawGroup === "string" ? rawGroup : "");
+        if (!addonGroupId) return null;
+        const fromOptions = (addonGroupSearch.options || []).find((opt) => opt?._id === addonGroupId);
+        return fromOptions || { _id: addonGroupId, name: rawGroup?.name || item?.addonGroupName || "" };
+      })
+      .filter(Boolean);
+    if (nextSelected.length === 0) return;
+    setSelectedAddonGroups(nextSelected);
     hasInitializedAddonGroupRef.current = true;
   }, [addonGroupMapResponse, addonGroupSearch.options]);
 
@@ -173,7 +176,11 @@ export default function EditMenuVariationPage({ menuId }) {
       };
 
       const pendingNewVariants = variantRows.filter(
-        (row) => !row._id && String(row.name || "").trim() && String(row.price ?? "").trim()
+        (row) =>
+          !row._id &&
+          String(row.name || "").trim() &&
+          String(row.price ?? "").trim() &&
+          String(row.sku || "").trim()
       );
 
       const submitPromise = (async () => {
@@ -191,14 +198,13 @@ export default function EditMenuVariationPage({ menuId }) {
           );
         }
 
-        const addonGroupId = selectedAddonGroup?._id || "";
-        if (addonGroupId) {
-          if (currentAddonGroupMapId) {
-            await fnbMenuAddonGroupMap.delete(currentAddonGroupMapId);
+        if (selectedAddonGroupIds.length > 0) {
+          for (const mapId of currentAddonGroupMapId) {
+            await fnbMenuAddonGroupMap.delete(mapId);
           }
-          await fnbMenuAddonGroupMap.create({
+          await fnbMenuAddonGroupMap.bulkCreate({
             menuId,
-            addonGroupId,
+            addonGroupIds: selectedAddonGroupIds,
           });
         }
       })();
@@ -256,7 +262,7 @@ export default function EditMenuVariationPage({ menuId }) {
   const handleSaveVariant = React.useCallback(
     async (key) => {
       const target = variantRows.find((row) => row.key === key);
-      if (!target || !target.name?.trim()) return;
+      if (!target || !target.name?.trim() || !String(target.price ?? "").trim() || !target.sku?.trim()) return;
 
       const payload = {
         menuId,
@@ -320,31 +326,21 @@ export default function EditMenuVariationPage({ menuId }) {
                 }
               }}
               onDescriptionChange={(event) => formik.setFieldValue("description", event.target.value)}
-              addonGroup={selectedAddonGroup}
+              addonGroups={selectedAddonGroups}
               addonGroupOptions={addonGroupSearch.options}
               addonGroupLoading={addonGroupSearch.loading}
               addonGroupOpen={addonGroupSearch.open}
               onAddonGroupOpen={addonGroupSearch.onOpen}
               onAddonGroupClose={addonGroupSearch.onClose}
               onAddonGroupInputChange={addonGroupSearch.onInputChange}
-              onAddonGroupChange={(_, value) => setSelectedAddonGroup(value || null)}
+              onAddonGroupChange={(_, value) => setSelectedAddonGroups(value || [])}
               addonGroupItems={addonGroupItems}
               addonGroupItemsLoading={addonItemsLoading}
             />
 
             {formik.values.useVariant ? (
               <Box sx={{ px: { xs: 2.25, md: 2.5 }, pb: 2.25 }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
-                  <Typography sx={{ color: "#0f172a", fontWeight: 800 }}>Variants</Typography>
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
-                    onClick={() => setVariantRows((prev) => [...prev, createVariantRow()])}
-                    sx={{ textTransform: "none" }}
-                  >
-                    Add Variant
-                  </Button>
-                </Box>
+                <Typography sx={{ color: "#0f172a", fontWeight: 800, mb: 1.5 }}>Variants</Typography>
                 <Stack spacing={1.5}>
                   {variantRows.map((row, index) => (
                     <VariantRowCard
@@ -360,6 +356,16 @@ export default function EditMenuVariationPage({ menuId }) {
                     />
                   ))}
                 </Stack>
+                <Box sx={{ mt: 1.5 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddCircle size={16} color="#155DFC" variant="Bold" />}
+                    onClick={() => setVariantRows((prev) => [...prev, createVariantRow()])}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Add Variant
+                  </Button>
+                </Box>
               </Box>
             ) : null}
 

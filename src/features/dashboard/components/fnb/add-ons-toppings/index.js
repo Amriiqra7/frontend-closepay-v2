@@ -261,7 +261,7 @@ export default function FnbAddOnsToppingsPage() {
   );
 
   const queryParams = React.useMemo(() => {
-    const sortBy = sorting.length > 0 ? sorting[0].id : "_id";
+    const sortBy = sorting.length > 0 ? sorting[0].id : "createdTime";
     const dir = sorting.length > 0 ? (sorting[0].desc ? "desc" : "asc") : "asc";
     return {
       size: pagination.pageSize,

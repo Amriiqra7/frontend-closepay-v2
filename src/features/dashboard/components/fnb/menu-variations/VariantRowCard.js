@@ -34,8 +34,9 @@ const variantToggleTextSx = (checked) => ({
   fontWeight: 700,
   letterSpacing: '0.01em',
 });
+const requiredMark = <Box component="span" sx={{ color: '#dc2626' }}> *</Box>;
 
-export default function VariantRowCard({
+function VariantRowCard({
   row,
   index,
   canRemove = true,
@@ -89,25 +90,26 @@ export default function VariantRowCard({
       >
         <Box>
           <Typography sx={{ mb: 0.5, fontSize: '0.82rem', color: '#111827', fontWeight: 600 }}>
-            Name
+            Name{requiredMark}
           </Typography>
-          <TextField size="small" fullWidth placeholder="Variant name" value={row.name} onChange={handleChange('name')} />
+          <TextField size="small" fullWidth required placeholder="Variant name" value={row.name} onChange={handleChange('name')} />
         </Box>
         <Box>
           <Typography sx={{ mb: 0.5, fontSize: '0.82rem', color: '#111827', fontWeight: 600 }}>
-            SKU
+            SKU{requiredMark}
           </Typography>
-          <TextField size="small" fullWidth placeholder="Variant SKU" value={row.sku} onChange={handleChange('sku')} />
+          <TextField size="small" fullWidth required placeholder="Variant SKU" value={row.sku} onChange={handleChange('sku')} />
         </Box>
         <Box>
           <Typography sx={{ mb: 0.5, fontSize: '0.82rem', color: '#111827', fontWeight: 600 }}>
-            Price
+            Price{requiredMark}
           </Typography>
           <TextField
             type="text"
             inputMode="numeric"
             size="small"
             fullWidth
+            required
             placeholder="0"
             value={formatRupiah(row.price)}
             onChange={(event) => onChange?.(row.key, 'price', parseRupiah(event.target.value))}
@@ -151,3 +153,5 @@ export default function VariantRowCard({
     </Paper>
   );
 }
+
+export default React.memo(VariantRowCard);

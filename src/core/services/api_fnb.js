@@ -119,6 +119,10 @@ export const fnbMenuAddonGroup = {
 };
 
 export const fnbMenuAddonGroupMap = {
+  bulkCreate: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/menu_addon_group_map/bulk_create", payload)),
+    { operationId: "fnb_merchant_menu_addon_group_map_bulk_create" }
+  ),
   create: addProps(
     (payload) => handleRequest(axiosInstance.post("/fnb/merchant/menu_addon_group_map/create", payload)),
     { operationId: "fnb_merchant_menu_addon_group_map_create" }

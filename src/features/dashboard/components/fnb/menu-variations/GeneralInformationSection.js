@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import { Box, MenuItem, Stack, Switch, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, MenuItem, Stack, Switch, TextField, Typography } from "@mui/material";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { Gallery as GalleryIcon } from "iconsax-react";
 import { SectionTitle } from "./parts";
 import { adminFieldSx, adminLabelSx } from "./styles";
 import { formatCurrencyIDR, formatRupiah, parseRupiah } from "@/shared/utils/format";
-import { Autosearch } from "@/shared/ui/Autosearch";
 
 function RequiredMark() {
   return <Box component="span" sx={{ color: "#dc2626" }}> *</Box>;
@@ -90,7 +89,7 @@ function ToggleRow({ label, checked, onChange, disabled = false }) {
   );
 }
 
-export default function GeneralInformationSection({
+function GeneralInformationSection({
   sectionTitle = "Information",
   menuName = "",
   category = "",
@@ -118,7 +117,7 @@ export default function GeneralInformationSection({
   useVariant = false,
   onUseVariantChange,
   statusChecked = true,
-  addonGroup = null,
+  addonGroups = [],
   addonGroupOptions = [],
   addonGroupLoading = false,
   addonGroupOpen = false,
@@ -366,16 +365,21 @@ export default function GeneralInformationSection({
                 <Typography variant="body2" sx={adminLabelSx}>
                   Add On Group
                 </Typography>
-                <Autosearch
-                  value={addonGroup}
-                  options={addonGroupOptions}
+                <Autocomplete
+                  multiple
+                  fullWidth
+                  size="small"
+                  options={addonGroupOptions || []}
+                  value={addonGroups || []}
                   loading={addonGroupLoading}
                   open={addonGroupOpen}
                   onOpen={onAddonGroupOpen}
                   onClose={onAddonGroupClose}
                   onInputChange={onAddonGroupInputChange}
+                  getOptionLabel={(option) => option?.name || ""}
+                  isOptionEqualToValue={(option, val) => option?._id === val?._id}
                   onChange={onAddonGroupChange}
-                  placeholder="Pilih add on group..."
+                  renderInput={(params) => <TextField {...params} placeholder="Pilih add on group" />}
                 />
               </Box>
               {addonGroupItemsLoading ? (
@@ -421,3 +425,5 @@ export default function GeneralInformationSection({
     </Box>
   );
 }
+
+export default React.memo(GeneralInformationSection);
