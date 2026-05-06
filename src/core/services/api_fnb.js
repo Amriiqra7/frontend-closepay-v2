@@ -166,3 +166,31 @@ export const fnbMenuAddonItem = {
     { operationId: "fnb_merchant_menu_addon_item_delete" }
   ),
 };
+
+export const fnbInternalUser = {
+  find: addProps(
+    (params) =>
+      handleRequest(
+        axiosInstance.get("/fnb/merchant/internal_user/find", {
+          params: removeEmptyParams(params),
+        })
+      ),
+    { operationId: "merchant_internal_user_find" }
+  ),
+  getById: addProps(
+    (userId) => handleRequest(axiosInstance.get(`/fnb/merchant/internal_user/get/${userId}`)),
+    { operationId: "merchant_internal_user_get" }
+  ),
+  create: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/internal_user/create", payload)),
+    { operationId: "merchant_internal_user_create" }
+  ),
+  update: addProps(
+    (userId, payload) => handleRequest(axiosInstance.put(`/fnb/merchant/internal_user/update/${userId}`, payload)),
+    { operationId: "merchant_internal_user_update" }
+  ),
+  delete: addProps(
+    (userId) => handleRequest(axiosInstance.delete(`/fnb/merchant/internal_user/delete/${userId}`)),
+    { operationId: "merchant_internal_user_delete" }
+  ),
+};

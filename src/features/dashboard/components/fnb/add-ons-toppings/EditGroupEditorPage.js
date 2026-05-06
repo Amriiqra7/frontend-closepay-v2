@@ -21,7 +21,7 @@ import SaveOutlined from '@mui/icons-material/SaveOutlined';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { AddCircle, Trash } from 'iconsax-react';
 import { fnbMenuAddonGroup, fnbMenuAddonItem } from '@/core/services/api_fnb';
-import { showErrorToast, toastPromise } from '@/shared/utils/toast';
+import { getApiErrorMessage, showErrorToast, toastPromise } from '@/shared/utils/toast';
 import { formatRupiah, parseRupiah } from '@/shared/utils/format';
 
 const parseNumber = (value) => {
@@ -226,13 +226,13 @@ export default function EditGroupEditorPage({ addonGroupId }) {
 
   React.useEffect(() => {
     if (groupError) {
-      showErrorToast(groupError?.response?.data?.message || 'Gagal memuat detail grup add-on.');
+      showErrorToast(getApiErrorMessage(groupError, 'Gagal memuat detail grup add-on.'));
     }
   }, [groupError]);
 
   React.useEffect(() => {
     if (itemListError) {
-      showErrorToast(itemListError?.response?.data?.message || 'Gagal memuat list item add-on.');
+      showErrorToast(getApiErrorMessage(itemListError, 'Gagal memuat list item add-on.'));
     }
   }, [itemListError]);
 
@@ -254,7 +254,7 @@ export default function EditGroupEditorPage({ addonGroupId }) {
     toastPromise(executeRemove(), {
       loading: `Menghapus item "${target.name || 'Item'}"...`,
       success: `Item "${target.name || 'Item'}" berhasil dihapus.`,
-      error: (error) => error?.response?.data?.message || error?.message || 'Gagal menghapus item.',
+      error: (error) => getApiErrorMessage(error, 'Gagal menghapus item.'),
     });
   }, [items]);
 
@@ -279,7 +279,7 @@ export default function EditGroupEditorPage({ addonGroupId }) {
         await toastPromise(fnbMenuAddonItem.update(target._id, payload), {
           loading: `Menyimpan item "${target.name}"...`,
           success: `Item "${target.name}" berhasil diperbarui.`,
-          error: (error) => error?.response?.data?.message || error?.message || 'Gagal menyimpan item.',
+          error: (error) => getApiErrorMessage(error, 'Gagal menyimpan item.'),
         });
         await mutateItems();
       } finally {
@@ -329,7 +329,7 @@ export default function EditGroupEditorPage({ addonGroupId }) {
       await toastPromise(submitPromise, {
         loading: 'Menyimpan grup add-on...',
         success: 'Grup add-on berhasil diperbarui.',
-        error: (error) => error?.response?.data?.message || error?.message || 'Gagal menyimpan grup add-on.',
+        error: (error) => getApiErrorMessage(error, 'Gagal menyimpan grup add-on.'),
       });
       await mutateGroup();
       await mutateItems();

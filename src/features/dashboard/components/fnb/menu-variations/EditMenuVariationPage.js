@@ -17,7 +17,7 @@ import {
   fnbMenuCategory,
   fnbMenuVariant,
 } from "@/core/services/api_fnb";
-import { showErrorToast, toastPromise } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 
 const createVariantRow = (overrides = {}) => ({
   key: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -212,7 +212,7 @@ export default function EditMenuVariationPage({ menuId }) {
       await toastPromise(submitPromise, {
         loading: "Menyimpan menu...",
         success: "Menu berhasil diperbarui.",
-        error: (error) => error?.response?.data?.message || "Gagal menyimpan menu.",
+        error: (error) => getApiErrorMessage(error, "Gagal menyimpan menu."),
       });
       await mutateDetail();
       await mutateVariants();
@@ -222,13 +222,13 @@ export default function EditMenuVariationPage({ menuId }) {
 
   React.useEffect(() => {
     if (detailError) {
-      showErrorToast(detailError?.response?.data?.message || "Gagal memuat detail menu.");
+      showErrorToast(getApiErrorMessage(detailError, "Gagal memuat detail menu."));
     }
   }, [detailError]);
 
   React.useEffect(() => {
     if (addonGroupSearch.error) {
-      showErrorToast(addonGroupSearch.error?.response?.data?.message || "Gagal memuat add on group.");
+      showErrorToast(getApiErrorMessage(addonGroupSearch.error, "Gagal memuat add on group."));
     }
   }, [addonGroupSearch.error]);
 
@@ -253,7 +253,7 @@ export default function EditMenuVariationPage({ menuId }) {
       await toastPromise(execute(), {
         loading: `Menghapus variant "${target.name || "Variant"}"...`,
         success: `Variant "${target.name || "Variant"}" berhasil dihapus.`,
-        error: (error) => error?.response?.data?.message || "Gagal menghapus variant.",
+        error: (error) => getApiErrorMessage(error, "Gagal menghapus variant."),
       });
     },
     [variantRows, mutateVariants]
@@ -279,13 +279,13 @@ export default function EditMenuVariationPage({ menuId }) {
           await toastPromise(fnbMenuVariant.update(target._id, payload), {
             loading: `Menyimpan variant "${target.name}"...`,
             success: `Variant "${target.name}" berhasil diperbarui.`,
-            error: (error) => error?.response?.data?.message || "Gagal menyimpan variant.",
+            error: (error) => getApiErrorMessage(error, "Gagal menyimpan variant."),
           });
         } else {
           await toastPromise(fnbMenuVariant.create([payload]), {
             loading: `Membuat variant "${target.name}"...`,
             success: `Variant "${target.name}" berhasil dibuat.`,
-            error: (error) => error?.response?.data?.message || "Gagal membuat variant.",
+            error: (error) => getApiErrorMessage(error, "Gagal membuat variant."),
           });
         }
         await mutateVariants();

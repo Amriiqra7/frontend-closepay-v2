@@ -22,7 +22,7 @@ import {
   fnbMenuCategory,
   fnbMenuVariant,
 } from "@/core/services/api_fnb";
-import { showErrorToast, toastPromise } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 import GeneralInformationSection from "./GeneralInformationSection";
 import VariantRowCard from "./VariantRowCard";
 
@@ -173,7 +173,7 @@ export default function NewMenuVariationPage() {
       await toastPromise(submitPromise, {
         loading: "Menyimpan menu...",
         success: "Menu berhasil disimpan.",
-        error: (error) => error?.response?.data?.message || "Gagal menyimpan menu.",
+        error: (error) => getApiErrorMessage(error, "Gagal menyimpan menu."),
       });
 
       router.push("/fnb/master-product/menu-variations");
@@ -182,13 +182,13 @@ export default function NewMenuVariationPage() {
 
   React.useEffect(() => {
     if (categoryError) {
-      showErrorToast(categoryError?.response?.data?.message || "Gagal memuat kategori menu.");
+      showErrorToast(getApiErrorMessage(categoryError, "Gagal memuat kategori menu."));
     }
   }, [categoryError]);
 
   React.useEffect(() => {
     if (addonGroupSearch.error) {
-      showErrorToast(addonGroupSearch.error?.response?.data?.message || "Gagal memuat add on group.");
+      showErrorToast(getApiErrorMessage(addonGroupSearch.error, "Gagal memuat add on group."));
     }
   }, [addonGroupSearch.error]);
 

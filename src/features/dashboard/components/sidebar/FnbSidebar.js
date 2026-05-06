@@ -16,6 +16,7 @@ import {
   Home2,
   MessageQuestion,
   ReceiptSearch,
+  User,
   Shop,
   TruckFast,
 } from 'iconsax-react';
@@ -89,6 +90,12 @@ const mainItems = [
     label: 'Stock Opname',
     href: '/fnb/stock-opname',
     icon: ClipboardText,
+  },
+  {
+    id: 'fnb-internal-user',
+    label: 'Internal User',
+    href: '/fnb/internal-user',
+    icon: User,
   },
 ];
 

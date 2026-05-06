@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { authentication } from "@/core/services/api_auth";
-import { showErrorToast } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast } from "@/shared/utils/toast";
 
 const FNB_LOGIN_CONTEXT_KEY = "closepay.fnb.login-context";
 
@@ -56,12 +56,7 @@ export default function FnbInitialLogin() {
       });
     } catch (error) {
       setCompany(null);
-      showErrorToast(
-        error?.response?.data?.message ||
-          error?.response?.data?.detail?.message ||
-          error?.message ||
-          "Gagal mengambil data company"
-      );
+      showErrorToast(getApiErrorMessage(error, "Gagal mengambil data company"));
     } finally {
       setLoading(false);
     }
@@ -104,7 +99,14 @@ export default function FnbInitialLogin() {
               Masukkan initial perusahaan terlebih dahulu untuk lanjut ke login FNB.
             </Typography>
 
-            <Stack spacing={2} sx={{ mt: 2.25 }}>
+            <Stack component="form" onSubmit={(event) => {
+              event.preventDefault();
+              if (company) {
+                handleConfirm();
+              } else {
+                handleLookup();
+              }
+            }} spacing={2} sx={{ mt: 2.25 }}>
               <TextField
                 label="Initial"
                 placeholder="Contoh: QA"
@@ -128,6 +130,7 @@ export default function FnbInitialLogin() {
 
               <Button
                 variant="contained"
+                type="submit"
                 onClick={company ? handleConfirm : handleLookup}
                 disabled={loading || !String(initial || "").trim()}
                 sx={{ py: 1, borderRadius: 1, fontWeight: 600, textTransform: "none" }}

@@ -28,7 +28,7 @@ import TablePagination from "@/shared/ui/TablePagination";
 import DebouncedInput from "@/shared/ui/DebouncedInput";
 import { Autosearch, useAutosearch } from "@/shared/ui/Autosearch";
 import { fnbMenu, fnbMenuAddonGroupMap, fnbMenuCategory, fnbMenuVariant } from "@/core/services/api_fnb";
-import { showErrorToast, toastPromise } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 import { formatCurrencyIDR } from "@/shared/utils/format";
 import GeneralInformationSection from "./GeneralInformationSection";
 import { pageContainerSx } from "./styles";
@@ -374,25 +374,25 @@ export default function FnbMenuVariationsPage() {
 
   React.useEffect(() => {
     if (categorySearch.error) {
-      showErrorToast(categorySearch.error?.response?.data?.message || "Gagal memuat kategori menu.");
+      showErrorToast(getApiErrorMessage(categorySearch.error, "Gagal memuat kategori menu."));
     }
   }, [categorySearch.error]);
 
   React.useEffect(() => {
     if (listError) {
-      showErrorToast(listError?.response?.data?.message || "Gagal memuat product list.");
+      showErrorToast(getApiErrorMessage(listError, "Gagal memuat product list."));
     }
   }, [listError]);
 
   React.useEffect(() => {
     if (detailError) {
-      showErrorToast(detailError?.response?.data?.message || "Gagal memuat detail menu.");
+      showErrorToast(getApiErrorMessage(detailError, "Gagal memuat detail menu."));
     }
   }, [detailError]);
 
   React.useEffect(() => {
     if (variantError) {
-      showErrorToast(variantError?.response?.data?.message || "Gagal memuat variant menu.");
+      showErrorToast(getApiErrorMessage(variantError, "Gagal memuat variant menu."));
     }
   }, [variantError]);
 
@@ -445,7 +445,7 @@ export default function FnbMenuVariationsPage() {
     await toastPromise(fnbMenu.delete(targetMenuId), {
       loading: `Menghapus menu "${targetMenu.name}"...`,
       success: `Menu "${targetMenu.name}" berhasil dihapus.`,
-      error: (error) => error?.response?.data?.message || "Gagal menghapus menu.",
+      error: (error) => getApiErrorMessage(error, "Gagal menghapus menu."),
     });
 
     await fetchList({ force: true });

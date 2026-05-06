@@ -568,6 +568,12 @@ const GLOBAL_MENU_ITEMS = {
       },
     ],
   },
+  'fnb-internal-user': {
+    id: 'fnb-internal-user',
+    label: 'Internal User',
+    href: '/fnb/internal-user',
+    icon: User,
+  },
   'fnb-inventory': {
     id: 'fnb-inventory',
     label: 'Inventory',
@@ -1072,6 +1078,7 @@ export const ADMIN_MENU_CONFIG = {
       getMenuItem('fnb-inventory'),
       getMenuItem('fnb-distribution'),
       getMenuItem('fnb-stock-opname'),
+      getMenuItem('fnb-internal-user'),
       getMenuItem('fnb-support'),
     ],
   },

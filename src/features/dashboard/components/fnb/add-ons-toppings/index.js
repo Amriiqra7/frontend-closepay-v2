@@ -26,7 +26,7 @@ import FilterCollapse, { FilterButton } from "@/shared/ui/FilterCollapse";
 import AlertDialog from "@/shared/ui/AlertDialog";
 import TablePagination from "@/shared/ui/TablePagination";
 import DebouncedInput from "@/shared/ui/DebouncedInput";
-import { showErrorToast, toastPromise } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 import { formatCurrencyIDR } from "@/shared/utils/format";
 import { fnbMenuAddonGroup, fnbMenuAddonItem } from "@/core/services/api_fnb";
 import { pageContainerSx } from "../menu-variations/styles";
@@ -316,11 +316,11 @@ export default function FnbAddOnsToppingsPage() {
   const detailData = detailResponse?.data || selectedRow || null;
 
   React.useEffect(() => {
-    if (listError) showErrorToast(listError?.response?.data?.message || "Gagal memuat add-on group.");
+    if (listError) showErrorToast(getApiErrorMessage(listError, "Gagal memuat add-on group."));
   }, [listError]);
 
   React.useEffect(() => {
-    if (detailError) showErrorToast(detailError?.response?.data?.message || "Gagal memuat detail add-on group.");
+    if (detailError) showErrorToast(getApiErrorMessage(detailError, "Gagal memuat detail add-on group."));
   }, [detailError]);
 
   const handleToggleFilters = React.useCallback((nextOpen) => {
@@ -357,7 +357,7 @@ export default function FnbAddOnsToppingsPage() {
     await toastPromise(fnbMenuAddonGroup.delete(targetId), {
       loading: `Menghapus add-on group "${target.name}"...`,
       success: `Add-on group "${target.name}" berhasil dihapus.`,
-      error: (error) => error?.response?.data?.message || "Gagal menghapus add-on group.",
+      error: (error) => getApiErrorMessage(error, "Gagal menghapus add-on group."),
     });
 
     await fetchList({ force: true });

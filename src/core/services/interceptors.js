@@ -44,7 +44,10 @@ const onResponse = (response) => response;
 const createResponseErrorHandler = () => (error) => {
     const statusCode = error?.response?.status;
     const errorType = error?.response?.data?.detail?.type || error?.response?.data?.type;
-    const isAuthError = statusCode === 401 || errorType === "AUTHENTICATION_FAILED";
+    const isAuthError =
+        statusCode === 401 ||
+        errorType === "AUTHENTICATION_FAILED" ||
+        (statusCode === 403 && errorType === "NOT_AUTHENTICATED");
 
     if (isAuthError && typeof window !== "undefined") {
         clearAuthSession();

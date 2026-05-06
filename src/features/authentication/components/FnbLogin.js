@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  InputAdornment,
   Paper,
   Stack,
   TextField,
@@ -40,7 +41,8 @@ import {
   saveOtpContext,
   savePkceBundle,
 } from "@/core/services/authSession";
-import { showErrorToast, showSuccessToast } from "@/shared/utils/toast";
+import { Eye, EyeSlash } from "iconsax-react";
+import { getApiErrorMessage, showErrorToast, showSuccessToast } from "@/shared/utils/toast";
 
 const FNB_LOGIN_CONTEXT_KEY = "closepay.fnb.login-context";
 
@@ -202,6 +204,7 @@ export default function FnbLogin() {
   const [loginContext, setLoginContext] = useState({ companyId: "", initial: "", companyName: "" });
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({ username: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const [captchaOpen, setCaptchaOpen] = useState(false);
   const [captchaChallenge, setCaptchaChallenge] = useState(null);
@@ -329,7 +332,7 @@ export default function FnbLogin() {
         setCaptchaOpen(true);
         return;
       }
-      showErrorToast(error?.response?.data?.message || error?.response?.data?.detail?.message || error?.message || "Login FNB gagal");
+      showErrorToast(getApiErrorMessage(error, "Login FNB gagal"));
     } finally {
       setLoading(false);
     }
@@ -469,12 +472,21 @@ export default function FnbLogin() {
                 />
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   fullWidth
                   margin="normal"
                   autoComplete="current-password"
                   value={formValues.password}
                   onChange={(event) => setFormValues((prev) => ({ ...prev, password: event.target.value }))}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                          {showPassword ? <EyeSlash size={18} color="black" /> : <Eye size={18} color="black" />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                   sx={loginMainLikeInputSx}
                   slotProps={{
                     htmlInput: {

@@ -5,6 +5,20 @@
 
 import toast from 'react-hot-toast';
 
+export const getApiErrorMessage = (error, fallback = 'Terjadi kesalahan') => {
+  const responseData = error?.response?.data || {};
+  const detail = responseData?.detail || error?.detail || {};
+  const firstError = Array.isArray(detail?.errors) ? detail.errors[0] : null;
+
+  return (
+    responseData?.message ||
+    detail?.message ||
+    firstError?.msg ||
+    error?.message ||
+    fallback
+  );
+};
+
 /**
  * Show success toast
  * @param {string} message - Success message
@@ -61,12 +75,22 @@ export const showLoadingToast = (message) => {
  * );
  */
 export const toastPromise = (promise, messages, options = {}) => {
+  const resolveErrorMessage = (err) => {
+    if (typeof messages?.error === 'function') {
+      return messages.error(err) || getApiErrorMessage(err);
+    }
+    if (typeof messages?.error === 'string' && messages.error.trim()) {
+      return messages.error;
+    }
+    return getApiErrorMessage(err);
+  };
+
   return toast.promise(
     promise,
     {
       loading: messages.loading || 'Memproses...',
       success: messages.success || 'Berhasil!',
-      error: messages.error || 'Terjadi kesalahan',
+      error: resolveErrorMessage,
     },
     {
       position: 'top-right',

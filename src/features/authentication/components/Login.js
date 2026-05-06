@@ -4,7 +4,7 @@ import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import OtpInput from "react-otp-input";
 import { useRouter } from "next/navigation";
-import { Refresh2 } from "iconsax-react";
+import { Eye, EyeSlash, Refresh2 } from "iconsax-react";
 import {
   Alert,
   Avatar,
@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  InputAdornment,
   Link,
   Paper,
   Stack,
@@ -50,7 +51,7 @@ import {
   saveOtpContext,
   savePkceBundle,
 } from "@/core/services/authSession";
-import { showErrorToast, showSuccessToast } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast, showSuccessToast } from "@/shared/utils/toast";
 
 const getPrefixValue = (prefix) => {
   const normalizedPrefix = typeof prefix === "string" ? prefix.trim() : "";
@@ -410,6 +411,7 @@ function LoginForm({ prefix }) {
     username: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const requestedCaptchaKeyRef = useRef("");
 
   const effectivePrefix = useMemo(() => getPrefixValue(prefix), [prefix]);
@@ -626,7 +628,7 @@ function LoginForm({ prefix }) {
         return;
       }
 
-      showErrorToast(detail?.message || error?.message || "Login gagal");
+      showErrorToast(getApiErrorMessage(error, "Login gagal"));
     } finally {
       setIsSubmitting(false);
     }
@@ -904,7 +906,7 @@ function LoginForm({ prefix }) {
             />
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               variant="outlined"
               fullWidth
               margin="normal"
@@ -921,7 +923,16 @@ function LoginForm({ prefix }) {
                   suppressHydrationWarning: true,
                 },
               }}
-              InputProps={{ sx: { borderRadius: 4 } }}
+              InputProps={{
+                sx: { borderRadius: 4 },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                      {showPassword ? <EyeSlash size={18} /> : <Eye size={18} />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Button
               type="submit"

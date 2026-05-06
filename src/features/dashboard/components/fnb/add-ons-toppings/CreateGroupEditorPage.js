@@ -18,7 +18,7 @@ import {
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { AddCircle, Trash } from 'iconsax-react';
 import { fnbMenuAddonGroup, fnbMenuAddonItem } from '@/core/services/api_fnb';
-import { toastPromise } from '@/shared/utils/toast';
+import { getApiErrorMessage, toastPromise } from '@/shared/utils/toast';
 import { formatRupiah, parseRupiah } from '@/shared/utils/format';
 
 const parseNumber = (value) => {
@@ -213,7 +213,7 @@ export default function CreateGroupEditorPage() {
       await toastPromise(submitPromise, {
         loading: 'Menyimpan add-on group...',
         success: 'Add-on group berhasil dibuat.',
-        error: (error) => error?.response?.data?.message || error?.message || 'Gagal membuat add-on group.',
+        error: (error) => getApiErrorMessage(error, 'Gagal membuat add-on group.'),
       });
       router.push('/fnb/master-product/add-ons-toppings');
     } finally {
