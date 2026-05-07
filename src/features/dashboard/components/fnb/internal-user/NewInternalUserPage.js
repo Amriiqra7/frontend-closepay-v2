@@ -44,7 +44,7 @@ export default function NewInternalUserPage() {
           error: (error) => getApiErrorMessage(error, "Gagal membuat internal user."),
         }
       );
-      router.push("/fnb/internal-user");
+      router.push("/fnb/manajemen-user");
     } finally {
       setIsSubmitting(false);
     }
@@ -128,7 +128,7 @@ export default function NewInternalUserPage() {
           </Box>
         </Box>
         <Stack direction="row" justifyContent="flex-end" spacing={1.25} sx={{ mt: 3 }}>
-          <Button component={Link} href="/fnb/internal-user" variant="text">Cancel</Button>
+          <Button component={Link} href="/fnb/manajemen-user" variant="text">Cancel</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
@@ -142,3 +142,4 @@ export default function NewInternalUserPage() {
     </Box>
   );
 }
+

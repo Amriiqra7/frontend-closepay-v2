@@ -67,7 +67,7 @@ export default function EditInternalUserPage({ userId }) {
         success: "Internal user berhasil diperbarui.",
         error: (error) => getApiErrorMessage(error, "Gagal memperbarui internal user."),
       });
-      router.push("/fnb/internal-user");
+      router.push("/fnb/manajemen-user");
     } finally {
       setIsSubmitting(false);
     }
@@ -151,7 +151,7 @@ export default function EditInternalUserPage({ userId }) {
           </Box>
         </Box>
         <Stack direction="row" justifyContent="flex-end" spacing={1.25} sx={{ mt: 3 }}>
-          <Button component={Link} href="/fnb/internal-user" variant="text">Cancel</Button>
+          <Button component={Link} href="/fnb/manajemen-user" variant="text">Cancel</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
@@ -165,3 +165,4 @@ export default function EditInternalUserPage({ userId }) {
     </Box>
   );
 }
+

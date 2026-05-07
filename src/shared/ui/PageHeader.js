@@ -150,7 +150,7 @@ const customTitleMap = {
   '/fnb/performance-trends': 'Performance Trends',
   '/fnb/quick-actions': 'Quick Actions',
   '/fnb/master-product': 'Master Product',
-  '/fnb/internal-user': 'Internal User',
+  '/fnb/manajemen-user': 'Manajemen User',
   '/fnb/inventory': 'Inventory',
   '/fnb/distribution': 'Distribution',
   '/fnb/stock-opname': 'Stock Opname',
@@ -565,3 +565,4 @@ export default function PageHeader() {
     </Box>
   );
 }
+

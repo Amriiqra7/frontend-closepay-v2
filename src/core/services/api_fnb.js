@@ -194,3 +194,10 @@ export const fnbInternalUser = {
     { operationId: "merchant_internal_user_delete" }
   ),
 };
+
+export const fnbMerchantQrCode = {
+  generate: addProps(
+    (payload = {}) => handleRequest(axiosInstance.post("/fnb/merchant/qr_code/generate", payload)),
+    { operationId: "merchant_qr_code_generate" }
+  ),
+};

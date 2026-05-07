@@ -14,11 +14,11 @@ import {
   Box1,
   ClipboardText,
   Home2,
-  MessageQuestion,
   ReceiptSearch,
   User,
   Shop,
   TruckFast,
+  Setting2,
 } from 'iconsax-react';
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
 import SidebarNavItem from './SidebarNavItem';
@@ -92,19 +92,22 @@ const mainItems = [
     icon: ClipboardText,
   },
   {
-    id: 'fnb-internal-user',
-    label: 'Internal User',
-    href: '/fnb/internal-user',
+    id: 'fnb-manajemen-user',
+    label: 'Manajemen User',
+    href: '/fnb/manajemen-user',
     icon: User,
   },
-];
-
-const utilityItems = [
   {
-    id: 'fnb-support',
-    label: 'Support',
-    href: '/fnb/support',
-    icon: MessageQuestion,
+    id: 'fnb-generate-qr',
+    label: 'Generate QR',
+    href: '/fnb/generate-qr',
+    icon: ReceiptSearch,
+  },
+  {
+    id: 'fnb-konfigurasi-merchant',
+    label: 'Konfigurasi Merchant',
+    href: '/fnb/konfigurasi-merchant',
+    icon: Setting2,
   },
 ];
 
@@ -195,21 +198,6 @@ export default function FnbSidebar({
       </Box>
 
       <Divider />
-
-      <Box sx={{ px: desktopExpanded ? 2 : 1, py: 1.5 }}>
-        <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-          {utilityItems.map((item) => (
-            <SidebarNavItem
-              key={item.id}
-              item={item}
-              pathname={pathname}
-              onNavigate={handleNavigate}
-              brandColor={brandColor}
-              desktopExpanded={desktopExpanded}
-            />
-          ))}
-        </List>
-      </Box>
     </Box>
   );
 

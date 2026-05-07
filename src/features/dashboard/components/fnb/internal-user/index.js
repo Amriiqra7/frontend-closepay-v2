@@ -326,7 +326,7 @@ export default function FnbInternalUserPage() {
           <Button
             variant="contained"
             startIcon={<Add size={20} color="white" />}
-            onClick={() => router.push("/fnb/internal-user/new")}
+            onClick={() => router.push("/fnb/manajemen-user/new")}
             sx={{ textTransform: "none", height: "40px", px: 2 }}
           >
             Tambah
@@ -397,7 +397,7 @@ export default function FnbInternalUserPage() {
           </IconButton>
         </Tooltip>
         <Tooltip title="Edit" arrow>
-          <IconButton size="small" onClick={() => router.push(`/fnb/internal-user/${safeId(row.original)}/edit`)} sx={{ color: "#ed6c02" }}>
+          <IconButton size="small" onClick={() => router.push(`/fnb/manajemen-user/${safeId(row.original)}/edit`)} sx={{ color: "#ed6c02" }}>
             <Edit size={20} color="#ed6c02" variant="Linear" />
           </IconButton>
         </Tooltip>
@@ -490,3 +490,4 @@ export default function FnbInternalUserPage() {
     </Box>
   );
 }
+

@@ -570,8 +570,8 @@ const GLOBAL_MENU_ITEMS = {
   },
   'fnb-internal-user': {
     id: 'fnb-internal-user',
-    label: 'Internal User',
-    href: '/fnb/internal-user',
+    label: 'Manajemen User',
+    href: '/fnb/manajemen-user',
     icon: User,
   },
   'fnb-inventory': {
@@ -1179,3 +1179,5 @@ export const ADMIN_MENU_CONFIG = {
 
 // Export global menu items for direct access if needed
 export { GLOBAL_MENU_ITEMS, getMenuItem, getMenuItems };
+
+
