@@ -1,5 +1,5 @@
-import LoginView from "@/views/auth/LoginView";
+import LoginPageView from "@/views/auth/LoginPage";
 
 export default function LoginPage() {
-  return <LoginView initialPrefix="" />;
+  return <LoginPageView initialPrefix="" />;
 }

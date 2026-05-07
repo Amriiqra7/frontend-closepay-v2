@@ -28,7 +28,7 @@ import {
 } from 'iconsax-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
-import { SIDEBAR_SECTIONS } from '@/features/dashboard/components/sidebar/menuConfig';
+import { SIDEBAR_SECTIONS } from '@/views/dashboard/sidebar/menuConfig';
 import { ADMIN_MENU_CONFIG } from '@/shared/config/adminMenuConfig';
 
 const RECENT_PAGES_KEY = 'search_recent_pages';
@@ -604,3 +604,4 @@ export default function SearchDialog({ open, onClose }) {
     </Dialog>
   );
 }
+

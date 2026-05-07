@@ -1,4 +1,4 @@
-import CompanyKustomNamaSaldo from "@/features/company/kustom-nama-saldo/components/CompanyKustomNamaSaldo";
+import CompanyKustomNamaSaldo from "@/views/company/kustom-nama-saldo/CompanyKustomNamaSaldo";
 
 export default function CompanyKustomNamaSaldoPage() {
   return <CompanyKustomNamaSaldo />;

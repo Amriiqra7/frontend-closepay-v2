@@ -1,4 +1,4 @@
-import CompanyAturMenuAppMerchant from '@/features/company/atur-menu-app-merchant/components/CompanyAturMenuAppMerchant';
+import CompanyAturMenuAppMerchant from '@/views/company/atur-menu-app-merchant/CompanyAturMenuAppMerchant';
 
 export default function CompanyAturMenuAppMerchantPage() {
   return <CompanyAturMenuAppMerchant />;

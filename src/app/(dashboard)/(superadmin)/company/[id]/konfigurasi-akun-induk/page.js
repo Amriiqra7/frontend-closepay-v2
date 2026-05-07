@@ -1,4 +1,4 @@
-import CompanyKonfigurasiAkunInduk from "@/features/company/konfigurasi-akun-induk/components/CompanyKonfigurasiAkunInduk";
+import CompanyKonfigurasiAkunInduk from "@/views/company/konfigurasi-akun-induk/CompanyKonfigurasiAkunInduk";
 
 export default function CompanyKonfigurasiAkunIndukPage() {
   return <CompanyKonfigurasiAkunInduk />;

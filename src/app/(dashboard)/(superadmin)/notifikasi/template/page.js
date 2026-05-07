@@ -1,4 +1,4 @@
-import TemplateList from '@/features/notification/components/template/TemplateList';
+import TemplateList from '@/views/notification/template/TemplateList';
 
 export default function TemplatePage() {
   return <TemplateList />;

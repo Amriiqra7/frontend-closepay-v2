@@ -1,5 +1,5 @@
-import PermintaanDistribusiView from "@/views/fnb/distribution/PermintaanDistribusiView";
+import PermintaanDistribusiList from "@/views/fnb/distribution/permintaan-distribusi/PermintaanDistribusiList";
 
 export default function FnbPermintaanDistribusiRoute() {
-  return <PermintaanDistribusiView />;
+  return <PermintaanDistribusiList />;
 }

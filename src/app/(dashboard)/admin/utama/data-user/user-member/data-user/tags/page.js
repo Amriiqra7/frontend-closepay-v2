@@ -1,6 +1,6 @@
 'use client';
 
-import TagsList from '@/features/user-member/components/TagsList';
+import TagsList from '@/views/user-member/TagsList';
 
 export default function TagsPage() {
   return <TagsList />;

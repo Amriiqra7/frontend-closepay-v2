@@ -1,6 +1,6 @@
-import InternalUserEditView from "@/views/fnb/master-product/InternalUserEditView";
+import InternalUserForm from "@/views/fnb/master-product/internal-user/InternalUserForm";
 
 export default async function FnbManajemenUserEditRoute({ params }) {
   const resolvedParams = await params;
-  return <InternalUserEditView userId={resolvedParams?.userId} />;
+  return <InternalUserForm mode="edit" userId={resolvedParams?.userId} />;
 }

@@ -1,4 +1,4 @@
-import CompanyKonfigurasiPerizinanOTPLogin from "@/features/company/konfigurasi-perizinan-otp-login/components/CompanyKonfigurasiPerizinanOTPLogin";
+import CompanyKonfigurasiPerizinanOTPLogin from "@/views/company/konfigurasi-perizinan-otp-login/CompanyKonfigurasiPerizinanOTPLogin";
 
 export default function CompanyKonfigurasiPerizinanOTPLoginPage() {
   return <CompanyKonfigurasiPerizinanOTPLogin />;

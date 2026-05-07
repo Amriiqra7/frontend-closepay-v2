@@ -1,4 +1,4 @@
-import DataIzinAksesEdit from "@/features/role/components/data-izin-akses/DataIzinAksesEdit";
+import DataIzinAksesEdit from "@/views/role/data-izin-akses/DataIzinAksesEdit";
 
 // Force dynamic rendering to avoid prerendering issues
 export const dynamic = 'force-dynamic';

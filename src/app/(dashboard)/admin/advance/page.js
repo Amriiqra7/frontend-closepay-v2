@@ -1,4 +1,4 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function AdvancePage() {
   return <AdminDashboard title="Advance" />;

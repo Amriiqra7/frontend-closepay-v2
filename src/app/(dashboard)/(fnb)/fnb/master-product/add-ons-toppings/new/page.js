@@ -1,5 +1,5 @@
-import AddOnsToppingsNewView from "@/views/fnb/master-product/AddOnsToppingsNewView";
+import AddOnGroupForm from "@/views/fnb/master-product/add-ons-toppings/AddOnGroupForm";
 
 export default function FnbAddOnsToppingsNewRoute() {
-  return <AddOnsToppingsNewView />;
+  return <AddOnGroupForm mode="create" />;
 }

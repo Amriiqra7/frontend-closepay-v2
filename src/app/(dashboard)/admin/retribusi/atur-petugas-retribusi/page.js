@@ -1,4 +1,4 @@
-import AdminDashboard from "@/features/dashboard/components/AdminDashboard";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function AturPetugasRetribusiPage() {
   return <AdminDashboard title="Atur Petugas Retribusi" />;

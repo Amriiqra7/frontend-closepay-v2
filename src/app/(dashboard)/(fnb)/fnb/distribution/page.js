@@ -1,5 +1,5 @@
-import DistributionView from "@/views/fnb/distribution/DistributionView";
+import PermintaanDistribusiList from "@/views/fnb/distribution/permintaan-distribusi/PermintaanDistribusiList";
 
 export default function FnbDistributionPage() {
-  return <DistributionView />;
+  return <PermintaanDistribusiList />;
 }

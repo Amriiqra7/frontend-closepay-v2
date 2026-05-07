@@ -1,5 +1,5 @@
-import StockBarangView from "@/views/fnb/inventory/StockBarangView";
+import StockBarangList from "@/views/fnb/inventory/stock-barang/StockBarangList";
 
 export default function FnbStockBarangRoute() {
-  return <StockBarangView />;
+  return <StockBarangList />;
 }

@@ -1,4 +1,4 @@
-import CompanyAturLimitTopup from "@/features/company/atur-limit-topup/components/CompanyAturLimitTopup";
+import CompanyAturLimitTopup from "@/views/company/atur-limit-topup/CompanyAturLimitTopup";
 
 export default function CompanyAturLimitTopupPage() {
   return <CompanyAturLimitTopup />;

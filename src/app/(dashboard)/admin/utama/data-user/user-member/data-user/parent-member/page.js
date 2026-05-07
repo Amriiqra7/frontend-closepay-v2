@@ -1,6 +1,6 @@
 'use client';
 
-import ParentMemberList from '@/features/user-member/components/ParentMemberList';
+import ParentMemberList from '@/views/user-member/ParentMemberList';
 
 export default function ParentMemberPage() {
   return <ParentMemberList />;

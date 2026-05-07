@@ -1,4 +1,4 @@
-import RiwayatPembayaranDetail from '@/features/manajemen-keuangan/components/RiwayatPembayaranDetail';
+import RiwayatPembayaranDetail from '@/views/manajemen-keuangan/RiwayatPembayaranDetail';
 
 export default function RiwayatPembayaranDetailPage() {
   return <RiwayatPembayaranDetail />;

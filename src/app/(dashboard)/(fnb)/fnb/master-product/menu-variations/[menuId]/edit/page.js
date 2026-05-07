@@ -1,6 +1,6 @@
-import MenuVariationsEditView from "@/views/fnb/master-product/MenuVariationsEditView";
+import EditMenuVariationPage from "@/views/fnb/master-product/menu-variations/EditMenuVariationPage";
 
 export default async function FnbMenuVariationsEditRoute({ params }) {
   const resolvedParams = await params;
-  return <MenuVariationsEditView menuId={resolvedParams?.menuId} />;
+  return <EditMenuVariationPage menuId={resolvedParams?.menuId} />;
 }

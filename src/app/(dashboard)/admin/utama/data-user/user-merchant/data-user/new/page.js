@@ -1,4 +1,4 @@
-import UserMerchantNew from '@/features/user-merchant/components/UserMerchantNew';
+import UserMerchantNew from '@/views/user-merchant/UserMerchantNew';
 
 export default function DataUserMerchantNewPage() {
   return <UserMerchantNew />;

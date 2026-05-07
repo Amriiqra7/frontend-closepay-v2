@@ -1,4 +1,4 @@
-import CompanyCredentialRekening from "@/features/company/credential-rekening/components/CompanyCredentialRekening";
+import CompanyCredentialRekening from "@/views/company/credential-rekening/CompanyCredentialRekening";
 
 export default function CompanyCredentialRekeningPage() {
   return <CompanyCredentialRekening />;

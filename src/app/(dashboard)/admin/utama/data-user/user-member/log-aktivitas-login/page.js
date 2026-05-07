@@ -1,4 +1,4 @@
-import LogAktivitasLoginList from '@/features/user-member/components/LogAktivitasLoginList';
+import LogAktivitasLoginList from '@/views/user-member/LogAktivitasLoginList';
 
 export default function LogAktivitasLoginMemberPage() {
   return <LogAktivitasLoginList />;

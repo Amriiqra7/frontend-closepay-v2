@@ -3,9 +3,9 @@
 import React, { useState, Suspense, useEffect } from 'react';
 import { Box, Toolbar } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
-import Sidebar from '@/features/dashboard/components/Sidebar';
-import AdminSidebar from '@/features/dashboard/components/sidebar/AdminSidebar';
-import FnbSidebar from '@/features/dashboard/components/sidebar/FnbSidebar';
+import Sidebar from '@/views/dashboard/Sidebar';
+import AdminSidebar from '@/views/dashboard/sidebar/AdminSidebar';
+import FnbSidebar from '@/views/dashboard/sidebar/FnbSidebar';
 import Header from './Header';
 import PageHeader from '@/shared/ui/PageHeader';
 import PageLoading from '@/shared/ui/PageLoading';

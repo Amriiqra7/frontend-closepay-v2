@@ -1,4 +1,4 @@
-import MerchantConfigurationDetailPage from "@/features/dashboard/components/fnb/merchant-configuration/DetailPage";
+import MerchantConfigurationDetailPage from "@/views/fnb/merchant-configuration/MerchantConfigurationDetailPage";
 
 export default function ManajemenMejaPage() {
   return (

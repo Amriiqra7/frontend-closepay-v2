@@ -1,5 +1,5 @@
-import RiwayatOpnameView from "@/views/fnb/stock-opname/RiwayatOpnameView";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function FnbRiwayatOpnamePage() {
-  return <RiwayatOpnameView />;
+  return <AdminDashboard title="Riwayat Opname" />;
 }

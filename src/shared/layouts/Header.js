@@ -6,7 +6,7 @@ import { ArrowDown2, HambergerMenu, Profile, Setting2, LogoutCurve, ArrowLeft2, 
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
 import { usePathname, useRouter } from 'next/navigation';
 import SearchDialog from '@/shared/ui/SearchDialog';
-import AdminMenuDialog from '@/features/admin-monitor/components/AdminMenuDialog';
+import AdminMenuDialog from '@/views/admin-monitor/AdminMenuDialog';
 
 export default function Header({ 
   drawerWidth, 

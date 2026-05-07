@@ -1,5 +1,5 @@
-import InventoryView from "@/views/fnb/inventory/InventoryView";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function FnbInventoryPage() {
-  return <InventoryView />;
+  return <AdminDashboard title="Inventory" />;
 }

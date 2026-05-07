@@ -1,4 +1,4 @@
-import CompanyAturNamaMenuWebAdmin from '@/features/company/atur-nama-menu-web-admin/components/CompanyAturNamaMenuWebAdmin';
+import CompanyAturNamaMenuWebAdmin from '@/views/company/atur-nama-menu-web-admin/CompanyAturNamaMenuWebAdmin';
 
 export default function CompanyAturNamaMenuWebAdminPage() {
   return <CompanyAturNamaMenuWebAdmin />;

@@ -1,5 +1,5 @@
-import FnbLoginView from "@/views/auth/FnbLoginView";
+import FnbLoginPageView from "@/views/auth/FnbLoginPage";
 
 export default function FnbLoginPage() {
-  return <FnbLoginView />;
+  return <FnbLoginPageView />;
 }

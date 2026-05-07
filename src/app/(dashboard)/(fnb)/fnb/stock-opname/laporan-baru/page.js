@@ -1,5 +1,5 @@
-import LaporanBaruView from "@/views/fnb/stock-opname/LaporanBaruView";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function FnbLaporanBaruPage() {
-  return <LaporanBaruView />;
+  return <AdminDashboard title="Laporan Baru" />;
 }

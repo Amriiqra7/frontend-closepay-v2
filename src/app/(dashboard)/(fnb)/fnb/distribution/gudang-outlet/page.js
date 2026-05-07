@@ -1,5 +1,5 @@
-import GudangOutletView from "@/views/fnb/distribution/GudangOutletView";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function FnbGudangOutletPage() {
-  return <GudangOutletView />;
+  return <AdminDashboard title="Gudang Outlet" />;
 }

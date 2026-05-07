@@ -1,5 +1,5 @@
-import PerformanceTrendsView from "@/views/fnb/performance-trends/PerformanceTrendsView";
+import AdminDashboard from "@/views/dashboard/AdminDashboard";
 
 export default function FnbPerformanceTrendsPage() {
-  return <PerformanceTrendsView />;
+  return <AdminDashboard title="Performance Trends" />;
 }

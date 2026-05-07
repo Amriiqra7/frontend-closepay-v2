@@ -1,6 +1,6 @@
 'use client';
 
-import UserMemberNew from '@/features/user-member/components/UserMemberNew';
+import UserMemberNew from '@/views/user-member/UserMemberNew';
 
 export default function UserMemberNewPage() {
   return <UserMemberNew />;

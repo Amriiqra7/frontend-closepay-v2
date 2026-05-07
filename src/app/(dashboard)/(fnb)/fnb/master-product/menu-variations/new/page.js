@@ -1,5 +1,5 @@
-import MenuVariationsNewView from "@/views/fnb/master-product/MenuVariationsNewView";
+import NewMenuVariationPage from "@/views/fnb/master-product/menu-variations/NewMenuVariationPage";
 
 export default function FnbMenuVariationsNewRoute() {
-  return <MenuVariationsNewView />;
+  return <NewMenuVariationPage />;
 }

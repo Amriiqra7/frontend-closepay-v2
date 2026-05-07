@@ -1,4 +1,4 @@
-import TagihanMasterForm from "@/features/invoice/components/TagihanMasterForm";
+import TagihanMasterForm from "@/views/invoice/TagihanMasterForm";
 
 export default function TagihanMasterNewPage() {
   return <TagihanMasterForm />;

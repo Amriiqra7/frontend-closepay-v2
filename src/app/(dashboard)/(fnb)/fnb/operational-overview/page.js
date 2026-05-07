@@ -1,5 +1,5 @@
-import OperationalOverviewView from "@/views/fnb/operational-overview/OperationalOverviewView";
+import FnbDashboardList from "@/views/fnb/dashboard/FnbDashboardList";
 
 export default function FnbOperationalOverviewPage() {
-  return <OperationalOverviewView />;
+  return <FnbDashboardList />;
 }

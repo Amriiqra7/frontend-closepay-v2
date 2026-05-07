@@ -1,5 +1,5 @@
-import BahanBakuResepNewView from "@/views/fnb/master-product/BahanBakuResepNewView";
+import NewRecipeWorkspace from "@/views/fnb/master-product/bahan-baku-resep/NewRecipeWorkspace";
 
 export default function FnbBahanBakuResepNewRoute() {
-  return <BahanBakuResepNewView />;
+  return <NewRecipeWorkspace />;
 }

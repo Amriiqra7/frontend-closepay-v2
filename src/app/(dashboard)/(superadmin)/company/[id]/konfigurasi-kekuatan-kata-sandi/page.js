@@ -1,4 +1,4 @@
-import CompanyKonfigurasiKekuatanKataSandi from "@/features/company/konfigurasi-kekuatan-kata-sandi/components/CompanyKonfigurasiKekuatanKataSandi";
+import CompanyKonfigurasiKekuatanKataSandi from "@/views/company/konfigurasi-kekuatan-kata-sandi/CompanyKonfigurasiKekuatanKataSandi";
 
 export default function CompanyKonfigurasiKekuatanKataSandiPage() {
   return <CompanyKonfigurasiKekuatanKataSandi />;

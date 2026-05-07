@@ -1,5 +1,5 @@
-import InternalUserNewView from "@/views/fnb/master-product/InternalUserNewView";
+import InternalUserForm from "@/views/fnb/master-product/internal-user/InternalUserForm";
 
 export default function FnbManajemenUserNewRoute() {
-  return <InternalUserNewView />;
+  return <InternalUserForm mode="create" />;
 }

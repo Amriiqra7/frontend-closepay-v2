@@ -1,4 +1,4 @@
-import CompanyPerizinanLoginUser from "@/features/company/perizinan-login-user/components/CompanyPerizinanLoginUser";
+import CompanyPerizinanLoginUser from "@/views/company/perizinan-login-user/CompanyPerizinanLoginUser";
 
 export default function CompanyPerizinanLoginUserPage() {
   return <CompanyPerizinanLoginUser />;

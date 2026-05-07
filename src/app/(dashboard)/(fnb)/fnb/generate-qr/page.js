@@ -1,5 +1,5 @@
-import GenerateQrView from "@/views/fnb/generate-qr/GenerateQrView";
+import GenerateQrList from "@/views/fnb/generate-qr/GenerateQrList";
 
 export default function FnbGenerateQrPageRoute() {
-  return <GenerateQrView />;
+  return <GenerateQrList />;
 }

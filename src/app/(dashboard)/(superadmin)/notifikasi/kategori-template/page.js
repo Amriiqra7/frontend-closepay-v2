@@ -1,4 +1,4 @@
-import KategoriTemplateList from '@/features/notification/components/kategoriTemplate/KategoriTemplateList';
+import KategoriTemplateList from '@/views/notification/kategoriTemplate/KategoriTemplateList';
 
 export default function KategoriTemplatePage() {
   return <KategoriTemplateList />;

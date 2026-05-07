@@ -1,5 +1,5 @@
-import MerchantConfigurationView from "@/views/fnb/merchant-configuration/MerchantConfigurationView";
+import MerchantConfigurationMenuPage from "@/views/fnb/merchant-configuration/MerchantConfigurationMenuPage";
 
 export default function FnbMerchantConfigurationPage() {
-  return <MerchantConfigurationView />;
+  return <MerchantConfigurationMenuPage />;
 }

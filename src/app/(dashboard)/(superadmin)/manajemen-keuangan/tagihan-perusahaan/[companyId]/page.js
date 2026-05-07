@@ -1,4 +1,4 @@
-import TagihanPerusahaanList from '@/features/manajemen-keuangan/components/TagihanPerusahaanList';
+import TagihanPerusahaanList from '@/views/manajemen-keuangan/TagihanPerusahaanList';
 
 export default function TagihanPerusahaanPage() {
   return <TagihanPerusahaanList />;

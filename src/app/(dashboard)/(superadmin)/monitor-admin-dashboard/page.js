@@ -1,4 +1,4 @@
-import MonitorAdminDashboard from "@/features/admin-monitor/components/MonitorAdminDashboard";
+import MonitorAdminDashboard from "@/views/admin-monitor/MonitorAdminDashboard";
 
 export default function MonitorAdminDashboardPage() {
   return <MonitorAdminDashboard />;

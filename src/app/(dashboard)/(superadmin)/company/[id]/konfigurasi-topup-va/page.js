@@ -1,4 +1,4 @@
-import CompanyKonfigurasiTopupVA from "@/features/company/konfigurasi-topup-va/components/CompanyKonfigurasiTopupVA";
+import CompanyKonfigurasiTopupVA from "@/views/company/konfigurasi-topup-va/CompanyKonfigurasiTopupVA";
 
 export default function CompanyKonfigurasiTopupVAPage() {
   return <CompanyKonfigurasiTopupVA />;

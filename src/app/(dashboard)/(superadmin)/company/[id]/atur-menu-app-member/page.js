@@ -1,4 +1,4 @@
-import CompanyAturMenuAppMember from '@/features/company/atur-menu-app-member/components/CompanyAturMenuAppMember';
+import CompanyAturMenuAppMember from '@/views/company/atur-menu-app-member/CompanyAturMenuAppMember';
 
 export default function CompanyAturMenuAppMemberPage() {
   return <CompanyAturMenuAppMember />;

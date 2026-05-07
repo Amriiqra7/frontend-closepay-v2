@@ -1,4 +1,4 @@
-import UserMemberList from "@/features/user-member/components/UserMemberList";
+import UserMemberList from "@/views/user-member/UserMemberList";
 
 export default function DataUserMemberPage() {
   return <UserMemberList />;

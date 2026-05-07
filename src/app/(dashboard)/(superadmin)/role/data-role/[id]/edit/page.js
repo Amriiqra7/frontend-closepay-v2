@@ -1,4 +1,4 @@
-import RoleEdit from "@/features/role/components/data-role/RoleEdit";
+import RoleEdit from "@/views/role/data-role/RoleEdit";
 
 // Force dynamic rendering to avoid prerendering issues with useSearchParams
 export const dynamic = 'force-dynamic';

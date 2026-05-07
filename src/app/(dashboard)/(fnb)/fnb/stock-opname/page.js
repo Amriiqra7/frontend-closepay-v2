@@ -1,5 +1,5 @@
-import StockOpnameView from "@/views/fnb/stock-opname/StockOpnameView";
+import StockOpnameList from "@/views/fnb/stock-opname/StockOpnameList";
 
 export default function FnbStockOpnameRoute() {
-  return <StockOpnameView />;
+  return <StockOpnameList />;
 }

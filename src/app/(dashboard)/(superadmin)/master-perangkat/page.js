@@ -1,4 +1,4 @@
-import MasterPerangkatList from '@/features/master-perangkat/components/MasterPerangkatList';
+import MasterPerangkatList from '@/views/master-perangkat/MasterPerangkatList';
 
 export default function MasterPerangkatPage() {
   return <MasterPerangkatList />;
