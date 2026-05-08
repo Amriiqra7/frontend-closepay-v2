@@ -18,16 +18,16 @@ const generateMockCompany = (id) => {
       inisialPerusahaan: 'KF12',
     },
   ];
-  
+
   const companyId = parseInt(id);
   // Logic sama dengan CompanyList.js: baseData = sampleData[(i - 1) % sampleData.length]
   const baseData = sampleData[(companyId - 1) % sampleData.length];
-  
+
   // Logic sama dengan CompanyList.js: nama = i <= sampleData.length ? baseData.nama : `${baseData.nama} ${Math.floor(i / sampleData.length)}`
-  const nama = companyId <= sampleData.length 
-    ? baseData.nama 
+  const nama = companyId <= sampleData.length
+    ? baseData.nama
     : `${baseData.nama} ${Math.floor(companyId / sampleData.length)}`;
-  
+
   return {
     id: companyId,
     nama: nama,
@@ -180,7 +180,7 @@ const getTitleFromPathname = (pathname) => {
   if (customTitleMap[pathname]) {
     return customTitleMap[pathname];
   }
-  
+
   // Handle dynamic routes
   if (pathname.startsWith('/manajemen-keuangan/tagihan-perusahaan/')) {
     if (pathname.includes('/riwayat-pembayaran')) {
@@ -188,7 +188,7 @@ const getTitleFromPathname = (pathname) => {
     }
     return 'Tagihan Perusahaan';
   }
-  
+
   return null;
 };
 
@@ -216,7 +216,7 @@ const formatSegmentLabel = (segment) => {
 const isValidRoute = (path) => {
   // Beranda selalu valid
   if (path === '/dashboard' || path === '/fnb') return true;
-  
+
   // Route khusus yang valid (untuk superadmin routes yang tidak ada di ADMIN_MENU_CONFIG)
   const validSuperadminRoutes = [
     '/company',
@@ -232,22 +232,22 @@ const isValidRoute = (path) => {
   if (validSuperadminRoutes.includes(path)) {
     return true;
   }
-  
+
   // Route pattern untuk /company/[id] dan /company/[id]/...
   if (path.startsWith('/company/')) {
     return true;
   }
-  
+
   // Route pattern untuk /manajemen-keuangan/tagihan-perusahaan/[companyId] dan /manajemen-keuangan/tagihan-perusahaan/[companyId]/...
   if (path.startsWith('/manajemen-keuangan/tagihan-perusahaan/')) {
     return true;
   }
-  
+
   // Route pattern untuk /data-log/...
   if (path.startsWith('/data-log/')) {
     return true;
   }
-  
+
   // Fungsi rekursif untuk mencari route di menu config
   const findRouteInMenu = (menuObj, targetPath) => {
     // Cek subMenus
@@ -298,12 +298,12 @@ const isParentMenuOnly = (path) => {
   if (routesWithOwnPage.includes(path)) {
     return false;
   }
-  
+
   // Route pattern untuk /company/[id] dan /company/[id]/... punya halaman sendiri
   if (path.startsWith('/company/')) {
     return false;
   }
-  
+
   // Fungsi rekursif untuk mencari route di menu config
   const findRouteInMenu = (menuObj, targetPath) => {
     if (menuObj.subMenus) {
@@ -350,9 +350,9 @@ const isSuperadminRoute = (pathname) => {
     '/manajemen-keuangan',
     '/data-log',
   ];
-  
+
   // Cek apakah pathname adalah superadmin route atau dimulai dengan superadmin route
-  return superadminRoutes.some(route => 
+  return superadminRoutes.some(route =>
     pathname === route || pathname.startsWith(route + '/')
   );
 };
@@ -360,10 +360,10 @@ const isSuperadminRoute = (pathname) => {
 // Fungsi untuk generate breadcrumb dari pathname
 const generateBreadcrumbs = (pathname, companyNameMap = {}) => {
   const segments = pathname.split('/').filter(Boolean);
-  
+
   // Cek apakah ini route superadmin
   const isSuperadmin = isSuperadminRoute(pathname);
-  
+
   // Beranda disabled jika route superadmin (karena /dashboard tidak valid untuk superadmin)
   const breadcrumbs = [
     { label: 'Beranda', href: '/dashboard', disabled: isSuperadmin },
@@ -372,7 +372,7 @@ const generateBreadcrumbs = (pathname, companyNameMap = {}) => {
   let currentPath = '';
   segments.forEach((segment, index) => {
     currentPath += `/${segment}`;
-    
+
     // Cek apakah segment ini adalah ID perusahaan (setelah /company)
     let label = formatSegmentLabel(segment);
     const isCompanyId = index > 0 && segments[index - 1] === 'company';
@@ -380,25 +380,25 @@ const generateBreadcrumbs = (pathname, companyNameMap = {}) => {
       // Gunakan nama perusahaan jika ada, fallback ke ID
       label = companyNameMap[segment] || segment;
     }
-    
+
     const isLast = index === segments.length - 1;
-    
+
     // Cek apakah route valid
     const isValid = isValidRoute(currentPath);
     // Cek apakah route adalah parent menu only (punya children tapi tidak punya halaman sendiri)
     const isParentOnly = isParentMenuOnly(currentPath);
-    
+
     // Cek apakah ini route detail perusahaan (/company/[id])
     const isCompanyDetailRoute = isCompanyId && currentPath.match(/^\/company\/\d+$/);
     // Cek apakah pathname saat ini sama dengan currentPath (halaman aktif)
     const isCurrentPathActive = pathname === currentPath;
-    
+
     // Nama perusahaan disabled jika:
     // 1. Merupakan breadcrumb terakhir (isLast)
     // 2. Atau route /company/[id] tidak valid (tidak ada halaman untuk route tersebut)
     // Route /company/[id] dianggap tidak valid jika tidak ada halaman sendiri (hanya parent untuk child routes)
     const isCompanyDetailRouteInvalid = isCompanyDetailRoute && !isCurrentPathActive;
-    
+
     breadcrumbs.push({
       label,
       href: isLast ? null : currentPath,
@@ -416,7 +416,7 @@ const getTitle = (pathname, breadcrumbs) => {
   if (titleFromPathname) {
     return titleFromPathname;
   }
-  
+
   // Cek apakah ada custom title
   if (customTitleMap[pathname]) {
     return customTitleMap[pathname];
@@ -431,25 +431,25 @@ export default function PageHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [companyNameMap, setCompanyNameMap] = useState({});
-  
+
   // Extract company ID from pathname jika ada
   useEffect(() => {
     const segments = pathname.split('/').filter(Boolean);
     const companyIndex = segments.indexOf('company');
-    
+
     if (companyIndex !== -1 && segments[companyIndex + 1]) {
       const companyId = segments[companyIndex + 1];
-      
+
       // Skip jika segment adalah 'new', 'edit', atau route khusus lainnya
       if (companyId === 'new' || companyId === 'edit' || companyId === 'credential-rekening' || companyId === 'kustom-nama-saldo' || companyId === 'konfigurasi-topup-va' || companyId === 'konfigurasi-waktu-withdrawal' || companyId === 'atur-limit-topup' || companyId === 'konfigurasi-auto-payment-invoice' || companyId === 'perizinan-login-user' || companyId === 'konfigurasi-waktu-settlement-qris' || companyId === 'konfigurasi-icon-powered-by' || companyId === 'konfigurasi-kekuatan-kata-sandi' || companyId === 'konfigurasi-akun-induk' || companyId === 'konfigurasi-penawaran-email-telepon' || companyId === 'konfigurasi-perizinan-otp-login' || companyId === 'konfigurasi-kustom-nama-pengirim-email' || companyId === 'konfigurasi-login-member-google' || companyId === 'konfigurasi-akun-peran-hak-akses' || companyId === 'atur-nama-menu-web-admin' || companyId === 'atur-menu-app-member' || companyId === 'atur-nama-menu-app-member' || companyId === 'atur-menu-app-merchant' || companyId === 'atur-nama-menu-app-merchant') {
         return;
       }
-      
+
       // Pastikan companyId adalah angka (ID perusahaan)
       if (isNaN(companyId)) {
         return;
       }
-      
+
       // Always fetch to ensure we have the correct company name for this ID
       // This ensures that when navigating to a different company, the name updates correctly
       CompanyAPI.getById(companyId)
@@ -475,7 +475,7 @@ export default function PageHeader() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
-  
+
   // Generate breadcrumb secara otomatis
   const breadcrumbs = generateBreadcrumbs(pathname, companyNameMap);
   const title = getTitle(pathname, breadcrumbs);
@@ -494,7 +494,7 @@ export default function PageHeader() {
     <Box>
       {/* Breadcrumb */}
       {showBreadcrumb && (
-        <Box sx={{ pb: 1 }}>
+        <Box sx={{ pb: 0.5 }}>
           <Breadcrumbs
             aria-label="breadcrumb"
             separator={
@@ -511,7 +511,7 @@ export default function PageHeader() {
           >
             {breadcrumbs.map((crumb, index) => {
               const isLast = index === breadcrumbs.length - 1;
-              
+
               if (isLast || !crumb.href || crumb.disabled) {
                 return (
                   <Typography
@@ -556,8 +556,15 @@ export default function PageHeader() {
 
       {/* Title */}
       {showTitle && (
-        <Box sx={{ pb: 1 }}>
-          <Typography variant="h5" fontWeight="bold">
+        <Box sx={{ pb: 0.25 }}>
+          <Typography
+            sx={{
+              fontSize: { xs: '1.875rem', sm: '1.8rem' },
+              lineHeight: { xs: 1.27, sm: 1.21 },
+              fontWeight: 600,
+              color: 'text.primary',
+            }}
+          >
             {title}
           </Typography>
         </Box>

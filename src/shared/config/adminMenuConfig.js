@@ -54,6 +54,7 @@ import {
   Note,
   Building4,
   MessageQuestion,
+  ToggleOn,
 } from 'iconsax-react';
 
 /**
@@ -646,6 +647,18 @@ const GLOBAL_MENU_ITEMS = {
     href: '/fnb/support',
     icon: MessageQuestion,
   },
+  'fnb-konfigurasi-merchant': {
+    id: 'fnb-konfigurasi-merchant',
+    label: 'Konfigurasi Merchant',
+    href: '/fnb/konfigurasi-merchant',
+    icon: Setting2,
+  },
+  'fnb-tata-letak-struk': {
+    id: 'fnb-tata-letak-struk',
+    label: 'Tata Letak Struk',
+    href: '/fnb/tata-letak-struk',
+    icon: Note,
+  },
   'data-perangkat': {
     id: 'data-perangkat',
     label: 'Data Perangkat',
@@ -1079,6 +1092,8 @@ export const ADMIN_MENU_CONFIG = {
       getMenuItem('fnb-distribution'),
       getMenuItem('fnb-stock-opname'),
       getMenuItem('fnb-internal-user'),
+      getMenuItem('fnb-konfigurasi-merchant'),
+      getMenuItem('fnb-tata-letak-struk'),
       getMenuItem('fnb-support'),
     ],
   },

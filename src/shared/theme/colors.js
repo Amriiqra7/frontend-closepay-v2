@@ -8,12 +8,15 @@
  * <Box sx={{ bgcolor: colors.black }}>...</Box>
  */
 export const colors = {
-  black: '#262626',
-  blackDark: '#1a1a1a',
-  blackLight: '#404040',
+  black: '#1D2630',
+  blackDark: '#131920',
+  blackLight: '#3E4853',
   white: '#ffffff',
-  gray: '#666666',
-  grayLight: '#f5f5f5',
-  grayBorder: '#e0e0e0',
-  grayDivider: '#e8ebee',
+  gray: '#5B6B79',
+  grayLight: '#F8F9FA',
+  grayBorder: '#DBE0E5',
+  grayDivider: '#F3F5F7',
+  primaryMain: '#4680FF',
+  primaryDark: '#3F78FF',
+  primaryLight: '#7EA6FF',
 };

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Avatar, IconButton, Menu, MenuItem, Box, Divider, useTheme, Button, TextField, InputAdornment, Paper } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { ArrowDown2, HambergerMenu, Profile, Setting2, LogoutCurve, ArrowLeft2, SearchNormal1, Menu as MenuIcon, Notification, Setting } from 'iconsax-react';
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
 import { usePathname, useRouter } from 'next/navigation';
@@ -76,13 +77,24 @@ export default function Header({
               ? `calc(100% - ${drawerWidth}px)`
               : `calc(100% - ${collapsedDrawerWidth}px)`,
           },
-          bgcolor: 'white',
+          bgcolor: alpha('#ffffff', 0.8),
           boxShadow: 'none',
-          borderBottom: '1px dashed #b0b0b0',
+          borderBottom: '1px dashed #e0e0e0',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          zIndex: 1200,
           transition: 'left 120ms ease, width 120ms ease',
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between', minHeight: '80px !important', py: 2.1, px: { xs: 2, sm: 2 } }}>
+        <Toolbar
+          sx={{
+            justifyContent: 'space-between',
+            minHeight: '74px !important',
+            px: { xs: 2, sm: 4.5 },
+            pl: { lg: 5 },
+            pr: { lg: 3 },
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -90,11 +102,12 @@ export default function Header({
             onClick={onDrawerToggle}
             sx={{ 
               color: 'text.primary',
-              bgcolor: isFnbDashboard ? '#f3f6fa' : 'grey.100',
+              bgcolor: isFnbDashboard ? '#f3f6fa' : 'secondary.100',
               ml: { xs: 0, sm: 0 },
               mr: { xs: 1, sm: 2 },
+              p: 1,
               '&:hover': {
-                bgcolor: isFnbDashboard ? '#e8edf4' : 'grey.200',
+                bgcolor: isFnbDashboard ? '#e8edf4' : 'secondary.200',
               },
             }}
           >

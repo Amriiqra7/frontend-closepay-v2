@@ -169,12 +169,14 @@ export default function DashboardLayout({ children }) {
         />
 
         {/* Spacer for fixed AppBar */}
-        <Toolbar sx={{ minHeight: '80px !important' }} />
+        <Toolbar sx={{ minHeight: '74px !important' }} />
 
         {/* Main Content - Scroll happens here */}
         <Box 
           sx={{ 
-            p: { xs: 2, sm: 3 }, 
+            px: { xs: 2, sm: 3 },
+            pb: { xs: 2, sm: 3 },
+            pt: { xs: 1, sm: 1.5 },
             width: '100%',
             flex: 1,
             display: 'flex',
@@ -191,7 +193,7 @@ export default function DashboardLayout({ children }) {
           {/* Page Content - No overflow here, let parent handle scrolling */}
           <Box
             data-fnb-ui={isFnbRoute ? 'true' : 'false'}
-            sx={{ mt: 2, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, ...fnbTextScaleSx }}
+            sx={{ mt: 0.75, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, ...fnbTextScaleSx }}
           >
             <Suspense fallback={<PageLoading />}>
               {children}

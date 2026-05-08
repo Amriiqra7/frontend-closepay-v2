@@ -14,6 +14,7 @@ import {
   Box1,
   ClipboardText,
   Home2,
+  Note,
   ReceiptSearch,
   User,
   Shop,
@@ -108,6 +109,12 @@ const mainItems = [
     label: 'Konfigurasi Merchant',
     href: '/fnb/konfigurasi-merchant',
     icon: Setting2,
+  },
+  {
+    id: 'fnb-tata-letak-struk',
+    label: 'Tata Letak Struk',
+    href: '/fnb/tata-letak-struk',
+    icon: Note,
   },
 ];
 

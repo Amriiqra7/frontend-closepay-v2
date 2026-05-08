@@ -50,11 +50,13 @@ export default function InternalUserDetailDialog({ open, onClose, loading, data 
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="xl"
+      maxWidth="md"
       PaperProps={{
         sx: {
           borderRadius: 2,
           bgcolor: "#eef2f5",
+          width: "100%",
+          maxWidth: 900,
         },
       }}
     >
@@ -118,7 +120,13 @@ export default function InternalUserDetailDialog({ open, onClose, loading, data 
         <Button
           variant="contained"
           onClick={onClose}
-          sx={{ bgcolor: "#e5e7eb", color: "#111827", boxShadow: "none", textTransform: "none" }}
+          sx={{
+            bgcolor: "#e5e7eb",
+            color: "#111827",
+            boxShadow: "none",
+            textTransform: "none",
+            "&:hover": { bgcolor: "#d1d5db", boxShadow: "none" },
+          }}
         >
           Tutup
         </Button>
