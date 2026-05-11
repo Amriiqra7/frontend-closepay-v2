@@ -20,7 +20,7 @@ const FNB_LOGIN_CONTEXT_KEY = "closepay.fnb.login-context";
 
 const adminInputSx = {
   "& .MuiOutlinedInput-root": {
-    borderRadius: 1,
+    borderRadius: "10px",
     "& .MuiOutlinedInput-input": {
       fontSize: "0.875rem",
     },
@@ -28,6 +28,12 @@ const adminInputSx = {
   "& .MuiInputLabel-root": {
     fontSize: "0.875rem",
   },
+};
+
+const fieldLabelSx = {
+  color: "#374151",
+  fontSize: "0.875rem",
+  fontWeight: 600,
 };
 
 export default function FnbInitialLogin() {
@@ -107,20 +113,22 @@ export default function FnbInitialLogin() {
                 handleLookup();
               }
             }} spacing={2} sx={{ mt: 2.25 }}>
-              <TextField
-                label="Initial"
-                placeholder="Contoh: QA"
-                fullWidth
-                size="small"
-                value={initial}
-                onChange={(event) => setInitial(event.target.value.toUpperCase())}
-                sx={adminInputSx}
-                slotProps={{
-                  htmlInput: {
-                    suppressHydrationWarning: true,
-                  },
-                }}
-              />
+              <Stack spacing={0.75}>
+                <Typography sx={fieldLabelSx}>Initial</Typography>
+                <TextField
+                  placeholder="Contoh: QA"
+                  fullWidth
+                  size="small"
+                  value={initial}
+                  onChange={(event) => setInitial(event.target.value.toUpperCase())}
+                  sx={adminInputSx}
+                  slotProps={{
+                    htmlInput: {
+                      suppressHydrationWarning: true,
+                    },
+                  }}
+                />
+              </Stack>
 
               {company ? (
                 <Alert severity="success" sx={{ borderRadius: 3 }}>

@@ -48,7 +48,7 @@ const FNB_LOGIN_CONTEXT_KEY = "closepay.fnb.login-context";
 
 const loginMainLikeInputSx = {
   "& .MuiOutlinedInput-root": {
-    borderRadius: 4,
+    borderRadius: "10px",
     "& .MuiOutlinedInput-input": {
       fontSize: "0.875rem",
     },
@@ -57,6 +57,19 @@ const loginMainLikeInputSx = {
     fontSize: "0.875rem",
   },
 };
+
+const fieldLabelSx = {
+  color: "#374151",
+  fontSize: "0.875rem",
+  fontWeight: 600,
+};
+
+const LabeledTextField = ({ label, sx, ...props }) => (
+  <Stack spacing={0.75}>
+    <Typography sx={fieldLabelSx}>{label}</Typography>
+    <TextField {...props} sx={[loginMainLikeInputSx, sx]} />
+  </Stack>
+);
 
 const formatCountdown = (seconds) => {
   const safeSeconds = Math.max(0, seconds);
@@ -120,11 +133,11 @@ const CaptchaDialog = memo(function CaptchaDialog({
           ) : null}
 
           {!challenge?.captchaLoading && captchaImage ? (
-            <TextField label="Email" fullWidth type="email" value={emailValue} onChange={(event) => onEmailChange(event.target.value)} />
+            <LabeledTextField label="Email" fullWidth type="email" value={emailValue} onChange={(event) => onEmailChange(event.target.value)} />
           ) : null}
 
           {!challenge?.captchaLoading && captchaImage ? (
-            <TextField label="Masukkan captcha" fullWidth value={captchaValue} onChange={(event) => onCaptchaChange(event.target.value)} />
+            <LabeledTextField label="Masukkan captcha" fullWidth value={captchaValue} onChange={(event) => onCaptchaChange(event.target.value)} />
           ) : null}
 
           {!challenge?.captchaLoading && captchaImage ? (
@@ -456,25 +469,22 @@ export default function FnbLogin() {
             </Alert>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1.5 }}>
               <Stack spacing={1.5}>
-                <TextField
+                <LabeledTextField
                   label="Username / Email"
                   fullWidth
-                  margin="normal"
                   autoComplete="username"
                   value={formValues.username}
                   onChange={(event) => setFormValues((prev) => ({ ...prev, username: event.target.value }))}
-                  sx={loginMainLikeInputSx}
                   slotProps={{
                     htmlInput: {
                       suppressHydrationWarning: true,
                     },
                   }}
                 />
-                <TextField
+                <LabeledTextField
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   fullWidth
-                  margin="normal"
                   autoComplete="current-password"
                   value={formValues.password}
                   onChange={(event) => setFormValues((prev) => ({ ...prev, password: event.target.value }))}
@@ -487,7 +497,6 @@ export default function FnbLogin() {
                       </InputAdornment>
                     ),
                   }}
-                  sx={loginMainLikeInputSx}
                   slotProps={{
                     htmlInput: {
                       suppressHydrationWarning: true,
