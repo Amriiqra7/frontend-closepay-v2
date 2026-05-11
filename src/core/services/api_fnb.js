@@ -201,3 +201,23 @@ export const fnbMerchantQrCode = {
     { operationId: "merchant_qr_code_generate" }
   ),
 };
+
+export const fnbMerchantTable = {
+  find: addProps(
+    (params = {}) =>
+      handleRequest(
+        axiosInstance.get("/fnb/merchant/table/find", {
+          params: removeEmptyParams(params),
+        })
+      ),
+    { operationId: "merchant_table_find" }
+  ),
+  getById: addProps(
+    (tableId) => handleRequest(axiosInstance.get(`/fnb/merchant/table/get/${tableId}`)),
+    { operationId: "merchant_table_get" }
+  ),
+  generate: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/table/generate", payload)),
+    { operationId: "merchant_table_generate" }
+  ),
+};
