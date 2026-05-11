@@ -114,38 +114,63 @@ function ReceiptPreview({ state }) {
     return null;
   };
 
+  const receiptTextSx = {
+    fontSize: "0.92rem",
+    color: "#0f172a",
+    lineHeight: 1.35,
+    fontWeight: 600,
+  };
+
+  const receiptRowSx = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 1,
+  };
+
   return (
     <Paper elevation={0} sx={{ border: "1px solid #e8edf3", borderRadius: 4, p: 2.5, maxWidth: 380, mx: "auto", bgcolor: "#fff" }}>
-      <Stack spacing={1.1}>
+      <Stack spacing={0.95}>
         {state.topFields.map((field) => renderField(field))}
 
-        <Typography sx={{ fontFamily: "monospace", color: "#0f172a", fontSize: "0.86rem", lineHeight: 1.45 }}>
-          {"-------------------------"}
-        </Typography>
-        <Typography sx={{ fontWeight: 700, fontFamily: "monospace", fontSize: "1rem" }}>NO ANTRIAN</Typography>
-        <Typography sx={{ fontWeight: 700, fontFamily: "monospace", fontSize: "2rem", lineHeight: 1 }}>A-03</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Tanggal: 05/06/2026</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Jam: 21:45</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Kasir: -</Typography>
-        <Typography sx={{ fontFamily: "monospace", color: "#0f172a", fontSize: "0.86rem", lineHeight: 1.45 }}>
-          {"-------------------------"}
-        </Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Order ID: preview...</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Pembayaran: Cash</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Jenis Pesanan: Makan di tempat</Typography>
-        <Typography sx={{ fontFamily: "monospace", color: "#0f172a", fontSize: "0.86rem", lineHeight: 1.45 }}>
-          {"-------------------------"}
-        </Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Contoh menu x1     Rp 27.500</Typography>
-        <Typography sx={{ fontFamily: "monospace", color: "#0f172a", fontSize: "0.86rem", lineHeight: 1.45 }}>
-          {"-------------------------"}
-        </Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Bayar (Cash)       Rp 27.500</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontSize: "0.92rem" }}>Kembalian          Rp 0</Typography>
-        <Typography sx={{ fontFamily: "monospace", fontWeight: 700, fontSize: "1rem" }}>TOTAL              Rp 27.500</Typography>
-        <Typography sx={{ fontFamily: "monospace", color: "#0f172a", fontSize: "0.86rem", lineHeight: 1.45 }}>
-          {"========================="}
-        </Typography>
+        <Typography sx={{ fontWeight: 700, fontSize: "1.05rem", mt: 0.8, mb: 0.2 }}>NO ANTRIAN</Typography>
+        <Typography sx={{ fontWeight: 800, fontSize: "2.25rem", lineHeight: 1.05, mb: 0.45 }}>A-03</Typography>
+        <Typography sx={receiptTextSx}>Tanggal 05/05/2026</Typography>
+        <Typography sx={receiptTextSx}>Jam 21.45</Typography>
+        <Typography sx={receiptTextSx}>Kasir -</Typography>
+        <Typography sx={receiptTextSx}>Order ID __preview__</Typography>
+
+        <Stack spacing={0.9} sx={{ mt: 1.5, mb: 1.35 }}>
+          <Box sx={receiptRowSx}>
+            <Typography sx={receiptTextSx}>Pembayaran</Typography>
+            <Typography sx={receiptTextSx}>Cash</Typography>
+          </Box>
+          <Box sx={receiptRowSx}>
+            <Typography sx={receiptTextSx}>Jenis pesanan</Typography>
+            <Typography sx={receiptTextSx}>Makan di tempat</Typography>
+          </Box>
+        </Stack>
+
+        <Divider sx={{ borderColor: "#64748b", my: 1.2 }} />
+        <Box sx={{ ...receiptRowSx, py: 1.2 }}>
+          <Typography sx={receiptTextSx}>Contoh menu x1</Typography>
+          <Typography sx={receiptTextSx}>Rp 27.500</Typography>
+        </Box>
+        <Divider sx={{ borderColor: "#64748b", my: 1.2 }} />
+        <Stack spacing={0.9} sx={{ mt: 1.35, mb: 1.4 }}>
+          <Box sx={receiptRowSx}>
+            <Typography sx={receiptTextSx}>Bayar (Cash)</Typography>
+            <Typography sx={receiptTextSx}>Rp 27.500</Typography>
+          </Box>
+          <Box sx={receiptRowSx}>
+            <Typography sx={receiptTextSx}>Kembalian</Typography>
+            <Typography sx={receiptTextSx}>Rp 0</Typography>
+          </Box>
+        </Stack>
+        <Box sx={{ ...receiptRowSx, mt: 0.9 }}>
+          <Typography sx={{ fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.2 }}>Total</Typography>
+          <Typography sx={{ fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.2 }}>Rp 27.500</Typography>
+        </Box>
 
         {state.bottomFields.map((field) => renderField(field))}
 
@@ -250,10 +275,19 @@ export default function ReceiptLayoutPage() {
       <Paper elevation={0} sx={{ border: "1px solid #e8edf3", borderRadius: 3, p: { xs: 2, md: 3 } }}>
         <Stack spacing={3}>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} justifyContent="flex-end" sx={{ width: "100%" }}>
-            <Button variant="contained" color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ textTransform: "none", height: "40px", px: 2 }}
+            >
               Simpan struk
             </Button>
-            <Button variant="outlined" color="primary" onClick={handleResetDefault}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleResetDefault}
+              sx={{ textTransform: "none", height: "40px", px: 2 }}
+            >
               Kembalikan default
             </Button>
           </Stack>
@@ -410,7 +444,24 @@ export default function ReceiptLayoutPage() {
             </DragDropContext>
 
             <Box>
-              <Typography sx={{ fontWeight: 700, color: "primary.main", fontSize: "1.15rem", mb: 1.5 }}>PRATINJAU STRUK</Typography>
+              <Paper
+                elevation={0}
+                sx={{
+                  mb: 1.5,
+                  border: "1px solid #e8edf3",
+                  borderRadius: 2.5,
+                  px: 1.5,
+                  py: 1.1,
+                  bgcolor: "#f8fafc",
+                }}
+              >
+                <Typography sx={{ fontWeight: 800, color: "#0f172a", fontSize: "0.92rem", letterSpacing: 0.6, lineHeight: 1.1 }}>
+                  PRATINJAU STRUK
+                </Typography>
+                <Typography sx={{ mt: 0.35, color: "#64748b", fontSize: "0.78rem", lineHeight: 1.25 }}>
+                  Tampilan simulasi cetak struk berdasarkan pengaturan saat ini.
+                </Typography>
+              </Paper>
               <ReceiptPreview state={form} />
             </Box>
           </Box>
