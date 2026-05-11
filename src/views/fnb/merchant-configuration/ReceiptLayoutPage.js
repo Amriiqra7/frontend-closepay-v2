@@ -449,7 +449,7 @@ export default function ReceiptLayoutPage() {
                 sx={{
                   mb: 1.5,
                   border: "1px solid #e8edf3",
-                  borderRadius: 2.5,
+                  borderRadius: 1.5,
                   px: 1.5,
                   py: 1.1,
                   bgcolor: "#f8fafc",
