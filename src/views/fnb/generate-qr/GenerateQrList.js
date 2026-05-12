@@ -267,6 +267,7 @@ export default function FnbGenerateQrPage() {
           setPreviewTableNumber("");
         }}
         qrValue={previewQrValue}
+        tableNumber={previewTableNumber}
         title={previewTableNumber ? `Preview QR Meja ${previewTableNumber}` : "Preview QR Meja"}
       />
     </Box>

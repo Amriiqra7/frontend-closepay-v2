@@ -3,6 +3,7 @@
 import React from "react";
 import { QRCode } from "antd";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
+import { downloadQrFromContainer } from "./qrDownload";
 
 export default function GenerateQrFormDialog({
   open,
@@ -15,6 +16,7 @@ export default function GenerateQrFormDialog({
   onPreviewQr,
 }) {
   const hasGenerated = generatedRows.length > 0;
+  const qrRefs = React.useRef({});
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
@@ -53,12 +55,30 @@ export default function GenerateQrFormDialog({
                     Meja {item?.tableNumber ?? "-"}
                   </Typography>
                   {item?.qrCode ? (
-                    <Box
-                      onClick={() => onPreviewQr?.(item.qrCode, item.tableNumber)}
-                      sx={{ width: "fit-content", mx: "auto", cursor: "zoom-in" }}
-                    >
-                      <QRCode value={item.qrCode} size={86} />
-                    </Box>
+                    <>
+                      <Box
+                        ref={(node) => {
+                          qrRefs.current[item?._id || `table-${item?.tableNumber}`] = node;
+                        }}
+                        onClick={() => onPreviewQr?.(item.qrCode, item.tableNumber)}
+                        sx={{ width: "fit-content", mx: "auto", cursor: "zoom-in" }}
+                      >
+                        <QRCode value={item.qrCode} size={86} />
+                      </Box>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        sx={{ mt: 0.75, minWidth: 0, textTransform: "none", fontSize: "0.72rem", px: 1 }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          const key = item?._id || `table-${item?.tableNumber}`;
+                          const fileName = `qr-meja-${item?.tableNumber ?? "unknown"}.png`;
+                          downloadQrFromContainer(qrRefs.current[key], fileName);
+                        }}
+                      >
+                        Download QR
+                      </Button>
+                    </>
                   ) : (
                     <Typography sx={{ color: "#6b7280", fontSize: "0.78rem" }}>QR tidak ada</Typography>
                   )}
