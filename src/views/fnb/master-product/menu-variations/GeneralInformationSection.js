@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Autocomplete, Box, MenuItem, Stack, Switch, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, MenuItem, Switch, TextField, Typography } from "@mui/material";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { Gallery as GalleryIcon } from "iconsax-react";
 import { SectionTitle } from "./parts";
+import AddonGroupItemsSection from "./AddonGroupItemsSection";
 import { adminFieldSx, adminLabelSx } from "./styles";
-import { formatCurrencyIDR, formatRupiah, parseRupiah } from "@/shared/utils/format";
+import { formatRupiah, parseRupiah } from "@/shared/utils/format";
 
 function RequiredMark() {
   return <Box component="span" sx={{ color: "#dc2626" }}> *</Box>;
@@ -26,15 +27,28 @@ const descriptionTextareaSx = {
   outline: "none",
 };
 
-function StaticField({ label, value }) {
+const readOnlyInputSx = {
+  "& .MuiInputBase-input": {
+    fontSize: "0.8125rem",
+    py: 1,
+  },
+};
+
+function ReadOnlyField({ label, value, multiline = false, minRows = 1 }) {
   return (
     <Box>
       <Typography variant="body2" sx={adminLabelSx}>
         {label}
       </Typography>
-      <Typography sx={{ color: "#111827", fontSize: "0.92rem", fontWeight: 500 }}>
-        {value || "-"}
-      </Typography>
+      <TextField
+        fullWidth
+        size="small"
+        value={value ?? "-"}
+        multiline={multiline}
+        minRows={minRows}
+        InputProps={{ readOnly: true }}
+        sx={readOnlyInputSx}
+      />
     </Box>
   );
 }
@@ -77,8 +91,8 @@ function GeneralInformationSection({
   statusLabel = "Active",
   description = "",
   addonGroupLabel = "",
-  addonGroupItems = [],
-  addonGroupItemsLoading = false,
+  addonGroupSections = [],
+  addonGroupSectionsLoading = false,
   showAddonDetails = true,
   categories = ["Starters", "Main Course"],
   categoryOptions,
@@ -117,7 +131,7 @@ function GeneralInformationSection({
 
   return (
     <Box sx={{ p: { xs: 2, md: 2 } }}>
-      <SectionTitle title={sectionTitle} />
+      {sectionTitle ? <SectionTitle title={sectionTitle} /> : null}
 
       <Box
         sx={{
@@ -199,56 +213,23 @@ function GeneralInformationSection({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           {readOnly ? (
             <>
-              <StaticField label="Menu Name" value={menuName} />
+              <ReadOnlyField label="Menu Name" value={menuName} />
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-                <StaticField label="Category" value={categoryLabel} />
-                <StaticField label="Status" value={statusChecked ? "Aktif" : "Tidak Aktif"} />
+                <ReadOnlyField label="Category" value={categoryLabel} />
+                <ReadOnlyField label="Status" value={statusChecked ? "Aktif" : "Tidak Aktif"} />
               </Box>
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
-              <StaticField label="Base Price" value={basePrice} />
-              <StaticField label="Min Variant Price" value={minVariantPrice} />
+                <ReadOnlyField label="Base Price" value={basePrice} />
+                <ReadOnlyField label="Min Variant Price" value={minVariantPrice} />
               </Box>
-              <StaticField label="Description" value={description} />
+              <ReadOnlyField label="Description" value={description} multiline minRows={3} />
               {showAddonDetails ? (
                 <>
-                  <StaticField label="Add On Group" value={addonGroupLabel} />
-                  {addonGroupItemsLoading ? (
-                    <Typography sx={{ color: "#6b7280", fontSize: "0.86rem" }}>Memuat item add-on...</Typography>
-                  ) : addonGroupItems.length ? (
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                      <Typography variant="body2" sx={adminLabelSx}>
-                        Add On Items
-                      </Typography>
-                      <Box sx={{ border: "1px solid #dbe3ef", borderRadius: 2, p: 1.25, bgcolor: "#f8fafc" }}>
-                        <Stack spacing={1}>
-                          {addonGroupItems.map((item) => (
-                            <Box
-                              key={item?._id || item?.name}
-                              sx={{
-                                p: 1.25,
-                                borderRadius: 2,
-                                border: "1px solid #e5e7eb",
-                                bgcolor: "#fff",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                gap: 2,
-                              }}
-                            >
-                              <Typography sx={{ color: "#111827", fontSize: "0.86rem", fontWeight: 500 }}>
-                                {item?.name || "-"}
-                              </Typography>
-                              <Typography sx={{ color: "#155DFC", fontSize: "0.86rem", fontWeight: 700 }}>
-                                {formatCurrencyIDR(item?.price)}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Box>
-                    </Box>
-                  ) : null}
+                  <ReadOnlyField label="Add On Group" value={addonGroupLabel} />
+                  <AddonGroupItemsSection sections={addonGroupSections} loading={addonGroupSectionsLoading} />
                 </>
               ) : null}
-              <StaticField label="Variant" value={useVariant ? "Aktif" : "Tidak Aktif"} />
+              <ReadOnlyField label="Variant" value={useVariant ? "Aktif" : "Tidak Aktif"} />
             </>
           ) : (
             <>
@@ -361,40 +342,7 @@ function GeneralInformationSection({
                   renderInput={(params) => <TextField {...params} placeholder="Pilih add on group" />}
                 />
               </Box>
-              {addonGroupItemsLoading ? (
-                <Typography sx={{ color: "#6b7280", fontSize: "0.86rem" }}>Memuat item add-on...</Typography>
-              ) : addonGroupItems.length ? (
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                  <Typography variant="body2" sx={adminLabelSx}>
-                    Add On Items
-                  </Typography>
-                  <Box sx={{ border: "1px solid #dbe3ef", borderRadius: 2, p: 1.25, bgcolor: "#f8fafc" }}>
-                    <Stack spacing={1}>
-                      {addonGroupItems.map((item) => (
-                        <Box
-                          key={item?._id || item?.name}
-                          sx={{
-                            p: 1.25,
-                            borderRadius: 2,
-                            border: "1px solid #e5e7eb",
-                            bgcolor: "#fff",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            gap: 2,
-                          }}
-                        >
-                          <Typography sx={{ color: "#111827", fontSize: "0.86rem", fontWeight: 500 }}>
-                            {item?.name || "-"}
-                          </Typography>
-                          <Typography sx={{ color: "#155DFC", fontSize: "0.86rem", fontWeight: 700 }}>
-                            {formatCurrencyIDR(item?.price)}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Box>
-                </Box>
-              ) : null}
+              <AddonGroupItemsSection sections={addonGroupSections} loading={addonGroupSectionsLoading} />
 
               <ToggleRow label="Variant" checked={useVariant} onChange={onUseVariantChange} />
             </>

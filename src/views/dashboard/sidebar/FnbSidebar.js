@@ -60,13 +60,13 @@ const mainItems = [
         href: '/fnb/master-product/bahan-baku-resep',
         icon: Box1,
       },
+      {
+        id: 'fnb-category',
+        label: 'Kategori',
+        href: '/fnb/master-product/category',
+        icon: Category,
+      },
     ],
-  },
-  {
-    id: 'fnb-category',
-    label: 'Kategori',
-    href: '/fnb/master-product/category',
-    icon: Category,
   },
   {
     id: 'fnb-inventory',
@@ -105,6 +105,12 @@ const mainItems = [
     label: 'Manajemen User',
     href: '/fnb/manajemen-user',
     icon: User,
+  },
+  {
+    id: 'fnb-manajemen-kiosk',
+    label: 'Manajemen Kiosk',
+    href: '/fnb/master-product/manajemen-kiosk',
+    icon: Shop,
   },
   {
     id: 'fnb-generate-qr',

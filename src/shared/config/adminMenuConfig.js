@@ -567,6 +567,12 @@ const GLOBAL_MENU_ITEMS = {
         href: '/fnb/master-product/bahan-baku-resep',
         icon: ArchiveBook,
       },
+      {
+        id: 'fnb-category',
+        label: 'Kategori',
+        href: '/fnb/master-product/category',
+        icon: MenuBoard,
+      },
     ],
   },
   'fnb-category': {
@@ -574,6 +580,12 @@ const GLOBAL_MENU_ITEMS = {
     label: 'Kategori',
     href: '/fnb/master-product/category',
     icon: MenuBoard,
+  },
+  'fnb-manajemen-kiosk': {
+    id: 'fnb-manajemen-kiosk',
+    label: 'Manajemen Kiosk',
+    href: '/fnb/master-product/manajemen-kiosk',
+    icon: Shop,
   },
   'fnb-internal-user': {
     id: 'fnb-internal-user',
@@ -970,6 +982,8 @@ export const ADMIN_MENU_CONFIG = {
       getMenuItem('riwayat-callback'),
       // Menu dari Sub-Company
       getMenuItem('manajemen-sub-company'),
+      // Menu dari FnB
+      getMenuItem('fnb-manajemen-kiosk'),
       // Menu dari Transaksi
       getMenuItem('transaksi-qriss'),
       getMenuItem('transaksi-barcode'),
@@ -1094,11 +1108,11 @@ export const ADMIN_MENU_CONFIG = {
     subMenus: [
       getMenuItem('fnb-dashboard'),
       getMenuItem('fnb-master-product'),
-      getMenuItem('fnb-category'),
       getMenuItem('fnb-inventory'),
       getMenuItem('fnb-distribution'),
       getMenuItem('fnb-stock-opname'),
       getMenuItem('fnb-internal-user'),
+      getMenuItem('fnb-manajemen-kiosk'),
       getMenuItem('fnb-konfigurasi-merchant'),
       getMenuItem('fnb-tata-letak-struk'),
       getMenuItem('fnb-support'),

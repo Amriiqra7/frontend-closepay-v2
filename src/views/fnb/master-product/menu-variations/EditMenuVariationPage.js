@@ -8,6 +8,7 @@ import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { AddCircle } from "iconsax-react";
 import GeneralInformationSection from "./GeneralInformationSection";
 import VariantRowCard from "./VariantRowCard";
+import { buildAddonGroupSectionsFromSelections } from "./addonGroupUtils";
 import { useAutosearch } from "@/shared/ui/Autosearch";
 import {
   fnbMenu,
@@ -66,7 +67,15 @@ export default function EditMenuVariationPage({ menuId }) {
       );
       return {
         data: {
-          items: responses.flatMap((response) => response?.data?.items || []),
+          groups: responses.map((response, index) => {
+            const group = selectedAddonGroups[index];
+            const groupId = selectedAddonGroupIds[index];
+            return {
+              groupId,
+              groupName: group?.name || "",
+              items: response?.data?.items || [],
+            };
+          }),
         },
       };
     },
@@ -76,7 +85,14 @@ export default function EditMenuVariationPage({ menuId }) {
     () => (categoryResponse?.data || []).map((item) => ({ value: item._id, label: item.name })),
     [categoryResponse]
   );
-  const addonGroupItems = React.useMemo(() => addonItemsResponse?.data?.items || [], [addonItemsResponse]);
+  const addonGroupSections = React.useMemo(
+    () =>
+      buildAddonGroupSectionsFromSelections(
+        selectedAddonGroups,
+        addonItemsResponse?.data?.groups || []
+      ),
+    [selectedAddonGroups, addonItemsResponse]
+  );
 
   const { data: detailResponse, error: detailError, mutate: mutateDetail } = useSWR(
     menuId ? ["fnb-menu-detail-edit", menuId] : null,
@@ -334,8 +350,8 @@ export default function EditMenuVariationPage({ menuId }) {
               onAddonGroupClose={addonGroupSearch.onClose}
               onAddonGroupInputChange={addonGroupSearch.onInputChange}
               onAddonGroupChange={(_, value) => setSelectedAddonGroups(value || [])}
-              addonGroupItems={addonGroupItems}
-              addonGroupItemsLoading={addonItemsLoading}
+              addonGroupSections={addonGroupSections}
+              addonGroupSectionsLoading={addonItemsLoading}
             />
 
             {formik.values.useVariant ? (

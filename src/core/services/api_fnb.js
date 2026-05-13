@@ -193,6 +193,34 @@ export const fnbMenuAddonItem = {
   ),
 };
 
+export const fnbMerchantKiosk = {
+  find: addProps(
+    (params) =>
+      handleRequest(
+        axiosInstance.get("/fnb/merchant/kiosk/find", {
+          params: removeEmptyParams(params),
+        })
+      ),
+    { operationId: "merchant_kiosk_find" }
+  ),
+  getById: addProps(
+    (kioskId) => handleRequest(axiosInstance.get(`/fnb/merchant/kiosk/get/${kioskId}`)),
+    { operationId: "merchant_kiosk_get" }
+  ),
+  create: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/kiosk/create", payload)),
+    { operationId: "merchant_kiosk_create" }
+  ),
+  update: addProps(
+    (kioskId, payload) => handleRequest(axiosInstance.put(`/fnb/merchant/kiosk/update/${kioskId}`, payload)),
+    { operationId: "merchant_kiosk_update" }
+  ),
+  rotateApiKey: addProps(
+    (kioskId) => handleRequest(axiosInstance.put(`/fnb/merchant/kiosk/rotate_api_key/${kioskId}`)),
+    { operationId: "merchant_kiosk_rotate_api_key" }
+  ),
+};
+
 export const fnbInternalUser = {
   find: addProps(
     (params) =>

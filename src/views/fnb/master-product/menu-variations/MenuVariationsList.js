@@ -12,6 +12,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   IconButton,
   Paper,
@@ -31,6 +32,8 @@ import { fnbMenu, fnbMenuAddonGroupMap, fnbMenuCategory, fnbMenuVariant } from "
 import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 import { formatCurrencyIDR } from "@/shared/utils/format";
 import GeneralInformationSection from "./GeneralInformationSection";
+import AddonGroupItemsSection from "./AddonGroupItemsSection";
+import { buildAddonGroupSectionsFromMapResponse } from "./addonGroupUtils";
 import { pageContainerSx } from "./styles";
 
 const PAGE_SIZE = 10;
@@ -65,17 +68,36 @@ function MenuDetailDialog({
   variants = [],
   variantLoading = false,
   addonGroups = [],
-  addonItems = [],
+  addonGroupSections = [],
   addonLoading = false,
 }) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle sx={{ fontWeight: 800 }}>Detail Menu</DialogTitle>
-      <DialogContent dividers sx={{ bgcolor: "#f8fafc" }}>
+      <DialogTitle sx={{ px: 3, py: 1.5, fontWeight: 500, fontSize: "1rem" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#1f2937" }}>Information</Typography>
+          <Button
+            onClick={onClose}
+            sx={{
+              minWidth: 32,
+              px: 1,
+              color: "#64748b",
+              fontSize: "1.5rem",
+              lineHeight: 1,
+              "&:hover": { bgcolor: "transparent", color: "#334155" },
+            }}
+          >
+            ×
+          </Button>
+        </Box>
+      </DialogTitle>
+      <Divider />
+      <DialogContent sx={{ px: 3, py: 3 }}>
         {menu ? (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2.25 }}>
             <Paper elevation={0} sx={{ borderRadius: 3, border: "1px solid #e8edf3", overflow: "hidden" }}>
               <GeneralInformationSection
+                sectionTitle=""
                 menuName={menu?.name || ""}
                 category={menu?.categoryId || ""}
                 basePrice={menu?.basePrice ?? 0}
@@ -95,37 +117,11 @@ function MenuDetailDialog({
               <Typography sx={{ color: "#111827", fontSize: "0.92rem", fontWeight: 600, mb: 1.25 }}>
                 {addonGroups.map((group) => group?.name || group?._id || "-").join(", ") || "-"}
               </Typography>
-              {addonLoading ? (
-                <Typography sx={{ color: "#6b7280", fontSize: "0.86rem" }}>Memuat item add-on...</Typography>
-              ) : addonItems.length ? (
-                <Box sx={{ border: "1px solid #dbe3ef", borderRadius: 2, p: 1.25, bgcolor: "#f8fafc" }}>
-                  <Stack spacing={1}>
-                    {addonItems.map((item) => (
-                      <Box
-                        key={item?._id || item?.name}
-                        sx={{
-                          p: 1.25,
-                          borderRadius: 2,
-                          border: "1px solid #e5e7eb",
-                          bgcolor: "#fff",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          gap: 2,
-                        }}
-                      >
-                        <Typography sx={{ color: "#111827", fontSize: "0.86rem", fontWeight: 500 }}>
-                          {item?.name || "-"}
-                        </Typography>
-                        <Typography sx={{ color: "#155DFC", fontSize: "0.86rem", fontWeight: 700 }}>
-                          {formatCurrencyIDR(item?.price)}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Stack>
-                </Box>
-              ) : (
-                <Typography sx={{ color: "#6b7280", fontSize: "0.86rem" }}>Belum ada item add-on.</Typography>
-              )}
+              <AddonGroupItemsSection
+                sections={addonGroupSections}
+                loading={addonLoading}
+                emptyText="Belum ada item add-on."
+              />
             </Paper>
 
             {menu?.useVariant ? (
@@ -174,8 +170,18 @@ function MenuDetailDialog({
           <Typography sx={{ color: "#6b7280" }}>Memuat detail menu...</Typography>
         )}
       </DialogContent>
-      <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button variant="outlined" onClick={onClose}>
+      <DialogActions sx={{ px: 3, py: 2.5 }}>
+        <Button
+          variant="contained"
+          onClick={onClose}
+          sx={{
+            bgcolor: "#e5e7eb",
+            color: "#111827",
+            boxShadow: "none",
+            textTransform: "none",
+            "&:hover": { bgcolor: "#d1d5db", boxShadow: "none" },
+          }}
+        >
           Tutup
         </Button>
       </DialogActions>
@@ -358,14 +364,10 @@ export default function FnbMenuVariationsPage() {
       .filter(Boolean);
   }, [addonGroupMapResponse]);
 
-  const detailAddonItems = React.useMemo(() => {
-    const raw = addonGroupMapResponse?.data || addonGroupMapResponse?.items || [];
-    const list = Array.isArray(raw) ? raw : [raw];
-    return list.flatMap((mapItem) => {
-      const detailGroups = Array.isArray(mapItem?.detailAddonGroup) ? mapItem.detailAddonGroup : [];
-      return detailGroups.flatMap((groupItem) => groupItem?.addonItems || []);
-    });
-  }, [addonGroupMapResponse]);
+  const detailAddonGroupSections = React.useMemo(
+    () => buildAddonGroupSectionsFromMapResponse(addonGroupMapResponse),
+    [addonGroupMapResponse]
+  );
 
   const detailVariants = React.useMemo(
     () => (variantResponse?.data?.items || []).filter((variant) => Boolean(variant?._id)),
@@ -748,7 +750,7 @@ export default function FnbMenuVariationsPage() {
         variants={detailVariants}
         variantLoading={variantLoading}
         addonGroups={detailAddonGroups}
-        addonItems={detailAddonItems}
+        addonGroupSections={detailAddonGroupSections}
         addonLoading={addonGroupLoading}
       />
 

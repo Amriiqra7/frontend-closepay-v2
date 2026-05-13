@@ -25,6 +25,7 @@ import {
 import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 import GeneralInformationSection from "./GeneralInformationSection";
 import VariantRowCard from "./VariantRowCard";
+import { buildAddonGroupSectionsFromSelections } from "./addonGroupUtils";
 
 const createVariantRow = (overrides = {}) => ({
   key: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -86,13 +87,28 @@ export default function NewMenuVariationPage() {
       );
       return {
         data: {
-          items: responses.flatMap((response) => response?.data?.items || []),
+          groups: responses.map((response, index) => {
+            const group = selectedAddonGroups[index];
+            const groupId = selectedAddonGroupIds[index];
+            return {
+              groupId,
+              groupName: group?.name || "",
+              items: response?.data?.items || [],
+            };
+          }),
         },
       };
     },
     { revalidateOnFocus: false, shouldRetryOnError: false }
   );
-  const addonGroupItems = React.useMemo(() => addonItemsResponse?.data?.items || [], [addonItemsResponse]);
+  const addonGroupSections = React.useMemo(
+    () =>
+      buildAddonGroupSectionsFromSelections(
+        selectedAddonGroups,
+        addonItemsResponse?.data?.groups || []
+      ),
+    [selectedAddonGroups, addonItemsResponse]
+  );
 
   const categoryOptions = React.useMemo(
     () =>
@@ -248,8 +264,8 @@ export default function NewMenuVariationPage() {
                 onAddonGroupClose={addonGroupSearch.onClose}
                 onAddonGroupInputChange={addonGroupSearch.onInputChange}
                 onAddonGroupChange={(_, value) => setSelectedAddonGroups(value || [])}
-                addonGroupItems={addonGroupItems}
-                addonGroupItemsLoading={addonItemsLoading}
+                addonGroupSections={addonGroupSections}
+                addonGroupSectionsLoading={addonItemsLoading}
               />
             </Box>
 
