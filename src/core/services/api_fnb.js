@@ -34,6 +34,32 @@ export const fnbMenu = {
 };
 
 export const fnbMenuCategory = {
+  find: addProps(
+    (params) =>
+      handleRequest(
+        axiosInstance.get("/fnb/merchant/menu_category/find", {
+          params: removeEmptyParams(params),
+        })
+      ),
+    { operationId: "merchant_menu_category_find" }
+  ),
+  getById: addProps(
+    (categoryId) => handleRequest(axiosInstance.get(`/fnb/merchant/menu_category/get/${categoryId}`)),
+    { operationId: "merchant_menu_category_get" }
+  ),
+  create: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/menu_category/create", payload)),
+    { operationId: "merchant_menu_category_create" }
+  ),
+  update: addProps(
+    (categoryId, payload) =>
+      handleRequest(axiosInstance.put(`/fnb/merchant/menu_category/update/${categoryId}`, payload)),
+    { operationId: "merchant_menu_category_update" }
+  ),
+  delete: addProps(
+    (categoryId) => handleRequest(axiosInstance.delete(`/fnb/merchant/menu_category/delete/${categoryId}`)),
+    { operationId: "merchant_menu_category_delete" }
+  ),
   combo: addProps(
     (params) =>
       handleRequest(

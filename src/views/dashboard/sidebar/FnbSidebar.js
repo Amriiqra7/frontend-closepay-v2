@@ -20,6 +20,7 @@ import {
   Shop,
   TruckFast,
   Setting2,
+  Category,
 } from 'iconsax-react';
 import { useAdminMenu } from '@/core/contexts/AdminMenuContext';
 import SidebarNavItem from './SidebarNavItem';
@@ -59,6 +60,12 @@ const mainItems = [
         icon: Box1,
       },
     ],
+  },
+  {
+    id: 'fnb-category',
+    label: 'Kategori',
+    href: '/fnb/master-product/category',
+    icon: Category,
   },
   {
     id: 'fnb-inventory',

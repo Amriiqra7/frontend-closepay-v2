@@ -94,6 +94,7 @@ const segmentLabelMap = {
   'menu-variations': 'Menu & Variations',
   'add-ons-toppings': 'Add-Ons & Toppings',
   'bahan-baku-resep': 'Bahan Baku & Resep',
+  'category': 'Kategori',
   'internal-user': 'Internal User',
   'inventory': 'Inventory',
   'stock-barang': 'Stock Barang',

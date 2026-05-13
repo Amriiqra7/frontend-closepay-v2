@@ -569,6 +569,12 @@ const GLOBAL_MENU_ITEMS = {
       },
     ],
   },
+  'fnb-category': {
+    id: 'fnb-category',
+    label: 'Kategori',
+    href: '/fnb/master-product/category',
+    icon: MenuBoard,
+  },
   'fnb-internal-user': {
     id: 'fnb-internal-user',
     label: 'Manajemen User',
@@ -1088,6 +1094,7 @@ export const ADMIN_MENU_CONFIG = {
     subMenus: [
       getMenuItem('fnb-dashboard'),
       getMenuItem('fnb-master-product'),
+      getMenuItem('fnb-category'),
       getMenuItem('fnb-inventory'),
       getMenuItem('fnb-distribution'),
       getMenuItem('fnb-stock-opname'),
