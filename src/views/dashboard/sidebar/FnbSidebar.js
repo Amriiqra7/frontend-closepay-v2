@@ -40,6 +40,7 @@ const mainItems = [
     label: 'Master Product',
     href: '/fnb/master-product',
     icon: Box1,
+    matchMode: 'exact',
     children: [
       {
         id: 'fnb-menu-variations',
