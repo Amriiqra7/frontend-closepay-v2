@@ -100,7 +100,7 @@ const mainItems = [
   },
   {
     id: 'fnb-generate-qr',
-    label: 'Generate QR',
+    label: 'Generate QR Meja',
     href: '/fnb/generate-qr',
     icon: ReceiptSearch,
   },

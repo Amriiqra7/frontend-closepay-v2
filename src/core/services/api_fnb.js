@@ -220,4 +220,8 @@ export const fnbMerchantTable = {
     (payload) => handleRequest(axiosInstance.post("/fnb/merchant/table/generate", payload)),
     { operationId: "merchant_table_generate" }
   ),
+  delete: addProps(
+    (tableId) => handleRequest(axiosInstance.delete(`/fnb/merchant/table/delete/${tableId}`)),
+    { operationId: "merchant_table_delete" }
+  ),
 };

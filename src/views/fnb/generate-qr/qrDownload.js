@@ -3,7 +3,7 @@ export function downloadQrFromContainer(container, fileName = "qr-code.png") {
 
   const canvas = container.querySelector("canvas");
   if (canvas) {
-    const blob = canvasToBlob(canvas);
+    const blob = canvasToBlob(canvas, 1024);
     if (!blob) return false;
     triggerBlobDownload(blob, ensureExtension(fileName, "png"));
     return true;
@@ -21,8 +21,25 @@ export function downloadQrFromContainer(container, fileName = "qr-code.png") {
   return false;
 }
 
-function canvasToBlob(canvas) {
-  const dataUrl = canvas.toDataURL("image/png");
+function canvasToBlob(canvas, targetSize = 1024) {
+  const sourceWidth = canvas.width || canvas.clientWidth || targetSize;
+  const sourceHeight = canvas.height || canvas.clientHeight || targetSize;
+  const maxSide = Math.max(sourceWidth, sourceHeight, 1);
+  const scale = Math.max(1, targetSize / maxSide);
+
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width = Math.round(sourceWidth * scale);
+  exportCanvas.height = Math.round(sourceHeight * scale);
+
+  const ctx = exportCanvas.getContext("2d");
+  if (!ctx) return null;
+
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+  ctx.drawImage(canvas, 0, 0, exportCanvas.width, exportCanvas.height);
+
+  const dataUrl = exportCanvas.toDataURL("image/png");
   const base64 = dataUrl.split(",")[1];
   if (!base64) return null;
   const binary = atob(base64);

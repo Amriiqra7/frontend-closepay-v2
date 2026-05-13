@@ -11,10 +11,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Add, Eye } from "iconsax-react";
+import { Add, Eye, Trash } from "iconsax-react";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { fnbMerchantTable } from "@/core/services/api_fnb";
-import { getApiErrorMessage, showErrorToast, showSuccessToast } from "@/shared/utils/toast";
+import AlertDialog from "@/shared/ui/AlertDialog";
+import { getApiErrorMessage, showErrorToast, showSuccessToast, toastPromise } from "@/shared/utils/toast";
 import GenerateQrFormDialog from "./GenerateQrFormDialog";
 import GenerateQrDetailDialog from "./GenerateQrDetailDialog";
 import QrPreviewDialog from "./QrPreviewDialog";
@@ -42,6 +43,7 @@ export default function FnbGenerateQrPage() {
   const [previewQrValue, setPreviewQrValue] = React.useState("");
   const [previewTableNumber, setPreviewTableNumber] = React.useState("");
   const [generatedRows, setGeneratedRows] = React.useState([]);
+  const [deleteDialog, setDeleteDialog] = React.useState({ open: false, row: null });
 
   const {
     data: listResponse,
@@ -103,6 +105,25 @@ export default function FnbGenerateQrPage() {
     setPreviewTableNumber(tableNumber ?? "");
     setPreviewOpen(true);
   }, []);
+
+  const handleDelete = React.useCallback((row) => {
+    setDeleteDialog({ open: true, row });
+  }, []);
+
+  const handleConfirmDelete = React.useCallback(async () => {
+    const target = deleteDialog.row;
+    const targetId = target?._id || target?.id;
+    if (!targetId) return;
+
+    await toastPromise(fnbMerchantTable.delete(targetId), {
+      loading: `Menghapus meja "${target?.tableNumber ?? "-"}"...`,
+      success: `Meja "${target?.tableNumber ?? "-"}" berhasil dihapus.`,
+      error: (error) => getApiErrorMessage(error, "Gagal menghapus meja."),
+    });
+
+    await mutateList();
+    setDeleteDialog({ open: false, row: null });
+  }, [deleteDialog.row, mutateList]);
 
   const columns = React.useMemo(
     () => [
@@ -224,11 +245,18 @@ export default function FnbGenerateQrPage() {
       baseBackgroundColor: "rgba(255, 255, 255, 1)",
     },
     renderRowActions: ({ row }) => (
-      <Tooltip title="Detail" arrow>
-        <IconButton size="small" onClick={() => handleOpenDetail(row.original)}>
-          <Eye size={20} color="#1976d2" variant="Linear" />
-        </IconButton>
-      </Tooltip>
+      <Box display="flex" gap={0.5}>
+        <Tooltip title="Detail" arrow>
+          <IconButton size="small" onClick={() => handleOpenDetail(row.original)}>
+            <Eye size={20} color="#1976d2" variant="Linear" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Hapus" arrow>
+          <IconButton size="small" onClick={() => handleDelete(row.original)} sx={{ color: "#d32f2f" }}>
+            <Trash size={20} color="#d32f2f" variant="Linear" />
+          </IconButton>
+        </Tooltip>
+      </Box>
     ),
   });
 
@@ -269,6 +297,21 @@ export default function FnbGenerateQrPage() {
         qrValue={previewQrValue}
         tableNumber={previewTableNumber}
         title={previewTableNumber ? `Preview QR Meja ${previewTableNumber}` : "Preview QR Meja"}
+      />
+
+      <AlertDialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, row: null })}
+        onConfirm={handleConfirmDelete}
+        title="Konfirmasi Hapus"
+        content={
+          <Typography variant="body1">
+            Apakah anda yakin akan menghapus <strong>Meja {deleteDialog.row?.tableNumber ?? "-"}</strong>?
+          </Typography>
+        }
+        confirmText="Hapus"
+        cancelText="Batal"
+        confirmColor="error"
       />
     </Box>
   );
