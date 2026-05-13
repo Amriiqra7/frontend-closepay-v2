@@ -4,10 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
-import { Autocomplete, Box, Button, IconButton, InputAdornment, Paper, Stack, Switch, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Eye, EyeSlash } from "iconsax-react";
 import { fnbInternalUser } from "@/core/services/api_fnb";
 import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
+import SimpleSwitchField from "../../common/SimpleSwitchField";
 
 const ROLES = ["KITCHEN", "STAFF", "KIOSK"];
 const reqMark = <Box component="span" sx={{ color: "#dc2626" }}> *</Box>;
@@ -93,13 +94,12 @@ export default function InternalUserForm({ mode = "create", userId }) {
             <Typography sx={labelSx}>Roles{reqMark}</Typography>
             <Autocomplete multiple fullWidth size="small" options={ROLES} value={form.roles} onChange={(_, value) => setForm((p) => ({ ...p, roles: value || [] }))} renderInput={(params) => <TextField {...params} placeholder="Pilih roles" />} />
           </Box>
-          <Box>
-            <Typography sx={labelSx}>Status</Typography>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", border: "1px solid #e5e7eb", borderRadius: 2, px: 1.25, py: 0.5 }}>
-              <Typography sx={{ color: form.isActive ? "#155DFC" : "#6b7280", fontWeight: 500, fontSize: "0.82rem" }}>{form.isActive ? "Aktif" : "Nonaktif"}</Typography>
-              <Switch checked={form.isActive} onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))} size="small" />
-            </Box>
-          </Box>
+          <SimpleSwitchField
+            label="Status"
+            labelSx={labelSx}
+            checked={form.isActive}
+            onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))}
+          />
         </Box>
         <Stack direction="row" justifyContent="flex-end" spacing={1.25} sx={{ mt: 3 }}>
           <Button component={Link} href="/fnb/manajemen-user" variant="text">Cancel</Button>
@@ -111,4 +111,3 @@ export default function InternalUserForm({ mode = "create", userId }) {
     </Box>
   );
 }
-

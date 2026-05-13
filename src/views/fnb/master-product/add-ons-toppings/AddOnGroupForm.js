@@ -69,6 +69,11 @@ const labelSx = {
   fontSize: '0.875rem',
   fontWeight: 500,
 };
+const plainSwitchSx = {
+  ml: -1,
+  '& .MuiSwitch-switchBase.Mui-checked': { color: '#155DFC' },
+  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#155DFC', opacity: 1 },
+};
 
 const CustomTooltip = ({ title, children }) => (
   <Tooltip title={title} arrow disableInteractive>
@@ -133,21 +138,11 @@ const AddonItemRow = React.memo(function AddonItemRow({
         </Box>
         <Box>
           <Typography sx={{ ...labelSx, mb: 0.75 }}>Is Available</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e5e7eb', borderRadius: 2, px: 1.25, py: 0.5 }}>
-            <Typography sx={{ color: item.isAvailable ? '#155DFC' : '#6b7280', fontWeight: 500, fontSize: '0.82rem' }}>
-              {item.isAvailable ? 'Aktif' : 'Nonaktif'}
-            </Typography>
-            <Switch checked={item.isAvailable} onChange={(e) => onChangeItem(itemKey, 'isAvailable', e.target.checked)} size="small" />
-          </Box>
+          <Switch checked={item.isAvailable} onChange={(e) => onChangeItem(itemKey, 'isAvailable', e.target.checked)} size="small" sx={plainSwitchSx} />
         </Box>
         <Box>
           <Typography sx={{ ...labelSx, mb: 0.75 }}>Is Default</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e5e7eb', borderRadius: 2, px: 1.25, py: 0.5 }}>
-            <Typography sx={{ color: item.isDefault ? '#155DFC' : '#6b7280', fontWeight: 500, fontSize: '0.82rem' }}>
-              {item.isDefault ? 'Yes' : 'No'}
-            </Typography>
-            <Switch checked={item.isDefault} onChange={(e) => onChangeItem(itemKey, 'isDefault', e.target.checked)} size="small" />
-          </Box>
+          <Switch checked={item.isDefault} onChange={(e) => onChangeItem(itemKey, 'isDefault', e.target.checked)} size="small" sx={plainSwitchSx} />
         </Box>
       </Box>
     </Box>
@@ -346,17 +341,11 @@ export default function AddOnGroupForm({ mode = 'create', addonGroupId }) {
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 2 }}>
             <Box>
               <Typography sx={{ ...labelSx, mb: 0.75 }}>Status Group</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e5e7eb', borderRadius: 2, px: 1.25, py: 0.5 }}>
-                <Typography sx={{ color: isActive ? '#155DFC' : '#6b7280', fontWeight: 500, fontSize: '0.82rem' }}>{isActive ? 'Aktif' : 'Nonaktif'}</Typography>
-                <Switch checked={isActive} onChange={(e) => setIsActive(e.target.checked)} size="small" />
-              </Box>
+              <Switch checked={isActive} onChange={(e) => setIsActive(e.target.checked)} size="small" sx={plainSwitchSx} />
             </Box>
             <Box>
               <Typography sx={{ ...labelSx, mb: 0.75 }}>Required</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #e5e7eb', borderRadius: 2, px: 1.25, py: 0.5 }}>
-                <Typography sx={{ color: isRequired ? '#155DFC' : '#6b7280', fontWeight: 500, fontSize: '0.82rem' }}>{isRequired ? 'Yes' : 'No'}</Typography>
-                <Switch checked={isRequired} onChange={(e) => setIsRequired(e.target.checked)} size="small" />
-              </Box>
+              <Switch checked={isRequired} onChange={(e) => setIsRequired(e.target.checked)} size="small" sx={plainSwitchSx} />
             </Box>
             <Box>
               <Typography sx={{ ...labelSx, mb: 0.75 }}>Min Selection</Typography>
@@ -413,4 +402,3 @@ export default function AddOnGroupForm({ mode = 'create', addonGroupId }) {
     </Box>
   );
 }
-

@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Box, MenuItem, Paper, Select, Stack, Switch, Typography } from "@mui/material";
+import { Box, MenuItem, Paper, Select, Stack, Typography } from "@mui/material";
+import SimpleSwitchField from "../common/SimpleSwitchField";
 
 const paymentTypeOptions = [
   { label: "Bayar di Awal", value: "pay_first" },
@@ -44,23 +45,13 @@ export default function MerchantPaymentManagementPage() {
             </Typography>
             <Stack spacing={1.25}>
               {paymentMethods.map((method) => (
-                <Box
-                  key={method.key}
-                  sx={{
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 2,
-                    p: 1.5,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    bgcolor: method.enabled ? "rgba(21, 93, 252, 0.04)" : "#fff",
-                  }}
-                >
-                  <Box>
-                    <Typography sx={{ fontSize: "0.95rem", fontWeight: 600, color: "#1f2937" }}>{method.label}</Typography>
-                    <Typography sx={{ fontSize: "0.82rem", color: "#64748b", mt: 0.2 }}>{method.description}</Typography>
-                  </Box>
-                  <Switch checked={method.enabled} onChange={() => handleToggleMethod(method.key)} />
+                <Box key={method.key}>
+                  <SimpleSwitchField
+                    label={method.label}
+                    checked={method.enabled}
+                    onChange={() => handleToggleMethod(method.key)}
+                  />
+                  <Typography sx={{ fontSize: "0.82rem", color: "#64748b", mt: 0.2 }}>{method.description}</Typography>
                 </Box>
               ))}
             </Stack>
@@ -70,4 +61,3 @@ export default function MerchantPaymentManagementPage() {
     </Box>
   );
 }
-

@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Box, Paper, Stack, Switch, Typography } from "@mui/material";
+import { Box, Paper, Stack } from "@mui/material";
+import SimpleSwitchField from "../common/SimpleSwitchField";
 
 const initialFeatureState = [
   { key: "inventory", label: "Inventory", enabled: true },
@@ -21,25 +22,15 @@ export default function MerchantFeatureManagementPage() {
       <Paper elevation={0} sx={{ border: "1px solid #e8edf3", borderRadius: 3, p: 3 }}>
         <Stack spacing={1.25}>
           {features.map((feature) => (
-            <Box
+            <SimpleSwitchField
               key={feature.key}
-              sx={{
-                border: "1px solid #e2e8f0",
-                borderRadius: 2,
-                p: 1.5,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                bgcolor: feature.enabled ? "rgba(21, 93, 252, 0.04)" : "#fff",
-              }}
-            >
-              <Typography sx={{ fontSize: "0.95rem", fontWeight: 600, color: "#1f2937" }}>{feature.label}</Typography>
-              <Switch checked={feature.enabled} onChange={() => handleToggle(feature.key)} />
-            </Box>
+              label={feature.label}
+              checked={feature.enabled}
+              onChange={() => handleToggle(feature.key)}
+            />
           ))}
         </Stack>
       </Paper>
     </Box>
   );
 }
-

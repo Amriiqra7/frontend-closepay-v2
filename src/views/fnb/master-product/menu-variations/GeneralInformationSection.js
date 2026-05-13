@@ -40,43 +40,19 @@ function StaticField({ label, value }) {
 }
 
 function ToggleRow({ label, checked, onChange, disabled = false }) {
-  const switchText = checked ? "Aktif" : "Nonaktif";
   return (
     <Box sx={{ pt: 0.25 }}>
       <Typography variant="body2" sx={adminLabelSx}>
         {label}
       </Typography>
-      <Box
-        sx={{
-          px: 1.25,
-          py: 0.85,
-          borderRadius: 1.8,
-          bgcolor: checked ? "rgba(21, 93, 252, 0.07)" : "#f8fafc",
-          border: "1px solid",
-          borderColor: checked ? "rgba(21, 93, 252, 0.2)" : "#e5e7eb",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          minHeight: 40,
-          transition: "all .18s ease",
-        }}
-      >
-        <Typography
-          sx={{
-            color: checked ? "#155DFC" : "#6b7280",
-            fontSize: "0.78rem",
-            fontWeight: 700,
-            letterSpacing: "0.01em",
-          }}
-        >
-          {switchText}
-        </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <Switch
           checked={checked}
           onChange={onChange}
           size="small"
           disabled={disabled}
           sx={{
+            ml: -1,
             "& .MuiSwitch-switchBase.Mui-checked": { color: "#155DFC" },
             "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
               bgcolor: "#155DFC",
@@ -84,6 +60,9 @@ function ToggleRow({ label, checked, onChange, disabled = false }) {
             },
           }}
         />
+        <Typography sx={{ color: checked ? "#155DFC" : "#6b7280", fontSize: "0.8rem", fontWeight: 600 }}>
+          {checked ? "Aktif" : "Tidak Aktif"}
+        </Typography>
       </Box>
     </Box>
   );
@@ -223,7 +202,7 @@ function GeneralInformationSection({
               <StaticField label="Menu Name" value={menuName} />
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
                 <StaticField label="Category" value={categoryLabel} />
-                <ToggleRow label="Status" checked={statusChecked} disabled />
+                <StaticField label="Status" value={statusChecked ? "Aktif" : "Tidak Aktif"} />
               </Box>
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2 }}>
               <StaticField label="Base Price" value={basePrice} />
@@ -269,7 +248,7 @@ function GeneralInformationSection({
                   ) : null}
                 </>
               ) : null}
-              <ToggleRow label="Variant" checked={useVariant} disabled />
+              <StaticField label="Variant" value={useVariant ? "Aktif" : "Tidak Aktif"} />
             </>
           ) : (
             <>

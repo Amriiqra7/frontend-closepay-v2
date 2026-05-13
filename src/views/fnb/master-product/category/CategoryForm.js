@@ -10,13 +10,13 @@ import {
   Button,
   Divider,
   Paper,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { fnbMenuCategory } from "@/core/services/api_fnb";
 import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
+import SimpleSwitchField from "../../common/SimpleSwitchField";
 
 const labelSx = {
   color: "#374151",
@@ -168,15 +168,11 @@ export default function CategoryForm({ mode = "create", categoryId }) {
                 <Divider sx={{ mb: 2 }} />
               </Box>
 
-              <Box>
-                <Typography sx={{ ...labelSx, mb: 0.75 }}>Status</Typography>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", border: "1px solid #e5e7eb", borderRadius: 2, px: 1.25, py: 0.5 }}>
-                  <Typography sx={{ color: formik.values.isActive ? "#155DFC" : "#6b7280", fontWeight: 500, fontSize: "0.82rem" }}>
-                    {formik.values.isActive ? "Aktif" : "Nonaktif"}
-                  </Typography>
-                  <Switch checked={formik.values.isActive} onChange={(e) => formik.setFieldValue("isActive", e.target.checked)} size="small" />
-                </Box>
-              </Box>
+              <SimpleSwitchField
+                label="Status"
+                checked={formik.values.isActive}
+                onChange={(e) => formik.setFieldValue("isActive", e.target.checked)}
+              />
             </Box>
 
             <Divider sx={{ my: 2.5 }} />

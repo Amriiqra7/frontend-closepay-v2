@@ -15,24 +15,9 @@ import { Trash } from 'iconsax-react';
 import { formatRupiah, parseRupiah } from '@/shared/utils/format';
 
 const variantToggleSx = (checked) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  px: 1.25,
-  py: 0.85,
-  borderRadius: 1.8,
-  bgcolor: checked ? 'rgba(21, 93, 252, 0.07)' : '#f8fafc',
-  border: '1px solid',
-  borderColor: checked ? 'rgba(21, 93, 252, 0.2)' : '#e5e7eb',
-  minHeight: 40,
-  transition: 'all .18s ease',
-});
-
-const variantToggleTextSx = (checked) => ({
-  color: checked ? '#155DFC' : '#6b7280',
-  fontSize: '0.78rem',
-  fontWeight: 700,
-  letterSpacing: '0.01em',
+  ml: -1,
+  '& .MuiSwitch-switchBase.Mui-checked': { color: '#155DFC' },
+  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#155DFC', opacity: 1 },
 });
 const requiredMark = <Box component="span" sx={{ color: '#dc2626' }}> *</Box>;
 
@@ -119,34 +104,22 @@ function VariantRowCard({
           <Typography sx={{ mb: 0.5, fontSize: '0.82rem', color: '#111827', fontWeight: 600 }}>
             Default
           </Typography>
-          <Box sx={variantToggleSx(row.isDefault)}>
-            <Typography sx={variantToggleTextSx(row.isDefault)}>{row.isDefault ? 'Aktif' : 'Nonaktif'}</Typography>
-            <Switch
-              checked={row.isDefault}
-              onChange={handleToggle('isDefault')}
-              size="small"
-              sx={{
-                '& .MuiSwitch-switchBase.Mui-checked': { color: '#155DFC' },
-                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#155DFC', opacity: 1 },
-              }}
-            />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Switch checked={row.isDefault} onChange={handleToggle('isDefault')} size="small" sx={variantToggleSx(row.isDefault)} />
+            <Typography sx={{ color: row.isDefault ? '#155DFC' : '#6b7280', fontSize: '0.8rem', fontWeight: 600 }}>
+              {row.isDefault ? 'Aktif' : 'Tidak Aktif'}
+            </Typography>
           </Box>
         </Box>
         <Box sx={{ pt: 0.25 }}>
           <Typography sx={{ mb: 0.5, fontSize: '0.82rem', color: '#111827', fontWeight: 600 }}>
             Available
           </Typography>
-          <Box sx={variantToggleSx(row.isAvailable)}>
-            <Typography sx={variantToggleTextSx(row.isAvailable)}>{row.isAvailable ? 'Aktif' : 'Nonaktif'}</Typography>
-            <Switch
-              checked={row.isAvailable}
-              onChange={handleToggle('isAvailable')}
-              size="small"
-              sx={{
-                '& .MuiSwitch-switchBase.Mui-checked': { color: '#155DFC' },
-                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#155DFC', opacity: 1 },
-              }}
-            />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Switch checked={row.isAvailable} onChange={handleToggle('isAvailable')} size="small" sx={variantToggleSx(row.isAvailable)} />
+            <Typography sx={{ color: row.isAvailable ? '#155DFC' : '#6b7280', fontSize: '0.8rem', fontWeight: 600 }}>
+              {row.isAvailable ? 'Aktif' : 'Tidak Aktif'}
+            </Typography>
           </Box>
         </Box>
       </Box>
