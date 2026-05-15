@@ -234,7 +234,7 @@ export default function KioskForm({ mode = "create", kioskId }) {
       <Form>
         <Box sx={{ display: "grid", gap: 1.5 }}>
           <Paper elevation={0} sx={{ borderRadius: 3, border: "1px solid #e5e7eb", p: { xs: 2, md: 3 }, bgcolor: "#fcfdff" }}>
-            <Box sx={{ display: "grid", gap: 2 }}>
+            <Box sx={{ display: "grid", gap: 1.25 }}>
               <Box>
                 <Typography sx={{ ...labelSx, mb: 1 }}>Device Code</Typography>
                 <TextField
@@ -248,7 +248,7 @@ export default function KioskForm({ mode = "create", kioskId }) {
                   placeholder="Masukkan device code"
                   disabled={isEdit || isCreateLocked}
                   error={Boolean(formik.touched.deviceCode && formik.errors.deviceCode)}
-                  helperText={formik.touched.deviceCode && formik.errors.deviceCode ? formik.errors.deviceCode : " "}
+                  helperText={formik.touched.deviceCode && formik.errors.deviceCode ? formik.errors.deviceCode : ""}
                 />
               </Box>
               <Box>
@@ -264,21 +264,12 @@ export default function KioskForm({ mode = "create", kioskId }) {
                   placeholder="Masukkan device name"
                   disabled={isCreateLocked}
                   error={Boolean(formik.touched.deviceName && formik.errors.deviceName)}
-                  helperText={formik.touched.deviceName && formik.errors.deviceName ? formik.errors.deviceName : " "}
+                  helperText={formik.touched.deviceName && formik.errors.deviceName ? formik.errors.deviceName : ""}
                 />
               </Box>
-            </Box>
-
-            {isEdit ? (
-              <>
-                <Divider sx={{ my: 2.5 }} />
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, flexWrap: "wrap" }}>
-                  <Box>
-                    <Typography sx={{ ...labelSx, mb: 0.5 }}>Status Kiosk</Typography>
-                    <Typography sx={{ color: "#6b7280", fontSize: "0.8rem" }}>
-                      {formik.values.isActive ? "Aktif" : "Tidak Aktif"}
-                    </Typography>
-                  </Box>
+              {isEdit ? (
+                <Box>
+                  <Typography sx={{ ...labelSx, mb: 0.5 }}>Status Kiosk</Typography>
                   <FormControlLabel
                     sx={{ m: 0 }}
                     control={
@@ -292,9 +283,18 @@ export default function KioskForm({ mode = "create", kioskId }) {
                         }}
                       />
                     }
-                    label={isTogglingActive ? "Memproses..." : ""}
+                    label=""
                   />
+                  {isTogglingActive ? (
+                    <Typography sx={{ color: "#6b7280", fontSize: "0.75rem", mt: 0.25 }}>Memproses...</Typography>
+                  ) : null}
                 </Box>
+              ) : null}
+            </Box>
+
+            {isEdit ? (
+              <>
+                <Divider sx={{ my: 2.5 }} />
                 <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1.5, flexWrap: "wrap" }}>
                   <Button type="button" variant="outlined" onClick={handleRotateApiKey} disabled={isRotating || formik.isSubmitting}>
                     {isRotating ? "Generating..." : "Generate API Key"}
