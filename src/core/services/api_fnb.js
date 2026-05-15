@@ -219,6 +219,14 @@ export const fnbMerchantKiosk = {
     (kioskId) => handleRequest(axiosInstance.put(`/fnb/merchant/kiosk/rotate_api_key/${kioskId}`)),
     { operationId: "merchant_kiosk_rotate_api_key" }
   ),
+  activate: addProps(
+    (kioskId) => handleRequest(axiosInstance.patch(`/fnb/merchant/kiosk/activate/${kioskId}`)),
+    { operationId: "merchant_kiosk_activate" }
+  ),
+  revoke: addProps(
+    (kioskId) => handleRequest(axiosInstance.patch(`/fnb/merchant/kiosk/revoke/${kioskId}`)),
+    { operationId: "merchant_kiosk_revoke" }
+  ),
 };
 
 export const fnbInternalUser = {

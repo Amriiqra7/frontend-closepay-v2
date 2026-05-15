@@ -8,9 +8,14 @@ import {
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   Paper,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -21,7 +26,7 @@ import FilterCollapse, { FilterButton } from "@/shared/ui/FilterCollapse";
 import TablePagination from "@/shared/ui/TablePagination";
 import DebouncedInput from "@/shared/ui/DebouncedInput";
 import { fnbMerchantKiosk } from "@/core/services/api_fnb";
-import { getApiErrorMessage, showErrorToast } from "@/shared/utils/toast";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 import { pageContainerSx } from "../menu-variations/styles";
 import KioskDetailDialog from "./KioskDetailDialog";
 
@@ -66,6 +71,8 @@ export default function KioskList() {
   const [listValidating, setListValidating] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [detailOpen, setDetailOpen] = React.useState(false);
+  const [switchLoadingById, setSwitchLoadingById] = React.useState({});
+  const [confirmToggle, setConfirmToggle] = React.useState({ open: false, row: null, nextActive: false });
   const lastFetchKeyRef = React.useRef("");
 
   const hasActiveFilters = React.useMemo(() => Boolean(keywordFilter || statusFilter), [keywordFilter, statusFilter]);
@@ -127,6 +134,34 @@ export default function KioskList() {
 
   const detailData = detailResponse?.data || selectedRow || null;
 
+  const handleConfirmToggleActive = React.useCallback(
+    async (row) => {
+      const kioskId = safeId(row);
+      if (!kioskId) return;
+      const currentActive = Boolean(row?.isActive);
+
+      setSwitchLoadingById((prev) => ({ ...prev, [kioskId]: true }));
+      try {
+        await toastPromise(
+          currentActive ? fnbMerchantKiosk.revoke(kioskId) : fnbMerchantKiosk.activate(kioskId),
+          {
+            loading: currentActive ? "Menonaktifkan kiosk..." : "Mengaktifkan kiosk...",
+            success: currentActive ? "Kiosk berhasil dinonaktifkan." : "Kiosk berhasil diaktifkan.",
+            error: (error) =>
+              getApiErrorMessage(
+                error,
+                currentActive ? "Gagal menonaktifkan kiosk." : "Gagal mengaktifkan kiosk."
+              ),
+          }
+        );
+        await fetchList({ force: true });
+      } finally {
+        setSwitchLoadingById((prev) => ({ ...prev, [kioskId]: false }));
+      }
+    },
+    [fetchList]
+  );
+
   const columns = React.useMemo(() => [
     { accessorKey: "index", header: "NO", size: 40, enableSorting: false, muiTableHeadCellProps: { align: "center" }, muiTableBodyCellProps: { align: "center" } },
     { accessorKey: "deviceCode", header: "DEVICE CODE", Cell: ({ cell }) => <Typography variant="body2">{cell.getValue()}</Typography> },
@@ -154,7 +189,7 @@ export default function KioskList() {
         );
       },
     },
-  ], []);
+  ], [handleConfirmToggleActive, switchLoadingById]);
 
   const table = useMaterialReactTable({
     columns,
@@ -245,7 +280,25 @@ export default function KioskList() {
     muiTablePaperProps: { elevation: 0, sx: { borderRadius: 0, boxShadow: "none", border: "none" } },
     mrtTheme: { baseBackgroundColor: "rgba(255, 255, 255, 1)" },
     renderRowActions: ({ row }) => (
-      <Box display="flex" gap={0.5}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <Tooltip title={row.original?.isActive ? "Nonaktifkan" : "Aktifkan"} arrow>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Switch
+              size="small"
+              checked={Boolean(row.original?.isActive)}
+              disabled={Boolean(switchLoadingById[safeId(row.original)])}
+              onChange={(_, checked) => {
+                setConfirmToggle({ open: true, row: row.original, nextActive: checked });
+              }}
+              sx={{
+                "& .MuiSwitch-switchBase.Mui-checked": { color: "#155DFC" },
+                "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                  backgroundColor: "#155DFC",
+                },
+              }}
+            />
+          </Box>
+        </Tooltip>
         <Tooltip title="Detail" arrow><IconButton size="small" onClick={() => { setSelectedRow(row.original); setDetailOpen(true); }}><Eye size={20} color="#1976d2" variant="Linear" /></IconButton></Tooltip>
         <Tooltip title="Edit" arrow><IconButton size="small" onClick={() => router.push(`/fnb/master-product/manajemen-kiosk/${safeId(row.original)}/edit`)}><Edit size={20} color="#ed6c02" variant="Linear" /></IconButton></Tooltip>
       </Box>
@@ -269,7 +322,43 @@ export default function KioskList() {
       </Paper>
 
       <KioskDetailDialog open={detailOpen} onClose={() => setDetailOpen(false)} data={detailData} loading={detailLoading} />
+      <Dialog
+        open={confirmToggle.open}
+        onClose={() => setConfirmToggle({ open: false, row: null, nextActive: false })}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle sx={{ fontSize: "1rem", fontWeight: 600 }}>
+          Konfirmasi Status Kiosk
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ fontSize: "0.9rem", color: "#374151" }}>
+            {confirmToggle.nextActive
+              ? "Yakin ingin mengaktifkan kiosk ini?"
+              : "Yakin ingin menonaktifkan kiosk ini?"}
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            variant="outlined"
+            onClick={() => setConfirmToggle({ open: false, row: null, nextActive: false })}
+            sx={{ textTransform: "none" }}
+          >
+            Batal
+          </Button>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              const row = confirmToggle.row;
+              setConfirmToggle({ open: false, row: null, nextActive: false });
+              if (row) await handleConfirmToggleActive(row);
+            }}
+            sx={{ textTransform: "none" }}
+          >
+            Ya, Lanjutkan
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
-

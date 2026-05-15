@@ -10,8 +10,14 @@ import {
   Box,
   Button,
   Divider,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
   IconButton,
   Paper,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -105,11 +111,32 @@ function ApiKeyReveal({ apiKey }) {
   );
 }
 
+function ApiKeyDialog({ open, apiKey, onBackToList }) {
+  return (
+    <Dialog open={open} onClose={onBackToList} fullWidth maxWidth="md">
+      <DialogTitle sx={{ px: 3, py: 1.5, fontWeight: 500, fontSize: "1rem" }}>
+        <Typography sx={{ fontSize: "1rem", fontWeight: 500, color: "#1f2937" }}>API Key Kiosk</Typography>
+      </DialogTitle>
+      <Divider />
+      <DialogContent sx={{ px: 3, py: 3 }}>
+        <ApiKeyReveal apiKey={apiKey} />
+      </DialogContent>
+      <DialogActions sx={{ px: 3, py: 2.5 }}>
+        <Button variant="contained" onClick={onBackToList} sx={{ textTransform: "none" }}>
+          Kembali
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 export default function KioskForm({ mode = "create", kioskId }) {
   const router = useRouter();
   const isEdit = mode === "edit";
   const [generatedApiKey, setGeneratedApiKey] = React.useState("");
+  const [apiKeyDialogOpen, setApiKeyDialogOpen] = React.useState(false);
   const [isRotating, setIsRotating] = React.useState(false);
+  const [isTogglingActive, setIsTogglingActive] = React.useState(false);
   const isCreateLocked = !isEdit && Boolean(generatedApiKey);
 
   const { data: detailResponse, error: detailError } = useSWR(
@@ -140,7 +167,6 @@ export default function KioskForm({ mode = "create", kioskId }) {
       const payload = isEdit
         ? {
           deviceName: values.deviceName.trim(),
-          isActive: true,
         }
         : {
           deviceCode: values.deviceCode.trim(),
@@ -158,13 +184,31 @@ export default function KioskForm({ mode = "create", kioskId }) {
       });
 
       const apiKey = response?.data?.apiKey;
-      if (!isEdit) {
-        if (apiKey) setGeneratedApiKey(apiKey);
+      if (apiKey) {
+        setGeneratedApiKey(apiKey);
+        setApiKeyDialogOpen(true);
         return;
       }
+
       router.push("/fnb/master-product/manajemen-kiosk");
     },
   });
+
+  const handleToggleActive = React.useCallback(async (_, nextChecked) => {
+    if (!kioskId) return;
+
+    setIsTogglingActive(true);
+    try {
+      await toastPromise(nextChecked ? fnbMerchantKiosk.activate(kioskId) : fnbMerchantKiosk.revoke(kioskId), {
+        loading: nextChecked ? "Mengaktifkan kiosk..." : "Menonaktifkan kiosk...",
+        success: nextChecked ? "Kiosk berhasil diaktifkan." : "Kiosk berhasil dinonaktifkan.",
+        error: (error) => getApiErrorMessage(error, nextChecked ? "Gagal mengaktifkan kiosk." : "Gagal menonaktifkan kiosk."),
+      });
+      formik.setFieldValue("isActive", nextChecked, false);
+    } finally {
+      setIsTogglingActive(false);
+    }
+  }, [formik, kioskId]);
 
   const handleRotateApiKey = React.useCallback(async () => {
     if (!kioskId) return;
@@ -176,7 +220,10 @@ export default function KioskForm({ mode = "create", kioskId }) {
         error: (error) => getApiErrorMessage(error, "Gagal membuat API key baru."),
       });
       const apiKey = response?.data?.apiKey;
-      if (apiKey) setGeneratedApiKey(apiKey);
+      if (apiKey) {
+        setGeneratedApiKey(apiKey);
+        setApiKeyDialogOpen(true);
+      }
     } finally {
       setIsRotating(false);
     }
@@ -186,7 +233,6 @@ export default function KioskForm({ mode = "create", kioskId }) {
     <FormikProvider value={formik}>
       <Form>
         <Box sx={{ display: "grid", gap: 1.5 }}>
-          {generatedApiKey ? <ApiKeyReveal apiKey={generatedApiKey} /> : null}
           <Paper elevation={0} sx={{ borderRadius: 3, border: "1px solid #e5e7eb", p: { xs: 2, md: 3 }, bgcolor: "#fcfdff" }}>
             <Box sx={{ display: "grid", gap: 2 }}>
               <Box>
@@ -226,6 +272,29 @@ export default function KioskForm({ mode = "create", kioskId }) {
             {isEdit ? (
               <>
                 <Divider sx={{ my: 2.5 }} />
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1.5, flexWrap: "wrap" }}>
+                  <Box>
+                    <Typography sx={{ ...labelSx, mb: 0.5 }}>Status Kiosk</Typography>
+                    <Typography sx={{ color: "#6b7280", fontSize: "0.8rem" }}>
+                      {formik.values.isActive ? "Aktif" : "Tidak Aktif"}
+                    </Typography>
+                  </Box>
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Switch
+                        checked={Boolean(formik.values.isActive)}
+                        onChange={handleToggleActive}
+                        disabled={isTogglingActive || formik.isSubmitting}
+                        sx={{
+                          "& .MuiSwitch-switchBase.Mui-checked": { color: "#155DFC" },
+                          "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": { backgroundColor: "#155DFC" },
+                        }}
+                      />
+                    }
+                    label={isTogglingActive ? "Memproses..." : ""}
+                  />
+                </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1.5, flexWrap: "wrap" }}>
                   <Button type="button" variant="outlined" onClick={handleRotateApiKey} disabled={isRotating || formik.isSubmitting}>
                     {isRotating ? "Generating..." : "Generate API Key"}
@@ -249,6 +318,14 @@ export default function KioskForm({ mode = "create", kioskId }) {
             </Box>
           </Paper>
         </Box>
+        <ApiKeyDialog
+          open={apiKeyDialogOpen && Boolean(generatedApiKey)}
+          apiKey={generatedApiKey}
+          onBackToList={() => {
+            setApiKeyDialogOpen(false);
+            router.push("/fnb/master-product/manajemen-kiosk");
+          }}
+        />
       </Form>
     </FormikProvider>
   );
