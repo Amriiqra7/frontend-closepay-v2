@@ -1,9 +1,12 @@
 "use client";
 
 import React from "react";
+import useSWR from "swr";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { Box, Button, Divider, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Image as ImageIcon } from "iconsax-react";
+import { fnbMerchantReceiptTemplate } from "@/core/services/api_fnb";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 
 const FIELD_META = {
   logo: {
@@ -18,21 +21,28 @@ const FIELD_META = {
     label: "Alamat atau slogan",
     helper: "Bisa dipakai sebagai alamat, cabang, atau slogan.",
   },
-  footerText: {
+  text: {
     label: "Teks bagian bawah",
     helper: "Beberapa baris dipisah dengan Enter.",
   },
 };
 
-const FIELD_ORDER = ["logo", "merchantName", "address", "footerText"];
+const FIELD_ORDER = ["logo", "merchantName", "address", "text"];
+const BOTTOM_FIELDS = ["text"];
+const FIELD_VALUE_KEY = {
+  logo: "logoUrl",
+  merchantName: "merchantName",
+  address: "address",
+  text: "text",
+};
 
 const DEFAULT_STATE = {
   logoUrl: "",
   merchantName: "ClosePay",
   address: "Alamat Toko / Instansi",
-  footerText: "Terima kasih atas kunjungan Anda.",
+  text: "Terima kasih atas kunjungan Anda.",
   topFields: ["logo", "merchantName", "address"],
-  bottomFields: ["footerText"],
+  bottomFields: ["text"],
 };
 
 const moveWithin = (list, fromIndex, toIndex) => {
@@ -42,16 +52,8 @@ const moveWithin = (list, fromIndex, toIndex) => {
   return next;
 };
 
-const moveAcross = (sourceList, destList, sourceIndex, destIndex) => {
-  const source = [...sourceList];
-  const destination = [...destList];
-  const [moved] = source.splice(sourceIndex, 1);
-  destination.splice(destIndex, 0, moved);
-  return { source, destination };
-};
-
 function ReceiptPreview({ state }) {
-  const footerLines = state.footerText
+  const footerLines = state.text
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
@@ -59,9 +61,14 @@ function ReceiptPreview({ state }) {
   const renderField = (field) => {
     if (field === "logo") {
       return (
-        <Box key={field} sx={{ textAlign: "center", mb: 0.5 }}>
+        <Box key={field} sx={{ textAlign: "center" }}>
           {state.logoUrl ? (
-            <Box component="img" src={state.logoUrl} alt="Logo merchant" sx={{ width: 64, height: 64, objectFit: "contain", mx: "auto" }} />
+            <Box
+              component="img"
+              src={state.logoUrl}
+              alt="Logo merchant"
+              sx={{ width: 64, maxHeight: 80, objectFit: "contain", mx: "auto", display: "block" }}
+            />
           ) : (
             <Box
               sx={{
@@ -99,7 +106,7 @@ function ReceiptPreview({ state }) {
       );
     }
 
-    if (field === "footerText") {
+    if (field === "text") {
       return footerLines.length ? (
         <Stack key={field} spacing={0.35} sx={{ pt: 0.5 }}>
           {footerLines.map((line) => (
@@ -130,7 +137,7 @@ function ReceiptPreview({ state }) {
 
   return (
     <Paper elevation={0} sx={{ border: "1px solid #e8edf3", borderRadius: 4, p: 2.5, maxWidth: 380, mx: "auto", bgcolor: "#fff" }}>
-      <Stack spacing={0.95}>
+      <Stack spacing={0.8}>
         {state.topFields.map((field) => renderField(field))}
 
         <Typography sx={{ fontWeight: 700, fontSize: "1.05rem", mt: 0.8, mb: 0.2 }}>NO ANTRIAN</Typography>
@@ -171,13 +178,19 @@ function ReceiptPreview({ state }) {
           <Typography sx={{ fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.2 }}>Total</Typography>
           <Typography sx={{ fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.2 }}>Rp 27.500</Typography>
         </Box>
-
         {state.bottomFields.map((field) => renderField(field))}
-
       </Stack>
     </Paper>
   );
 }
+
+const moveAcross = (sourceList, destList, sourceIndex, destIndex) => {
+  const source = [...sourceList];
+  const destination = [...destList];
+  const [moved] = source.splice(sourceIndex, 1);
+  destination.splice(destIndex, 0, moved);
+  return { source, destination };
+};
 
 function LayoutCard({ field, draggableProps, dragHandleProps, innerRef, isDragging, children }) {
   return (
@@ -232,42 +245,169 @@ function SectionTitle({ title, helper }) {
 
 export default function ReceiptLayoutPage() {
   const [form, setForm] = React.useState(DEFAULT_STATE);
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isResetting, setIsResetting] = React.useState(false);
+  const [isReordering, setIsReordering] = React.useState(false);
+  const hasTriedGenerateDefaultRef = React.useRef(false);
 
-  const handleResetDefault = () => setForm(DEFAULT_STATE);
+  const { data: receiptTemplateResponse, error: receiptTemplateError, mutate } = useSWR(
+    "fnb-receipt-template-get",
+    () => fnbMerchantReceiptTemplate.get(),
+    { revalidateOnFocus: false, shouldRetryOnError: false }
+  );
+
+  React.useEffect(() => {
+    if (!receiptTemplateError || hasTriedGenerateDefaultRef.current) return;
+
+    hasTriedGenerateDefaultRef.current = true;
+    (async () => {
+      try {
+        await fnbMerchantReceiptTemplate.generateDefault();
+        await mutate();
+      } catch (error) {
+        showErrorToast(getApiErrorMessage(error, "Gagal membuat tata letak struk default."));
+      }
+    })();
+  }, [receiptTemplateError, mutate]);
+
+  React.useEffect(() => {
+    const items = receiptTemplateResponse?.data?.items;
+    if (!Array.isArray(items) || !items.length) return;
+
+    const sorted = [...items].sort((a, b) => Number(a?.sortOrder || 0) - Number(b?.sortOrder || 0));
+    const orderedFields = sorted
+      .map((item) => item?.field)
+      .filter((field, index, array) => FIELD_ORDER.includes(field) && array.indexOf(field) === index);
+
+    const values = sorted.reduce((acc, item) => {
+      if (!FIELD_ORDER.includes(item?.field)) return acc;
+      const key = FIELD_VALUE_KEY[item.field];
+      if (!key) return acc;
+      acc[key] = item?.value ?? "";
+      return acc;
+    }, {});
+
+    const topFields = orderedFields.filter((field) => !BOTTOM_FIELDS.includes(field));
+    const bottomFields = orderedFields.filter((field) => BOTTOM_FIELDS.includes(field));
+
+    setForm((prev) => ({
+      ...prev,
+      ...values,
+      topFields: topFields.length ? topFields : prev.topFields,
+      bottomFields: bottomFields.length ? bottomFields : prev.bottomFields,
+    }));
+  }, [receiptTemplateResponse]);
+
+  const buildItemsPayload = React.useCallback((nextForm) => {
+    const mergedFields = [...nextForm.topFields, ...nextForm.bottomFields];
+    const fieldSet = new Set(mergedFields);
+    const orderedFields = [...mergedFields, ...FIELD_ORDER.filter((field) => !fieldSet.has(field))];
+    return orderedFields.map((field, index) => ({
+      field,
+      value: nextForm[FIELD_VALUE_KEY[field]] || null,
+      sortOrder: index + 1,
+    }));
+  }, []);
+
+  const handleResetDefault = React.useCallback(async () => {
+    setIsResetting(true);
+    try {
+      await toastPromise(fnbMerchantReceiptTemplate.resetDefault(), {
+        loading: "Mengembalikan tata letak default...",
+        success: "Tata letak struk berhasil dikembalikan ke default.",
+        error: (error) => getApiErrorMessage(error, "Gagal mengembalikan tata letak default."),
+      });
+      await mutate();
+    } finally {
+      setIsResetting(false);
+    }
+  }, [mutate]);
+
+  const handleSave = React.useCallback(async () => {
+    setIsSaving(true);
+    try {
+      const payload = { items: buildItemsPayload(form) };
+      await toastPromise(fnbMerchantReceiptTemplate.save(payload), {
+        loading: "Menyimpan tata letak struk...",
+        success: "Tata letak struk berhasil disimpan.",
+        error: (error) => getApiErrorMessage(error, "Gagal menyimpan tata letak struk."),
+      });
+      await mutate();
+    } finally {
+      setIsSaving(false);
+    }
+  }, [buildItemsPayload, form, mutate]);
+
+  const handleUpdateValue = React.useCallback(async (field) => {
+    if (!FIELD_ORDER.includes(field)) return;
+    await toastPromise(
+      fnbMerchantReceiptTemplate.updateValue({
+        field,
+        value: form[FIELD_VALUE_KEY[field]] || null,
+      }),
+      {
+        loading: "Menyimpan perubahan field...",
+        success: "Field tata letak struk berhasil diperbarui.",
+        error: (error) => getApiErrorMessage(error, "Gagal memperbarui field tata letak struk."),
+      }
+    );
+  }, [form]);
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
-
     const sourceId = source.droppableId;
     const destId = destination.droppableId;
 
     if (sourceId === destId) {
       if (source.index === destination.index) return;
       const key = sourceId === "top" ? "topFields" : "bottomFields";
-      setForm((prev) => ({
-        ...prev,
-        [key]: moveWithin(prev[key], source.index, destination.index),
-      }));
+      const nextForm = {
+        ...form,
+        [key]: moveWithin(form[key], source.index, destination.index),
+      };
+      setForm(nextForm);
+
+      setIsReordering(true);
+      toastPromise(
+        fnbMerchantReceiptTemplate.reorder({
+          items: buildItemsPayload(nextForm),
+        }),
+        {
+          loading: "Menyimpan urutan tata letak...",
+          success: "Urutan tata letak struk berhasil diperbarui.",
+          error: (error) => getApiErrorMessage(error, "Gagal memperbarui urutan tata letak struk."),
+        }
+      ).finally(() => setIsReordering(false));
       return;
     }
 
-    setForm((prev) => {
-      const sourceKey = sourceId === "top" ? "topFields" : "bottomFields";
-      const destKey = destId === "top" ? "topFields" : "bottomFields";
-      const { source: nextSource, destination: nextDestination } = moveAcross(
-        prev[sourceKey],
-        prev[destKey],
-        source.index,
-        destination.index
-      );
+    const sourceKey = sourceId === "top" ? "topFields" : "bottomFields";
+    const destKey = destId === "top" ? "topFields" : "bottomFields";
+    const { source: nextSource, destination: nextDestination } = moveAcross(
+      form[sourceKey],
+      form[destKey],
+      source.index,
+      destination.index
+    );
+    const nextForm = {
+      ...form,
+      [sourceKey]: nextSource,
+      [destKey]: nextDestination,
+    };
+    setForm(nextForm);
 
-      return {
-        ...prev,
-        [sourceKey]: nextSource,
-        [destKey]: nextDestination,
-      };
-    });
+    setIsReordering(true);
+    toastPromise(
+      fnbMerchantReceiptTemplate.reorder({
+        items: buildItemsPayload(nextForm),
+      }),
+      {
+        loading: "Menyimpan urutan tata letak...",
+        success: "Urutan tata letak struk berhasil diperbarui.",
+        error: (error) => getApiErrorMessage(error, "Gagal memperbarui urutan tata letak struk."),
+      }
+    ).finally(() => setIsReordering(false));
   };
 
   return (
@@ -278,17 +418,20 @@ export default function ReceiptLayoutPage() {
             <Button
               variant="contained"
               color="primary"
+              onClick={handleSave}
+              disabled={isSaving || isResetting || isReordering}
               sx={{ textTransform: "none", height: "40px", px: 2 }}
             >
-              Simpan struk
+              {isSaving ? "Menyimpan..." : "Simpan struk"}
             </Button>
             <Button
               variant="outlined"
               color="primary"
               onClick={handleResetDefault}
+              disabled={isSaving || isResetting || isReordering}
               sx={{ textTransform: "none", height: "40px", px: 2 }}
             >
-              Kembalikan default
+              {isResetting ? "Memproses..." : "Kembalikan default"}
             </Button>
           </Stack>
 
@@ -331,6 +474,7 @@ export default function ReceiptLayoutPage() {
                                         fullWidth
                                         value={form.logoUrl}
                                         onChange={(event) => setForm((prev) => ({ ...prev, logoUrl: event.target.value }))}
+                                        onBlur={() => handleUpdateValue("logo")}
                                         placeholder="https://contoh.com/logo.png"
                                         InputProps={{
                                           startAdornment: <ImageIcon size={18} color="#94a3b8" style={{ marginRight: 8 }} />,
@@ -369,6 +513,7 @@ export default function ReceiptLayoutPage() {
                                       fullWidth
                                       value={form.merchantName}
                                       onChange={(event) => setForm((prev) => ({ ...prev, merchantName: event.target.value }))}
+                                      onBlur={() => handleUpdateValue("merchantName")}
                                     />
                                   ) : null}
 
@@ -377,7 +522,19 @@ export default function ReceiptLayoutPage() {
                                       fullWidth
                                       value={form.address}
                                       onChange={(event) => setForm((prev) => ({ ...prev, address: event.target.value }))}
+                                      onBlur={() => handleUpdateValue("address")}
                                       placeholder="Opsional - baris kedua di bawah nama"
+                                    />
+                                  ) : null}
+
+                                  {field === "text" ? (
+                                    <TextField
+                                      fullWidth
+                                      multiline
+                                      minRows={4}
+                                      value={form.text}
+                                      onChange={(event) => setForm((prev) => ({ ...prev, text: event.target.value }))}
+                                      onBlur={() => handleUpdateValue("text")}
                                     />
                                   ) : null}
                                 </LayoutCard>
@@ -421,13 +578,14 @@ export default function ReceiptLayoutPage() {
                                   dragHandleProps={draggable.dragHandleProps}
                                   isDragging={dragSnapshot.isDragging}
                                 >
-                                  {field === "footerText" ? (
+                                  {field === "text" ? (
                                     <TextField
                                       fullWidth
                                       multiline
                                       minRows={4}
-                                      value={form.footerText}
-                                      onChange={(event) => setForm((prev) => ({ ...prev, footerText: event.target.value }))}
+                                      value={form.text}
+                                      onChange={(event) => setForm((prev) => ({ ...prev, text: event.target.value }))}
+                                      onBlur={() => handleUpdateValue("text")}
                                     />
                                   ) : null}
                                 </LayoutCard>

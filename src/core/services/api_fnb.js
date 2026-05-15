@@ -287,3 +287,30 @@ export const fnbMerchantTable = {
     { operationId: "merchant_table_delete" }
   ),
 };
+
+export const fnbMerchantReceiptTemplate = {
+  get: addProps(
+    () => handleRequest(axiosInstance.get("/fnb/merchant/receipt_template/get")),
+    { operationId: "merchant_receipt_template_get" }
+  ),
+  generateDefault: addProps(
+    () => handleRequest(axiosInstance.post("/fnb/merchant/receipt_template/generate-default")),
+    { operationId: "merchant_receipt_template_generate_default" }
+  ),
+  save: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/receipt_template/save", payload)),
+    { operationId: "merchant_receipt_template_save" }
+  ),
+  reorder: addProps(
+    (payload) => handleRequest(axiosInstance.post("/fnb/merchant/receipt_template/reorder", payload)),
+    { operationId: "merchant_receipt_template_reorder" }
+  ),
+  updateValue: addProps(
+    (payload) => handleRequest(axiosInstance.patch("/fnb/merchant/receipt_template/value", payload)),
+    { operationId: "merchant_receipt_template_update_value" }
+  ),
+  resetDefault: addProps(
+    () => handleRequest(axiosInstance.post("/fnb/merchant/receipt_template/reset-default")),
+    { operationId: "merchant_receipt_template_reset_default" }
+  ),
+};
