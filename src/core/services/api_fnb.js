@@ -314,3 +314,14 @@ export const fnbMerchantReceiptTemplate = {
     { operationId: "merchant_receipt_template_reset_default" }
   ),
 };
+
+export const fnbMerchantPaymentConfig = {
+  get: addProps(
+    () => handleRequest(axiosInstance.get("/fnb/merchant/payment_config/get")),
+    { operationId: "merchant_payment_config_get" }
+  ),
+  update: addProps(
+    (payload) => handleRequest(axiosInstance.put("/fnb/merchant/payment_config/update", payload)),
+    { operationId: "merchant_payment_config_update" }
+  ),
+};

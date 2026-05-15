@@ -1,12 +1,16 @@
 "use client";
 
 import React from "react";
-import { Box, MenuItem, Paper, Select, Stack, Typography } from "@mui/material";
+import { Box, Button, MenuItem, Paper, Select, Stack, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import SimpleSwitchField from "../common/SimpleSwitchField";
+import { fnbMerchantPaymentConfig } from "@/core/services/api_fnb";
+import { getApiErrorMessage, showErrorToast, toastPromise } from "@/shared/utils/toast";
 
 const paymentTypeOptions = [
-  { label: "Bayar di Awal", value: "pay_first" },
-  { label: "Bayar di Akhir", value: "pay_later" },
+  { label: "Bayar di Awal", value: "PAY_FIRST" },
+  { label: "Bayar di Akhir", value: "PAY_LAST" },
+  { label: "Bebas (Awal / Akhir)", value: "PAY_EITHER" },
 ];
 
 const initialMethods = [
@@ -17,20 +21,88 @@ const initialMethods = [
 ];
 
 export default function MerchantPaymentManagementPage() {
+  const router = useRouter();
   const [paymentType, setPaymentType] = React.useState(paymentTypeOptions[0].value);
+  const [savedPaymentType, setSavedPaymentType] = React.useState(paymentTypeOptions[0].value);
+  const [isLoadingConfig, setIsLoadingConfig] = React.useState(true);
+  const [isSaving, setIsSaving] = React.useState(false);
   const [paymentMethods, setPaymentMethods] = React.useState(initialMethods);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    const loadConfig = async () => {
+      try {
+        setIsLoadingConfig(true);
+        const response = await fnbMerchantPaymentConfig.get();
+        const apiValue = response?.data?.configPayment;
+        const normalized = paymentTypeOptions.some((item) => item.value === apiValue)
+          ? apiValue
+          : paymentTypeOptions[0].value;
+
+        if (!isMounted) return;
+
+        setPaymentType(normalized);
+        setSavedPaymentType(normalized);
+      } catch (error) {
+        if (!isMounted) return;
+        showErrorToast(getApiErrorMessage(error, "Gagal memuat konfigurasi pembayaran merchant."));
+      } finally {
+        if (!isMounted) return;
+        setIsLoadingConfig(false);
+      }
+    };
+
+    loadConfig();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleToggleMethod = (key) => {
     setPaymentMethods((prev) => prev.map((item) => (item.key === key ? { ...item, enabled: !item.enabled } : item)));
   };
 
+  const isChanged = paymentType !== savedPaymentType;
+
+  const handleCancel = () => {
+    router.back();
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await toastPromise(
+        fnbMerchantPaymentConfig.update({
+          configPayment: paymentType,
+        }),
+        {
+          loading: "Menyimpan konfigurasi pembayaran...",
+          success: "Konfigurasi pembayaran berhasil disimpan.",
+          error: (error) => getApiErrorMessage(error, "Gagal menyimpan konfigurasi pembayaran."),
+        }
+      );
+
+      setSavedPaymentType(paymentType);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
-    <Box>
+    <Stack spacing={2}>
       <Paper elevation={0} sx={{ border: "1px solid #e8edf3", borderRadius: 3, p: 3 }}>
         <Stack spacing={3}>
           <Box>
             <Typography sx={{ mb: 0.8, color: "#334155", fontWeight: 400, fontSize: "0.88rem" }}>Jenis Pembayaran</Typography>
-            <Select fullWidth value={paymentType} onChange={(event) => setPaymentType(event.target.value)} displayEmpty>
+            <Select
+              fullWidth
+              value={paymentType}
+              onChange={(event) => setPaymentType(event.target.value)}
+              displayEmpty
+              disabled={isLoadingConfig || isSaving}
+            >
               {paymentTypeOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -50,6 +122,7 @@ export default function MerchantPaymentManagementPage() {
                     label={method.label}
                     checked={method.enabled}
                     onChange={() => handleToggleMethod(method.key)}
+                    disabled
                   />
                   <Typography sx={{ fontSize: "0.82rem", color: "#64748b", mt: 0.2 }}>{method.description}</Typography>
                 </Box>
@@ -58,6 +131,15 @@ export default function MerchantPaymentManagementPage() {
           </Box>
         </Stack>
       </Paper>
-    </Box>
+
+      <Stack direction="row" spacing={1.2} justifyContent="flex-end">
+        <Button variant="outlined" onClick={handleCancel} disabled={isSaving}>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={handleSave} disabled={isLoadingConfig || isSaving || !isChanged}>
+          Save
+        </Button>
+      </Stack>
+    </Stack>
   );
 }
